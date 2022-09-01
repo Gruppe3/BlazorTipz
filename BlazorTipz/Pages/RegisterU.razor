@@ -1,0 +1,80 @@
+﻿@page "/register"
+
+@using DataLibrary
+@using BlazorTipz.Data
+@using Microsoft.Extensions.Configuration
+
+@inject IDataAccess _data
+@inject IConfiguration _config
+
+<h1 class="center">Fill in the form</h1>
+<p class="d-flex justify-content-center">to register a user</p>
+
+<EditForm Model="@Register">
+    <div class="form-group">
+        <label for="Firstname">Firstname</label>
+        <InputText id="f_name" @bind-Value="Register.f_name" class="form-control"Placeholder="Type in your firstname.."></InputText>
+    </div>
+    <div class="form-group">
+        <label for="Lastname">Lastnme</label>
+        <InputText id="l_name" @bind-Value="Register.l_name" class="form-control" Placeholder="Type in your lastname.."></InputText>
+    </div>
+    <div class="form-group">
+        <label for="Email">Email</label>
+        <InputText id="email" @bind-Value="Register.email" class="form-control" type="email" Placeholder="Type in your email.."></InputText>
+    </div>
+    <div class="form-group">
+        <label for="Password">Password</label>
+        <InputText id="password" @bind-Value="Register.password" class="form-control" type="password" Placeholder="Type in your password.."></InputText>
+    </div>
+    <div class="center"> 
+    <button class="btn btn-primary" @onclick="RegisterUser">Submit</button>
+    </div>
+</EditForm>
+<h1 class="center">User List</h1>
+<table class="table">
+    <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Firstname</th>
+                    <th scope="col">Lastname</th>
+                </tr>
+            </thead>
+@if (people == null) {
+<p><em>Loading...</em></p>
+}
+else {
+    @foreach (var p in people) {
+        
+            <tbody>
+                <tr>
+                    <th scope="row">@p.id</th>
+                    <td>@p.f_name</td>
+                    <td>@p.l_name</td>
+                </tr>
+            </tbody>
+        
+
+    }
+}
+</table>
+
+@code {
+    User Register = new User();
+
+    List<User> people;
+
+    private async Task RegisterUser()
+    {
+        var sql = "insert into user (f_name, l_name, email, password) values (@f_name, @l_name, @email, @password);";
+
+        await _data.SaveData(sql, new { f_name = Register.f_name, l_name = Register.l_name, email = Register.email, password = Register.password }, _config.GetConnectionString("default"));
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        string sql = "select * from user";
+        people = await _data.LoadData<User, dynamic>(sql, new { }, _config.GetConnectionString("default")); 
+    }
+    
+}
