@@ -1,0 +1,21 @@
+﻿@page "/login"
+
+@using Data
+@using Microsoft.Extensions.Configuration
+
+@inject UserModel User
+@inject IConfiguration Configuration
+
+<h1>Login</h1>
+
+@code {
+    List<> people;
+
+    protected override async Task OnInitializedAsync()
+    {
+        string sql = "select * from user";
+        
+        people
+    }
+    
+}
