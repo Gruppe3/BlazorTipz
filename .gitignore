@@ -363,7 +363,7 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # Debugger Output
-BlazorTipz/obj/Debug/
-BlazorTipz/obj/Release/
-BlazorTipz/bin/Debug/
-BlazorTipz/bin/Release/
+BlazorTipz/obj/
+BlazorTipz/bin/
+DataLibrary/obj/
+DataLibrary/bin/
