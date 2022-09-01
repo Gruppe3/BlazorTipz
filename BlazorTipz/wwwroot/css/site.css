@@ -27,6 +27,11 @@ a, .btn-link {
     display: flex;
     justify-content: center;
     align-items: center;
+    padding-top: 1rem;
+}
+
+.center p {
+    padding-top: 0rem;
 }
 
 .content {

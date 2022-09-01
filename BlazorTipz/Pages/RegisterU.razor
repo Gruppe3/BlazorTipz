@@ -1,4 +1,4 @@
-﻿@page "/login"
+﻿@page "/register"
 
 @using DataLibrary
 @using BlazorTipz.Data
@@ -7,7 +7,8 @@
 @inject IDataAccess _data
 @inject IConfiguration _config
 
-<h1 class="center">User</h1>
+<h1 class="center">Fill in the form</h1>
+<p class="d-flex justify-content-center">to register a user</p>
 
 <EditForm Model="@Register">
     <div class="form-group">
@@ -32,7 +33,7 @@
 </EditForm>
 <h1 class="center">User List</h1>
 <table class="table">
-            <thead>
+    <thead>
                 <tr>
                     <th scope="col">Id</th>
                     <th scope="col">Firstname</th>

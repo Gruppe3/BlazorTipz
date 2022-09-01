@@ -22,7 +22,6 @@ namespace BlazorTipz
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<Data.WeatherForecastService>();
             services.AddSingleton<IDataAccess, DataAccess>();
         }
 
