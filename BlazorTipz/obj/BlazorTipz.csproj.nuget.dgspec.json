@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\IT og informasjonssystemer\\Gruppe 3 prosjekt\\BlazorTipz\\BlazorTipz\\BlazorTipz\\BlazorTipz.csproj": {}
+    "C:\\Users\\eirik\\source\\repos\\BlazorTipz\\BlazorTipz\\BlazorTipz.csproj": {}
   },
   "projects": {
-    "D:\\IT og informasjonssystemer\\Gruppe 3 prosjekt\\BlazorTipz\\BlazorTipz\\BlazorTipz\\BlazorTipz.csproj": {
+    "C:\\Users\\eirik\\source\\repos\\BlazorTipz\\BlazorTipz\\BlazorTipz.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\IT og informasjonssystemer\\Gruppe 3 prosjekt\\BlazorTipz\\BlazorTipz\\BlazorTipz\\BlazorTipz.csproj",
+        "projectUniqueName": "C:\\Users\\eirik\\source\\repos\\BlazorTipz\\BlazorTipz\\BlazorTipz.csproj",
         "projectName": "BlazorTipz",
-        "projectPath": "D:\\IT og informasjonssystemer\\Gruppe 3 prosjekt\\BlazorTipz\\BlazorTipz\\BlazorTipz\\BlazorTipz.csproj",
-        "packagesPath": "C:\\Users\\Sebastian\\.nuget\\packages\\",
-        "outputPath": "D:\\IT og informasjonssystemer\\Gruppe 3 prosjekt\\BlazorTipz\\BlazorTipz\\BlazorTipz\\obj\\",
+        "projectPath": "C:\\Users\\eirik\\source\\repos\\BlazorTipz\\BlazorTipz\\BlazorTipz.csproj",
+        "packagesPath": "C:\\Users\\eirik\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\eirik\\source\\repos\\BlazorTipz\\BlazorTipz\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Sebastian\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\eirik\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
