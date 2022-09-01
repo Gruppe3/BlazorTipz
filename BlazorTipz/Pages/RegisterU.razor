@@ -10,7 +10,7 @@
 <h1 class="center">Fill in the form</h1>
 <p class="d-flex justify-content-center">to register a user</p>
 
-<EditForm Model="@Register">
+<EditForm Model="@Register" OnValidSubmit="RegisterUser">
     <div class="form-group">
         <label for="Firstname">Firstname</label>
         <InputText id="f_name" @bind-Value="Register.f_name" class="form-control"Placeholder="Type in your firstname.."></InputText>
@@ -25,10 +25,10 @@
     </div>
     <div class="form-group">
         <label for="Password">Password</label>
-        <InputText id="password" @bind-Value="Register.password" class="form-control" type="password" Placeholder="Type in your password.."></InputText>
+        <InputText id="password" @bind-Value="Register.password" class="form-control" type="password" Placeholder="Type in your password.." ></InputText>
     </div>
-    <div class="center"> 
-    <button class="btn btn-primary" @onclick="RegisterUser">Submit</button>
+    <div class="center">
+        <button class="btn btn-primary" type="submit">Submit</button>
     </div>
 </EditForm>
 <h1 class="center">User List</h1>
@@ -40,23 +40,29 @@
                     <th scope="col">Lastname</th>
                 </tr>
             </thead>
+    <tbody>
 @if (people == null) {
-<p><em>Loading...</em></p>
+            <tr>
+                <th scope="row">No ID</th>
+                <td>No Users in database</td>
+                <td></td>
+            </tr>
 }
 else {
     @foreach (var p in people) {
         
-            <tbody>
+            
                 <tr>
                     <th scope="row">@p.id</th>
                     <td>@p.f_name</td>
                     <td>@p.l_name</td>
                 </tr>
-            </tbody>
+            
         
 
     }
 }
+            </tbody>
 </table>
 
 @code {
@@ -66,9 +72,11 @@ else {
 
     private async Task RegisterUser()
     {
+
         var sql = "insert into user (f_name, l_name, email, password) values (@f_name, @l_name, @email, @password);";
 
         await _data.SaveData(sql, new { f_name = Register.f_name, l_name = Register.l_name, email = Register.email, password = Register.password }, _config.GetConnectionString("default"));
+        
     }
 
     protected override async Task OnInitializedAsync()

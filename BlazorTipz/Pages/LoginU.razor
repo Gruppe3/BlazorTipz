@@ -1,0 +1,39 @@
+﻿@page "/login"
+
+@using DataLibrary
+@using BlazorTipz.Data
+@using Microsoft.Extensions.Configuration
+
+@inject IDataAccess _data
+@inject IConfiguration _config
+
+<h1 class="center">Login</h1>
+<p class="d-flex justify-content-center">Fill your email and password</p>
+
+<EditForm Model="@Login" OnValidSubmit="LoginUser">
+    <div class="form-group">
+        <label for="Email">Email</label>
+        <InputText id="email" @bind-Value="Login.email" class="form-control" type="email" Placeholder="Type in your email.."></InputText>
+    </div>
+    <div class="form-group">
+        <label for="Password">Password</label>
+        <InputText id="password" @bind-Value="Login.password" class="form-control" type="password" Placeholder="Type in your password.."></InputText>
+    </div>
+    <div class="center">
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </div>
+</EditForm>
+
+@code {
+
+    User Login = new User();
+
+
+    private async Task LoginUser()
+    {
+        string sql = "select * user where (email, password) values (@email, @password);";
+        await _data.LoadData<User, dynamic>(sql, new { email = Login.email, password = Login.password }, _config.GetConnectionString("default"));
+
+        
+    }
+}
