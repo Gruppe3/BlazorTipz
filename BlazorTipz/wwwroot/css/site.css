@@ -28,6 +28,7 @@ a, .btn-link {
     justify-content: center;
     align-items: center;
     padding-top: 1rem;
+    margin-right: 0.5rem;
 }
 
 .center p {

@@ -8,7 +8,10 @@
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="6.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.8" />
     <PackageReference Include="MySql.Data" Version="8.0.30" />
+    <PackageReference Include="Radzen.Blazor" Version="3.20.9" />
   </ItemGroup>
 
 </Project>

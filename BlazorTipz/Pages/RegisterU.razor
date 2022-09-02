@@ -3,86 +3,110 @@
 @using DataLibrary
 @using BlazorTipz.Data
 @using Microsoft.Extensions.Configuration
+@using Radzen
+@using System.Text.Json
 
+@inject NavigationManager _navigationManager
 @inject IDataAccess _data
 @inject IConfiguration _config
 
 <h1 class="center">Fill in the form</h1>
 <p class="d-flex justify-content-center">to register a user</p>
 
-<EditForm Model="@Register" OnValidSubmit="RegisterUser">
-    <div class="form-group">
-        <label for="Firstname">Firstname</label>
-        <InputText id="f_name" @bind-Value="Register.f_name" class="form-control"Placeholder="Type in your firstname.."></InputText>
+<div class="container my-4">
+    <div class="row">
+        <div class="col-lg-6 offset-lg-3">
+            <RadzenTemplateForm TItem="User" Data=@Register Submit=RegisterUser>
+                    <div class="row mb-5">
+                        <div class="col-md-4" style="align-self: center;">
+                            <RadzenLabel Text="Firstname" />
+                        </div>
+                        <div class="col">
+                        <RadzenTextBox style="display: block" Name="f_name" @bind-Value=@Register.f_name Class="w-100"/>
+                        <RadzenLengthValidator Component="f_name" Min="3" Text="First name should be at least 3 characters" Popup=@popup Style="position: absolute" />
+                        <RadzenLengthValidator Component="f_name" Max="20" Text="First name should be at most 10 characters" Popup=@popup Style="position: absolute" />
+                        </div>
+                    </div>
+                <div class="row mb-5">
+                    <div class="col-md-4" style="align-self: center;">
+                        <RadzenLabel Text="Lastname" />
+                    </div>
+                    <div class="col">
+                        <RadzenTextBox style="display: block" Name="l_name" @bind-Value=@Register.l_name Class="w-100" />
+                        <RadzenLengthValidator Component="l_name" Min="3" Text="Last name should be at least 3 characters" Popup=@popup Style="position: absolute" />
+                        <RadzenLengthValidator Component="l_name" Max="20" Text="Last name should be at most 10 characters" Popup=@popup Style="position: absolute" />
+                    </div>
+                    </div>
+                <div class="row mb-5">
+                    <div class="col-md-4" style="align-self: center;">
+                        <RadzenLabel Text="Email" />
+                    </div>
+                    <div class="col">
+                        <RadzenTextBox style="display: block" Name="email" @bind-Value=@Register.email Class="w-100" />
+                        <RadzenRequiredValidator Component="email" Text="Email is required" Popup=@popup Style="position: absolute" />
+                        <RadzenEmailValidator Component="email" Text="Provide a valid email address" Popup=@popup Style="position: absolute" />
+                    </div>
+                </div>
+                <div class="row mb-5">
+                    <div class="col-md-4" style="align-self: center;">
+                        <RadzenLabel Text="Password" />
+                    </div>
+                    <div class="col">
+                        <RadzenTextBox style="display: block" Name="password" @bind-Value=@Register.password Class="w-100" type="password" />
+                        <RadzenLengthValidator Component="password" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
+                    </div>
+                </div>
+                    <div class="center">
+                    <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
+                   </div>
+            </RadzenTemplateForm>
+        </div>
     </div>
-    <div class="form-group">
-        <label for="Lastname">Lastnme</label>
-        <InputText id="l_name" @bind-Value="Register.l_name" class="form-control" Placeholder="Type in your lastname.."></InputText>
-    </div>
-    <div class="form-group">
-        <label for="Email">Email</label>
-        <InputText id="email" @bind-Value="Register.email" class="form-control" type="email" Placeholder="Type in your email.."></InputText>
-    </div>
-    <div class="form-group">
-        <label for="Password">Password</label>
-        <InputText id="password" @bind-Value="Register.password" class="form-control" type="password" Placeholder="Type in your password.." ></InputText>
-    </div>
-    <div class="center">
-        <button class="btn btn-primary" type="submit">Submit</button>
-    </div>
-</EditForm>
-<h1 class="center">User List</h1>
-<table class="table">
-    <thead>
-                <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col">Firstname</th>
-                    <th scope="col">Lastname</th>
-                </tr>
-            </thead>
-    <tbody>
-@if (people == null) {
-            <tr>
-                <th scope="row">No ID</th>
-                <td>No Users in database</td>
-                <td></td>
-            </tr>
-}
-else {
-    @foreach (var p in people) {
-        
-            
-                <tr>
-                    <th scope="row">@p.id</th>
-                    <td>@p.f_name</td>
-                    <td>@p.l_name</td>
-                </tr>
-            
-        
-
-    }
-}
-            </tbody>
-</table>
+</div>
+<div class="center">
+<h1 class="center">User List</h1><RadzenButton Click="UpdateDB" Icon="refresh" ButtonStyle="ButtonStyle.Secondary" />
+</div>
+ <RadzenDataGrid AllowFiltering="true" AllowColumnResize="false" 
+        FilterMode="FilterMode.Simple" PageSize="5" AllowPaging="true" AllowSorting="true" Data="@people" TItem="User" ColumnWidth="300px" 
+        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+        LogicalFilterOperator="LogicalFilterOperator.Or">
+        <Columns>
+        <RadzenDataGridColumn TItem="User" Property="id" Filterable="false" Title="ID" Frozen="true" Width="70px" TextAlign="TextAlign.Center" />
+        <RadzenDataGridColumn TItem="User" Property="f_name" Title="First Name" Frozen="true" Width="140px" />
+        <RadzenDataGridColumn TItem="User" Property="l_name" Title="Last Name" Width="140px" />
+        </Columns>
+    </RadzenDataGrid>
 
 @code {
-    User Register = new User();
+        bool popup;
+        bool isLoading = false;
 
-    List<User> people;
+        User Register = new User();
 
-    private async Task RegisterUser()
-    {
-
-        var sql = "insert into user (f_name, l_name, email, password) values (@f_name, @l_name, @email, @password);";
-
-        await _data.SaveData(sql, new { f_name = Register.f_name, l_name = Register.l_name, email = Register.email, password = Register.password }, _config.GetConnectionString("default"));
+        List<User> people;
         
+        private async Task RegisterUser()
+        {
+
+            var sql = "insert into user (f_name, l_name, email, password) values (@f_name, @l_name, @email, @password);";
+
+            await _data.SaveData(sql, new { f_name = Register.f_name, l_name = Register.l_name, email = Register.email, password = Register.password }, _config.GetConnectionString("default")); 
+
+        }
+        
+
+        protected override async Task OnInitializedAsync()
+        {
+            string sql = "select * from user";
+            people = await _data.LoadData<User, dynamic>(sql, new { }, _config.GetConnectionString("default")); 
+        }
+
+    //Check for updates to the database
+    
+    protected async Task UpdateDB(){
+        string sql = "select * from user";
+        people = await _data.LoadData<User, dynamic>(sql, new { }, _config.GetConnectionString("default"));
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-        string sql = "select * from user";
-        people = await _data.LoadData<User, dynamic>(sql, new { }, _config.GetConnectionString("default")); 
-    }
     
 }

@@ -1,7 +1,10 @@
+global using Microsoft.AspNetCore.Components.Authorization;
+using BlazorTipz;
 using BlazorTipz.Data;
 using DataLibrary;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
