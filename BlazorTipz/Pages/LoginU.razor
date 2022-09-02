@@ -9,7 +9,7 @@
 
 <h1 class="center">Login</h1>
 <p class="d-flex justify-content-center">Fill your email and password</p>
-
+<!--
 <EditForm Model="@Login" OnValidSubmit="LoginUser">
     <div class="form-group">
         <label for="Email">Email</label>
@@ -22,7 +22,7 @@
     <div class="center">
         <button class="btn btn-primary" type="submit">Submit</button>
     </div>
-</EditForm>
+</EditForm> -->
 
 @code {
 
@@ -32,7 +32,7 @@
     private async Task LoginUser()
     {
         string sql = "select * user where (email, password) values (@email, @password);";
-        await _data.LoadData<User, dynamic>(sql, new { email = Login.email, password = Login.password }, _config.GetConnectionString("default"));
+        await _data.LoadData<User, dynamic>(sql, new { password = Login.passwordHash }, _config.GetConnectionString("default"));
 
         
     }
