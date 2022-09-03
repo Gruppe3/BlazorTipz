@@ -4,11 +4,14 @@
 @using BlazorTipz.Data
 @using Microsoft.AspNetCore.Mvc
 @using Microsoft.Extensions.Configuration
+@using Microsoft.IdentityModel.Tokens
 @using Radzen
 @using System.Text.Json
 @using System.Security.Cryptography
 @using System.Diagnostics;
 @using System.Text
+@using System.Security.Claims
+@using System.IdentityModel.Tokens.Jwt
 
 @inject NavigationManager _navigationManager
 @inject IDataAccess _data
@@ -96,6 +99,35 @@
         </div>
     </div>
 </div>
+<div class="container my-4">
+    <div class="row">
+        <div class="col-lg-6 offset-lg-3">
+            <RadzenTemplateForm TItem="UserDto" Data=@userDto Submit=Login>
+                 <div class="row mb-5">
+                    <div class="col-md-4" style="align-self: center;">
+                        <RadzenLabel Text="ID" />
+                    </div>
+                    <div class="col">
+                        <RadzenNumeric style="display: block" Name="id" @bind-Value=@userDto.id Class="w-100" />
+                    </div>
+                </div>       
+                <div class="row mb-5">
+                    <div class="col-md-4" style="align-self: center;">
+                        <RadzenLabel Text="Password" />
+                    </div>
+                    <div class="col">
+                        <RadzenTextBox style="display: block" Name="password" @bind-Value=@userDto.password Class="w-100" type="password" />
+                        <RadzenLengthValidator Component="password" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
+                    </div>
+                </div>
+                    <div class="center">
+                    <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
+                   </div>
+            </RadzenTemplateForm> 
+        </div>
+    </div>
+</div>
+
 <!--
 <RadzenDataGrid AllowFiltering="true" AllowColumnResize="false" 
         FilterMode="FilterMode.Simple" PageSize="5" AllowPaging="true" AllowSorting="true" Data="@people" TItem="User" ColumnWidth="300px" 
@@ -135,7 +167,6 @@
     List<User> people;
 
 
-
     /* private async Task RegisterUser()
     {
 
@@ -168,7 +199,31 @@
         }
 
         string token = CreateToken(RegisterF);
-        return "token";
+        return token;
+    }
+
+    private string CreateToken(User user)
+    {
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, user.id.ToString())
+        };
+
+        var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
+
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+        var token = new JwtSecurityToken
+            (
+                claims: claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: creds
+            );
+
+        var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+
+        return jwt;
     }
 
     private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
