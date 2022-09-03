@@ -7,5 +7,7 @@ namespace BlazorTipz.Data
         public int? id { get; set; }
         public byte[] passwordHash { get; set; }
         public byte[] passwordSalt { get; set; }
+        public string fName { get; set; } = string.Empty;
+        public string lName { get; set; } = string.Empty;
     }
 }
