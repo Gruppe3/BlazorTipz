@@ -2,7 +2,7 @@
 {
     public class UserDto
     {
-        public int? id { get; set; }
+        public int? employmentId { get; set; }
         public string password { get; set; } = string.Empty;
     }
 }

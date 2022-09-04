@@ -80,7 +80,7 @@
                         <RadzenLabel Text="ID" />
                     </div>
                     <div class="col">
-                        <RadzenNumeric style="display: block" Name="id" @bind-Value=@userDto.id Class="w-100" />
+                        <RadzenNumeric style="display: block" Name="id" @bind-Value=@userDto.employmentId Class="w-100" />
                     </div>
                 </div>       
                 <div class="row mb-5">
@@ -108,7 +108,7 @@
                         <RadzenLabel Text="ID" />
                     </div>
                     <div class="col">
-                        <RadzenNumeric style="display: block" Name="id" @bind-Value=@userDto.id Class="w-100" />
+                        <RadzenNumeric style="display: block" Name="id" @bind-Value=@userDto.employmentId Class="w-100" />
                     </div>
                 </div>       
                 <div class="row mb-5">
@@ -136,7 +136,7 @@
         FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
         LogicalFilterOperator="LogicalFilterOperator.Or">
         <Columns>
-        <RadzenDataGridColumn TItem="User" Property="id" Filterable="false" Title="ID" Frozen="true" Width="70px" TextAlign="TextAlign.Center" />
+        <RadzenDataGridColumn TItem="User" Property="employmentId" Filterable="false" Title="ID" Frozen="true" Width="70px" TextAlign="TextAlign.Center" />
         <RadzenDataGridColumn TItem="User" Property="fName" Title="First Name" Frozen="true" Width="140px" />
         <RadzenDataGridColumn TItem="User" Property="lName" Title="Last Name" Width="140px" />
         </Columns>
@@ -166,7 +166,7 @@
     {
         CreatePasswordHash(request.password, out byte[] passwordHash, out byte[] passwordSalt);
 
-        User.id = request.id;
+        User.employmentId = request.employmentId;
         User.passwordHash = passwordHash;
         User.passwordSalt = passwordSalt;
 
@@ -175,7 +175,7 @@
 
     public async Task<ActionResult<string>> Login(UserDto request)
     {
-        if (User.id != request.id)
+        if (User.employmentId != request.employmentId)
         {
             return "User not found";
         }
@@ -192,7 +192,7 @@
     {
         var claims = new List<Claim>
             {
-            new Claim(ClaimTypes.Name, user.id.ToString())
+            new Claim(ClaimTypes.Name, user.employmentId.ToString())
         };
 
         var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
