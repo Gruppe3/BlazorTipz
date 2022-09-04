@@ -20,57 +20,7 @@
 <h1 class="center">Fill in the form</h1>
 <p class="d-flex justify-content-center">to register a user</p>
 
-<!--
-<div class="container my-4">
-    <div class="row">
-        <div class="col-lg-6 offset-lg-3">
-            <RadzenTemplateForm TItem="User" Data=@User Submit=RegisterUser>
-                    <div class="row mb-5">
-                        <div class="col-md-4" style="align-self: center;">
-                            <RadzenLabel Text="Firstname" />
-                        </div>
-                        <div class="col">
-                        <RadzenTextBox style="display: block" Name="fName" @bind-Value=@User.fName Class="w-100" />
-                        <RadzenLengthValidator Component="fName" Min="3" Text="First name should be at least 3 characters" Popup=@popup Style="position: absolute" />
-                        <RadzenLengthValidator Component="fName" Max="20" Text="First name should be at most 10 characters" Popup=@popup Style="position: absolute" />
-                        </div>
-                    </div>
-                <div class="row mb-5">
-                    <div class="col-md-4" style="align-self: center;">
-                        <RadzenLabel Text="Lastname" />
-                    </div>
-                    <div class="col">
-                        <RadzenTextBox style="display: block" Name="lName" @bind-Value=@User.lName Class="w-100" />
-                        <RadzenLengthValidator Component="l_name" Min="3" Text="Last name should be at least 3 characters" Popup=@popup Style="position: absolute" />
-                        <RadzenLengthValidator Component="l_name" Max="20" Text="Last name should be at most 10 characters" Popup=@popup Style="position: absolute" />
-                    </div>
-                    </div>
-                <div class="row mb-5">
-                    <div class="col-md-4" style="align-self: center;">
-                        <RadzenLabel Text="Email" />
-                    </div>
-                    <div class="col">
-                        <RadzenTextBox style="display: block" Name="email" @bind-Value=@User.email Class="w-100" />
-                        <RadzenRequiredValidator Component="email" Text="Email is required" Popup=@popup Style="position: absolute" />
-                        <RadzenEmailValidator Component="email" Text="Provide a valid email address" Popup=@popup Style="position: absolute" />
-                    </div>
-                </div>
-                <div class="row mb-5">
-                    <div class="col-md-4" style="align-self: center;">
-                        <RadzenLabel Text="Password" />
-                    </div>
-                    <div class="col">
-                        <RadzenTextBox style="display: block" Name="passwordHash" @bind-Value=@User.passwordHash Class="w-100" type="password" />
-                        <RadzenLengthValidator Component="passwordHash" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
-                    </div>
-                </div>
-                    <div class="center">
-                    <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
-                   </div>
-            </RadzenTemplateForm> 
-        </div>
-    </div>
-</div>-->
+
 <div class="container my-4">
     <div class="row">
         <div class="col-lg-6 offset-lg-3">
@@ -152,15 +102,6 @@
 
     List<User> people;
 
-
-    /* private async Task RegisterUser()
-    {
-
-    var sql = "insert into Users (fName, lName password) values (@fName, @lName, @password);";
-
-    await _data.SaveData(sql, new { fName = RegisterF.fName, lName = RegisterF.lName, passwordHash = RegisterF.passwordHash }, _config.GetConnectionString("default"));
-
-        }*/
 
     public async Task<ActionResult<User>> Register(UserDto request)
     {
