@@ -2,38 +2,153 @@
 
 @using DataLibrary
 @using BlazorTipz.Data
+@using Microsoft.AspNetCore.Mvc
 @using Microsoft.Extensions.Configuration
+@using Microsoft.IdentityModel.Tokens
+@using Radzen
+@using System.Text.Json
+@using System.Security.Cryptography
+@using System.Diagnostics;
+@using System.Text
+@using System.Security.Claims
+@using System.IdentityModel.Tokens.Jwt
 
+@inject NavigationManager _navigationManager
 @inject IDataAccess _data
 @inject IConfiguration _config
 
+
 <h1 class="center">Login</h1>
 <p class="d-flex justify-content-center">Fill your email and password</p>
-<!--
-<EditForm Model="@Login" OnValidSubmit="LoginUser">
-    <div class="form-group">
-        <label for="Email">Email</label>
-        <InputText id="email" @bind-Value="Login.email" class="form-control" type="email" Placeholder="Type in your email.."></InputText>
+<div class="container my-4">
+    <div class="row">
+        <div class="col-lg-6 offset-lg-3">
+            <RadzenTemplateForm TItem="UserDto" Data=@userDto Submit=LoginUs>
+                <div class="row mb-5">
+                    <div class="col-md-4" style="align-self: center;">
+                        <RadzenLabel Text="ID" />
+                    </div>
+                    <div class="col">
+                        <RadzenNumeric style="display: block" Name="id" @bind-Value=@userDto.employmentId Class="w-100" />
+                    </div>
+                </div>
+                <div class="row mb-5">
+                    <div class="col-md-4" style="align-self: center;">
+                        <RadzenLabel Text="Password" />
+                    </div>
+                    <div class="col">
+                        <RadzenTextBox style="display: block" Name="password" @bind-Value=@userDto.password Class="w-100" type="password" />
+                        <RadzenLengthValidator Component="password" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
+                    </div>
+                </div>
+                <div class="center">
+                    <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
+                </div>
+            </RadzenTemplateForm>
+        </div>
     </div>
-    <div class="form-group">
-        <label for="Password">Password</label>
-        <InputText id="password" @bind-Value="Login.password" class="form-control" type="password" Placeholder="Type in your password.."></InputText>
-    </div>
-    <div class="center">
-        <button class="btn btn-primary" type="submit">Submit</button>
-    </div>
-</EditForm> -->
+</div>
 
 @code {
+    bool popup;
+    bool isLoading = false;
 
-    User Login = new User();
+    User User = new User();
+    User Userdb = new User();
+    UserDto userDto = new UserDto();
 
 
-    private async Task LoginUser()
-    {
+    /*private async Task LoginUser()
+        {
         string sql = "select * user where (email, password) values (@email, @password);";
         await _data.LoadData<User, dynamic>(sql, new { password = Login.passwordHash }, _config.GetConnectionString("default"));
 
-        
+        await _data.SaveData(sql, new { employmentId = User.employmentId, passwordSalt = User.passwordSalt, passwordHash = User.passwordHash }, _config.GetConnectionString("default"));
+
+
+    }
+    */
+
+    public async Task<ActionResult<string>> LoginUs(UserDto request)
+    {
+        FillLoginUser(request.password, request.employmentId);
+        await FillUserDb(request.employmentId);
+
+        if (User.employmentId != Userdb.employmentId)
+        {
+            return "User not found";
+        }
+        if (!VerifyPasswordHash(request.password, Userdb.passwordHash, Userdb.passwordSalt))
+        {
+            return "Wrong password";
+        }
+
+        string token = CreateToken(User);
+        return token;
+    }
+
+    private User FillLoginUser(String password, int? employmentId)
+    {
+
+        User.employmentId = employmentId;
+
+        CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
+
+
+        User.passwordHash = passwordHash;
+        User.passwordSalt = passwordSalt;
+
+        return User;
+    }
+
+    private async Task FillUserDb(int? employmentId)
+    {
+        int? empId = employmentId;
+
+        string sql = "SELECT employmentId, passwordHash, passwordSalt FROM Users WHERE employmentId = " + empId + ";";
+        await _data.LoadData<User, dynamic>(sql, new { employmentId = Userdb.employmentId, passwordHash = Userdb.passwordHash, passwordSalt = Userdb.passwordSalt }, _config.GetConnectionString("default"));
+
+    }
+
+    private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+    {
+        using (var hmac = new HMACSHA512())
+        {
+            passwordSalt = hmac.Key;
+            passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+        }
+    }
+
+    private string CreateToken(User user)
+    {
+        var claims = new List<Claim>
+            {
+            new Claim(ClaimTypes.Name, user.employmentId.ToString())
+        };
+
+        var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
+
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+        var token = new JwtSecurityToken
+            (
+                claims: claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: creds
+            );
+
+        var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+
+        return jwt;
+    }
+
+    private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+    {
+        using (var hmac = new HMACSHA512(passwordSalt))
+        {
+            var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            return computedHash.SequenceEqual(passwordHash);
+        }
     }
 }

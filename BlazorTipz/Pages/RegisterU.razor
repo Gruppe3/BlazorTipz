@@ -49,34 +49,7 @@
         </div>
     </div>
 </div>
-<div class="container my-4">
-    <div class="row">
-        <div class="col-lg-6 offset-lg-3">
-            <RadzenTemplateForm TItem="UserDto" Data=@userDto Submit=Login>
-                 <div class="row mb-5">
-                    <div class="col-md-4" style="align-self: center;">
-                        <RadzenLabel Text="ID" />
-                    </div>
-                    <div class="col">
-                        <RadzenNumeric style="display: block" Name="id" @bind-Value=@userDto.employmentId Class="w-100" />
-                    </div>
-                </div>       
-                <div class="row mb-5">
-                    <div class="col-md-4" style="align-self: center;">
-                        <RadzenLabel Text="Password" />
-                    </div>
-                    <div class="col">
-                        <RadzenTextBox style="display: block" Name="password" @bind-Value=@userDto.password Class="w-100" type="password" />
-                        <RadzenLengthValidator Component="password" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
-                    </div>
-                </div>
-                    <div class="center">
-                    <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
-                   </div>
-            </RadzenTemplateForm> 
-        </div>
-    </div>
-</div>
+
 
 <!--    
 <h1 class="center">User List</h1><RadzenButton Click="UpdateDB" Icon="refresh" ButtonStyle="ButtonStyle.Secondary" />
@@ -118,44 +91,7 @@
         return User;
     }
 
-    public async Task<ActionResult<string>> Login(UserDto request)
-    {
-        if (User.employmentId != request.employmentId)
-        {
-            return "User not found";
-        }
-        if (!VerifyPasswordHash(request.password, User.passwordHash, User.passwordSalt))
-        {
-            return "Wrong password";
-        }
 
-        string token = CreateToken(User);
-        return token;
-    }
-
-    private string CreateToken(User user)
-    {
-        var claims = new List<Claim>
-            {
-            new Claim(ClaimTypes.Name, user.employmentId.ToString())
-        };
-
-        var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
-
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-        var token = new JwtSecurityToken
-            (
-                claims: claims,
-                expires: DateTime.Now.AddDays(1),
-                signingCredentials: creds
-            );
-
-        var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-
-
-        return jwt;
-    }
 
     private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
     {
@@ -166,14 +102,6 @@
         }
     }
 
-    private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
-    {
-        using (var hmac = new HMACSHA512(passwordSalt))
-        {
-            var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            return computedHash.SequenceEqual(passwordHash);
-        }
-    }
 
 
     /*protected override async Task OnInitializedAsync()
