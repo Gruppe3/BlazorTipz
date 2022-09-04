@@ -170,6 +170,10 @@
         User.passwordHash = passwordHash;
         User.passwordSalt = passwordSalt;
 
+        var sql = "insert into Users (employmentId, passwordHash, passwordSalt) values (@employmentId, @passwordHash, @passwordSalt);";
+
+        await _data.SaveData(sql, new { employmentId = User.employmentId, passwordSalt = User.passwordSalt, passwordHash = User.passwordHash }, _config.GetConnectionString("default"));
+        
         return User;
     }
 
