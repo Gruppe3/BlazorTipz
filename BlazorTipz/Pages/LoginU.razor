@@ -86,6 +86,7 @@
         }
         if (!VerifyPasswordHash(request.password, Userdb.passwordHash, Userdb.passwordSalt))
         {
+            Debug.WriteLine("passwordcheck failed");
             return "Wrong password";
         }
 
