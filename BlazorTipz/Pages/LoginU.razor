@@ -54,14 +54,17 @@
     bool isLoading = false;
 
     User User = new User();
-    User Userdb = new User();
+    Userdb Userdb = new Userdb();
     UserDto userDto = new UserDto();
-
+    List<Userdb> usersdb;
 
     /*private async Task LoginUser()
         {
         string sql = "select * user where (email, password) values (@email, @password);";
         await _data.LoadData<User, dynamic>(sql, new { password = Login.passwordHash }, _config.GetConnectionString("default"));
+
+
+
 
         await _data.SaveData(sql, new { employmentId = User.employmentId, passwordSalt = User.passwordSalt, passwordHash = User.passwordHash }, _config.GetConnectionString("default"));
 
@@ -72,10 +75,13 @@
     public async Task<ActionResult<string>> LoginUs(UserDto request)
     {
         FillLoginUser(request.password, request.employmentId);
-        await FillUserDb(request.employmentId);
 
-        if (User.employmentId != Userdb.employmentId)
+        await FillUserDb(request.employmentId);
+        
+
+        if (request.employmentId != Userdb.employmentId)
         {
+            Debug.WriteLine("not the same");
             return "User not found";
         }
         if (!VerifyPasswordHash(request.password, Userdb.passwordHash, Userdb.passwordSalt))
@@ -101,13 +107,14 @@
         return User;
     }
 
-    private async Task FillUserDb(int? employmentId)
+    private async Task<List<Userdb>> FillUserDb(int? employmentId)
     {
         int? empId = employmentId;
 
-        string sql = "SELECT employmentId, passwordHash, passwordSalt FROM Users WHERE employmentId = " + empId + ";";
-        await _data.LoadData<User, dynamic>(sql, new { employmentId = Userdb.employmentId, passwordHash = Userdb.passwordHash, passwordSalt = Userdb.passwordSalt }, _config.GetConnectionString("default"));
-
+        string sql = "SELECT * FROM Users WHERE employmentId = " + empId + ";";
+        await _data.LoadData<Userdb, dynamic>(sql, new { employmentId = Userdb.employmentId, passwordHash = Userdb.passwordHash, passwordSalt = Userdb.passwordSalt }, _config.GetConnectionString("default"));
+        
+        return usersdb;
     }
 
     private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
