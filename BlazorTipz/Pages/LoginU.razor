@@ -58,19 +58,6 @@
     UserDto userDto = new UserDto();
     List<Userdb> usersdb;
 
-    /*private async Task LoginUser()
-        {
-        string sql = "select * user where (email, password) values (@email, @password);";
-        await _data.LoadData<User, dynamic>(sql, new { password = Login.passwordHash }, _config.GetConnectionString("default"));
-
-
-
-
-        await _data.SaveData(sql, new { employmentId = User.employmentId, passwordSalt = User.passwordSalt, passwordHash = User.passwordHash }, _config.GetConnectionString("default"));
-
-
-    }
-    */
 
     public async Task<ActionResult<string>> LoginUs(UserDto request)
     {
@@ -93,15 +80,6 @@
         return token;
     }
 
-    /*Load user from database and check if user is the same as the one in UserDto
-    public async Task LoadUser()
-    {
-        string sql = "select * from user where employmentId = @employmentId;";
-        usersdb = await _data.LoadData<Userdb, dynamic>(sql, new { employmentId = userDto.employmentId }, _config.GetConnectionString("default"));
-        Userdb = usersdb[0];
-    }*/
-
-
     private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
     {
         using (var hmac = new HMACSHA512())
@@ -115,7 +93,8 @@
     {
         var claims = new List<Claim>
             {
-            new Claim(ClaimTypes.Name, user.employmentId.ToString())
+            new Claim(ClaimTypes.Name, user.employmentId.ToString()),
+            new Claim(ClaimTypes.Role, user.role)
         };
 
         var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
