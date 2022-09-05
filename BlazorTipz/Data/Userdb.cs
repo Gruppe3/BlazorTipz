@@ -11,5 +11,6 @@ namespace BlazorTipz.Data
         public string lName { get; set; } = string.Empty;
         public string passHash { get; set; }
         public string passSalt { get; set; }
+        public string role { get; set; }
     }
 }
