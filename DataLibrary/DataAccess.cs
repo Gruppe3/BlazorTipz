@@ -40,7 +40,17 @@ namespace DataLibrary
                 return connection.ExecuteAsync(sql, parameters);
             }
         }
-        
+
+        //Load data from mySQL to object
+        public async Task<T> LoadData<T, U>(string sql, U parameters, string connectionString, bool isSingle)
+        {
+            using (IDbConnection connection = new MySqlConnection(connectionString))
+            {
+                var rows = await connection.QueryAsync<T>(sql, parameters);
+
+                return rows.FirstOrDefault();
+            }
+        }
 
     }
 }
