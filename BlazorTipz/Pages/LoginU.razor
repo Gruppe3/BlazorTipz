@@ -74,10 +74,9 @@
 
     public async Task<ActionResult<string>> LoginUs(UserDto request)
     {
-        FillLoginUser(request.password, request.employmentId);
-
-        await FillUserDb(request.employmentId);
-        
+        string sql = "select * from Users where employmentId = @employmentId;";
+        usersdb = await _data.LoadData<Userdb, dynamic>(sql, new { employmentId = userDto.employmentId }, _config.GetConnectionString("default"));
+        Userdb = usersdb[0];
 
         if (request.employmentId != Userdb.employmentId)
         {
@@ -90,33 +89,18 @@
             return "Wrong password";
         }
 
-        string token = CreateToken(User);
+        string token = CreateToken(Userdb);
         return token;
     }
 
-    private User FillLoginUser(String password, int? employmentId)
+    /*Load user from database and check if user is the same as the one in UserDto
+    public async Task LoadUser()
     {
+        string sql = "select * from user where employmentId = @employmentId;";
+        usersdb = await _data.LoadData<Userdb, dynamic>(sql, new { employmentId = userDto.employmentId }, _config.GetConnectionString("default"));
+        Userdb = usersdb[0];
+    }*/
 
-        User.employmentId = employmentId;
-
-        CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
-
-
-        User.passwordHash = passwordHash;
-        User.passwordSalt = passwordSalt;
-
-        return User;
-    }
-
-    private async Task<List<Userdb>> FillUserDb(int? employmentId)
-    {
-        int? empId = employmentId;
-
-        string sql = "SELECT * FROM Users WHERE employmentId = " + empId + ";";
-        await _data.LoadData<Userdb, dynamic>(sql, new { employmentId = Userdb.employmentId, passwordHash = Userdb.passwordHash, passwordSalt = Userdb.passwordSalt }, _config.GetConnectionString("default"));
-        
-        return usersdb;
-    }
 
     private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
     {
@@ -127,7 +111,7 @@
         }
     }
 
-    private string CreateToken(User user)
+    private string CreateToken(Userdb user)
     {
         var claims = new List<Claim>
             {
