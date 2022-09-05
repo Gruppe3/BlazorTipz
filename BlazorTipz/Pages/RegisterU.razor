@@ -40,6 +40,14 @@
                     <div class="col">
                         <RadzenTextBox style="display: block" Name="password" @bind-Value=@userDto.password Class="w-100" type="password" />
                         <RadzenLengthValidator Component="password" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
+                    </div>        
+                </div>
+                <div class="row mb-5">
+                    <div class="col-md-4" style="align-self: center;">
+                        <RadzenLabel Text="Set role" /> 
+                    </div>
+                    <div class="col">
+                        <RadzenDropDown @bind-Value="userDto.role" Placeholder="User" Data="@roles" style="width: 100%;" TextProperty="role" ValueProperty="role" Name="Role" />
                     </div>
                 </div>
                     <div class="center">
@@ -75,6 +83,14 @@
 
     List<User> people;
 
+    List<Role> roles = new List<Role>()
+{
+        new Role() { roleId = 1, role = "User" },
+        new Role() { roleId = 2, role = "Team Leader" },
+        new Role() { roleId = 3, role = "Admin" }
+        //Remember to remove team leader from the list when the app is deployed
+    };
+
 
     public async Task<ActionResult<User>> Register(UserDto request)
     {
@@ -83,10 +99,11 @@
         User.employmentId = request.employmentId;
         User.passwordHash = passwordHash;
         User.passwordSalt = passwordSalt;
+        User.role = request.role;
 
-        var sql = "insert into Users (employmentId, passwordHash, passwordSalt) values (@employmentId, @passwordHash, @passwordSalt);";
+        var sql = "insert into Users (employmentId, passwordHash, passwordSalt, role) values (@employmentId, @passwordHash, @passwordSalt, @role);";
 
-        await _data.SaveData(sql, new { employmentId = User.employmentId, passwordSalt = User.passwordSalt, passwordHash = User.passwordHash }, _config.GetConnectionString("default"));
+        await _data.SaveData(sql, new { employmentId = User.employmentId, passwordSalt = User.passwordSalt, passwordHash = User.passwordHash, role = User.role}, _config.GetConnectionString("default"));
         
         return User;
     }
@@ -101,8 +118,6 @@
             passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
         }
     }
-
-
 
     /*protected override async Task OnInitializedAsync()
             {
