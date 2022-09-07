@@ -33,7 +33,8 @@
                         <RadzenLabel Text="ID" />
                     </div>
                     <div class="col">
-                        <RadzenNumeric style="display: block" Name="id" @bind-Value=@userDto.employmentId Class="w-100" />
+
+                        <RadzenNumeric ShowUpDown="false" style="display: block" Name="id" @bind-Value=@userDto.employmentId Class="w-100" />
                     </div>
                 </div>
                 <div class="row mb-5">
@@ -48,6 +49,9 @@
                 <div class="center">
                     <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
                 </div>
+                <div class="center">
+                    <h1>@Checker</h1>
+                </div>
             </RadzenTemplateForm>
         </div>
     </div>
@@ -57,25 +61,34 @@
     bool popup;
     bool isLoading = false;
 
+
+
     User User = new User();
     Userdb Userdb = new Userdb();
     UserDto userDto = new UserDto();
-    List<Userdb> usersdb;   
+    List<Userdb> usersdb;
+
+    public string Checker { get; set; }
+
     public async Task<ActionResult<string>> LoginUs(UserDto request)
-    {
+    { 
+        try{
         string sql = "select * from Users where employmentId = @employmentId;";
         usersdb = await _data.LoadData<Userdb, dynamic>(sql, new { employmentId = userDto.employmentId }, _config.GetConnectionString("default"));
         Userdb = usersdb[0];
-
-        if (request.employmentId != Userdb.employmentId)
-        {
-            Debug.WriteLine("not the same");
-            return "User not found";
-        }
+    } catch {
+            if (request.employmentId != Userdb.employmentId)
+            {
+                Debug.WriteLine("not the same");
+                Checker = "User ID is wrong";
+                return "User not found";
+            }
+    }
         if (!_auth.VerifyPasswordHash(request.password, Userdb.passwordHash, Userdb.passwordSalt))
         {
             Debug.WriteLine("passwordcheck failed");
-            return "Wrong password";
+            Checker = "Wrong Password";
+            return "Wrong password";  
         }
 
         string token = CreateToken(Userdb);

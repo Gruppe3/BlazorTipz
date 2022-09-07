@@ -3,6 +3,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Cryptography;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Components;
+using Blazored.LocalStorage;
 
 namespace BlazorTipz.Components
 {
@@ -10,7 +12,6 @@ namespace BlazorTipz.Components
     {
 
         private readonly IConfiguration _configuration;
-
         //Get IConfiguration from DI
         public AuthenticationComponent(IConfiguration configuration)
         {

@@ -2,17 +2,33 @@
 @using System.Diagnostics
 @using BlazorTipz.Components
 @inject ILocalStorageService _localStorage
+@inject NavigationManager NavigationManager
+@inject AuthenticationComponent _auth
 
 <PageTitle>Index</PageTitle>
 
 <h1 class="center">Hello, world!</h1>
 <p class="d-flex justify-content-center">Welcome to your new app.</p>
-<AuthorizeView Roles="Admin">
+<AuthorizeView>
     <Authorized>
         <p class="d-flex justify-content-center">You are authorized as @context.User.Identity.Name</p>
+        
+        <div class="center">
+            <button class="btn btn-primary" @onclick="Logout"> Logout </button>
+        </div>
     </Authorized>
+    <NotAuthorized>
+        <div class="center">
+            <button class="btn btn-primary" @onclick="NavigateToLogin"> Login </button>
+        </div>
+    </NotAuthorized>
 </AuthorizeView>
 
 @code {
-
+    private void NavigateToLogin() { NavigationManager.NavigateTo("login"); }
+    public async Task Logout()
+    {
+        await _localStorage.RemoveItemAsync("token");
+        NavigationManager.NavigateTo("/login", true);
+    }
 }
