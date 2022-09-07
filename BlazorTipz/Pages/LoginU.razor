@@ -12,11 +12,13 @@
 @using System.Text
 @using System.Security.Claims
 @using System.IdentityModel.Tokens.Jwt
+@using BlazorTipz.Components
 
 @inject NavigationManager _navigationManager
 @inject IDataAccess _data
 @inject IConfiguration _config
 @inject ILocalStorageService _localStorage
+@inject AuthenticationComponent _auth
 
 
 <h1 class="center">Login</h1>
@@ -24,7 +26,7 @@
 <div class="container my-4">
     <div class="row">
         <div class="col-lg-6 offset-lg-3">
-            <RadzenTemplateForm TItem="UserDto" Data=@userDto Submit=LoginUs>
+            <RadzenTemplateForm TItem="UserDto" Data=userDto Submit=LoginUs>
                 <div class="row mb-5">
                     <div class="col-md-4" style="align-self: center;">
                         <RadzenLabel Text="ID" />
@@ -53,75 +55,30 @@
 @code {
     bool popup;
     bool isLoading = false;
-
+    
     User User = new User();
     Userdb Userdb = new Userdb();
     UserDto userDto = new UserDto();
-    List<Userdb> usersdb;
-
-
+    List<Userdb> usersdb;   
     public async Task<ActionResult<string>> LoginUs(UserDto request)
-    {
+        {
         string sql = "select * from Users where employmentId = @employmentId;";
         usersdb = await _data.LoadData<Userdb, dynamic>(sql, new { employmentId = userDto.employmentId }, _config.GetConnectionString("default"));
         Userdb = usersdb[0];
 
         if (request.employmentId != Userdb.employmentId)
-        {
+            {
             Debug.WriteLine("not the same");
             return "User not found";
         }
-        if (!VerifyPasswordHash(request.password, Userdb.passwordHash, Userdb.passwordSalt))
-        {
+        if (!_auth.VerifyPasswordHash(request.password, Userdb.passwordHash, Userdb.passwordSalt))
+            {
             Debug.WriteLine("passwordcheck failed");
             return "Wrong password";
         }
 
-        string token = CreateToken(Userdb);
+        string token = _auth.CreateToken(Userdb);
         await _localStorage.SetItemAsync("token", token);
-        return token;
-    }
-
-    private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-    {
-        using (var hmac = new HMACSHA512())
-        {
-            passwordSalt = hmac.Key;
-            passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-        }
-    }
-
-    private string CreateToken(Userdb user)
-    {
-        var claims = new List<Claim>
-            {
-            new Claim(ClaimTypes.Name, user.employmentId.ToString()),
-            new Claim(ClaimTypes.Role, user.role)
-        };
-
-        var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
-
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-        var token = new JwtSecurityToken
-            (
-                claims: claims,
-                expires: DateTime.Now.AddDays(1),
-                signingCredentials: creds
-            );
-
-        var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-
-
-        return jwt;
-    }
-
-    private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
-    {
-        using (var hmac = new HMACSHA512(passwordSalt))
-        {
-            var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            return computedHash.SequenceEqual(passwordHash);
-        }
+    return token;
     }
 }

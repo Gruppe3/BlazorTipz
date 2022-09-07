@@ -1,5 +1,6 @@
 ﻿@page "/register"
 
+@using BlazorTipz.Components
 @using DataLibrary
 @using BlazorTipz.Data
 @using Microsoft.AspNetCore.Mvc
@@ -16,6 +17,7 @@
 @inject NavigationManager _navigationManager
 @inject IDataAccess _data
 @inject IConfiguration _config
+@inject AuthenticationComponent _auth
 
 <h1 class="center">Fill in the form</h1>
 <p class="d-flex justify-content-center">to register a user</p>
@@ -94,7 +96,7 @@
 
     public async Task<ActionResult<User>> Register(UserDto request)
     {
-        CreatePasswordHash(request.password, out byte[] passwordHash, out byte[] passwordSalt);
+        _auth.CreatePasswordHash(request.password, out byte[] passwordHash, out byte[] passwordSalt);
 
         User.employmentId = request.employmentId;
         User.passwordHash = passwordHash;
@@ -106,31 +108,5 @@
         await _data.SaveData(sql, new { employmentId = User.employmentId, passwordSalt = User.passwordSalt, passwordHash = User.passwordHash, role = User.role}, _config.GetConnectionString("default"));
         
         return User;
-    }
-
-
-
-    private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-    {
-        using (var hmac = new HMACSHA512())
-        {
-            passwordSalt = hmac.Key;
-            passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-        }
-    }
-
-    /*protected override async Task OnInitializedAsync()
-            {
-            string sql = "select * from Users";
-            people = await _data.LoadData<User, dynamic>(sql, new { }, _config.GetConnectionString("default"));
-    }
-
-    //Check for updates to the database
-
-    protected async Task UpdateDB(){
-        string sql = "select * from Users";
-        people = await _data.LoadData<User, dynamic>(sql, new { }, _config.GetConnectionString("default"));
-    }*/
-
-    
+    }    
 }
