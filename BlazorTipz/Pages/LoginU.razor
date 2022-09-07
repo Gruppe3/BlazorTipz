@@ -16,6 +16,7 @@
 @inject NavigationManager _navigationManager
 @inject IDataAccess _data
 @inject IConfiguration _config
+@inject ILocalStorageService _localStorage
 
 
 <h1 class="center">Login</h1>
@@ -77,6 +78,7 @@
         }
 
         string token = CreateToken(Userdb);
+        await _localStorage.SetItemAsync("token", token);
         return token;
     }
 

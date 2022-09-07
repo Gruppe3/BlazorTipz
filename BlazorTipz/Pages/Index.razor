@@ -1,8 +1,20 @@
 ﻿@page "/"
+@using System.Diagnostics
+@inject ILocalStorageService _localStorage
 
 <PageTitle>Index</PageTitle>
 
 <h1 class="center">Hello, world!</h1>
 <p class="d-flex justify-content-center">Welcome to your new app.</p>
+<button @onclick="PrintToken">Get token</button>
+<!--Show the token-->
 
-
+@code {
+    //Print the token to text field
+        async Task PrintToken()
+    {
+        var token = await _localStorage.GetItemAsync<string>("token");
+        Debug.WriteLine($"Current token = {token}");
+    }
+    
+}

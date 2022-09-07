@@ -1,4 +1,5 @@
 global using Microsoft.AspNetCore.Components.Authorization;
+using Blazored.LocalStorage;
 using BlazorTipz;
 using BlazorTipz.Data;
 using DataLibrary;
@@ -12,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<IDataAccess, DataAccess>();
+builder.Services.AddBlazoredLocalStorage();
 
 var app = builder.Build();
 
