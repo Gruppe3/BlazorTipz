@@ -59,7 +59,6 @@
 
 @code {
     bool popup;
-    bool isLoading = false;
 
 
 
@@ -94,7 +93,6 @@
         string token = CreateToken(Userdb);
         await _localStorage.SetItemAsync("token", token);
         NavigationManager.NavigateTo("/", true);
-        isLoading = true;
         return token;
     }
     
