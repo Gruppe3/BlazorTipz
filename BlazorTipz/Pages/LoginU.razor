@@ -19,6 +19,7 @@
 @inject IConfiguration _config
 @inject ILocalStorageService _localStorage
 @inject AuthenticationComponent _auth
+@inject NavigationManager NavigationManager
 
 
 <h1 class="center">Login</h1>
@@ -55,30 +56,56 @@
 @code {
     bool popup;
     bool isLoading = false;
-    
+
     User User = new User();
     Userdb Userdb = new Userdb();
     UserDto userDto = new UserDto();
     List<Userdb> usersdb;   
     public async Task<ActionResult<string>> LoginUs(UserDto request)
-        {
+    {
         string sql = "select * from Users where employmentId = @employmentId;";
         usersdb = await _data.LoadData<Userdb, dynamic>(sql, new { employmentId = userDto.employmentId }, _config.GetConnectionString("default"));
         Userdb = usersdb[0];
 
         if (request.employmentId != Userdb.employmentId)
-            {
+        {
             Debug.WriteLine("not the same");
             return "User not found";
         }
         if (!_auth.VerifyPasswordHash(request.password, Userdb.passwordHash, Userdb.passwordSalt))
-            {
+        {
             Debug.WriteLine("passwordcheck failed");
             return "Wrong password";
         }
 
-        string token = _auth.CreateToken(Userdb);
+        string token = CreateToken(Userdb);
         await _localStorage.SetItemAsync("token", token);
-    return token;
+        NavigationManager.NavigateTo("/", true);
+        return token;
+    }
+    
+    public string CreateToken(Userdb user)
+    {
+        var claims = new List<Claim>
+            {
+            new Claim(ClaimTypes.Name, user.employmentId.ToString()),
+            new Claim(ClaimTypes.Role, user.role)
+        };
+
+        var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
+
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+        var token = new JwtSecurityToken
+            (
+                claims: claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: creds
+            );
+
+        var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+
+        return jwt;
     }
 }

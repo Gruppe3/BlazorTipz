@@ -16,6 +16,8 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<IDataAccess, DataAccess>();
 builder.Services.AddSingleton<AuthenticationComponent>();
 builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddScoped<TokenServerAuthenticationStateProvider>();
+builder.Services.AddScoped<AuthenticationStateProvider>(provider => provider.GetRequiredService<TokenServerAuthenticationStateProvider>());
 
 var app = builder.Build();
 

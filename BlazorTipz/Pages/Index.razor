@@ -1,5 +1,6 @@
 ﻿@page "/"
 @using System.Diagnostics
+@using BlazorTipz.Components
 @inject ILocalStorageService _localStorage
 
 <PageTitle>Index</PageTitle>
@@ -7,14 +8,18 @@
 <h1 class="center">Hello, world!</h1>
 <p class="d-flex justify-content-center">Welcome to your new app.</p>
 <button @onclick="PrintToken">Get token</button>
-<!--Show the token-->
+<AuthorizeView Roles="Admin">
+    <Authorized>
+        <p class="d-flex justify-content-center">You are authorized as @context.User.Identity.Name</p>
+    </Authorized>
+</AuthorizeView>
 
 @code {
     //Print the token to text field
+
         async Task PrintToken()
-    {
-        var token = await _localStorage.GetItemAsync<string>("token");
-        Debug.WriteLine($"Current token = {token}");
-    }
-    
+        {
+            var token = await _localStorage.GetItemAsync<string>("token");
+            Debug.WriteLine(token);
+        }
 }
