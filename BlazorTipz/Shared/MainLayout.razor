@@ -1,50 +1,67 @@
 ﻿@inherits LayoutComponentBase
 
-<PageTitle>BlazorTipz</PageTitle>
+@if (isLoaded)
+{
+    <PageTitle>BlazorTipz</PageTitle>
 
 
 
-<AuthorizeView Roles="Admin">
-    <div class="page">
-        <div class="sidebar">
-            <NavMenu />
+    <AuthorizeView Roles="Admin">
+        <div class="page">
+            <div class="sidebar">
+                <NavMenu />
+            </div>
+
+            <main>
+                <article class="content px-4">
+                    @Body
+                </article>
+            </main>
         </div>
+    </AuthorizeView>
 
-        <main>
-            <article class="content px-4">
-                @Body
-            </article>
-        </main>
-    </div>
-</AuthorizeView>
+    <AuthorizeView Roles="Team Leader">
+        <div class="page">
+            <main>
+                <article class="content px-4">
+                    @Body
+                </article>
+            </main>
+        </div>
+    </AuthorizeView>
 
-<AuthorizeView Roles="Team Leader">
-    <div class="page">
-        <main>
-            <article class="content px-4">
-                @Body
-            </article>
-        </main>
-    </div>
-</AuthorizeView>
+    <AuthorizeView Roles="User">
+        <div class="page">
+            <main>
+                <article class="content px-4">
+                    @Body
+                </article>
+            </main>
+        </div>
+    </AuthorizeView>
+    <AuthorizeView>
+        <NotAuthorized>
+            <div class="page">
+                <main>
+                    <article class="content px-4">
+                        @Body
+                    </article>
+                </main>
+            </div>
+        </NotAuthorized>
+    </AuthorizeView>
+} else {
+   <div class="center">
+       <div class="spinner"></div>
+   </div>
+}
 
-<AuthorizeView Roles="User">
-    <div class="page">
-        <main>
-            <article class="content px-4">
-                @Body
-            </article>
-        </main>
-    </div>
-</AuthorizeView>
-<AuthorizeView>
-    <NotAuthorized>
-    <div class="page">
-        <main>
-            <article class="content px-4">
-                @Body
-            </article>
-        </main>
-    </div>
-    </NotAuthorized>
-</AuthorizeView>
+
+@code{
+    bool isLoaded;
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(1000); // TODO actual initialization job
+        isLoaded = true;
+    }
+}

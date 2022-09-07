@@ -22,40 +22,40 @@
 @inject NavigationManager NavigationManager
 
 
-<h1 class="center">Login</h1>
-<p class="d-flex justify-content-center">Fill your email and password</p>
-<div class="container my-4">
-    <div class="row">
-        <div class="col-lg-6 offset-lg-3">
-            <RadzenTemplateForm TItem="UserDto" Data=userDto Submit=LoginUs>
-                <div class="row mb-5">
-                    <div class="col-md-4" style="align-self: center;">
-                        <RadzenLabel Text="ID" />
-                    </div>
-                    <div class="col">
+    <h1 class="center">Login</h1>
+    <p class="d-flex justify-content-center">Fill your email and password</p>
+    <div class="container my-4">
+        <div class="row">
+            <div class="col-lg-6 offset-lg-3">
+                <RadzenTemplateForm TItem="UserDto" Data=userDto Submit=LoginUs>
+                    <div class="row mb-5">
+                        <div class="col-md-4" style="align-self: center;">
+                            <RadzenLabel Text="ID" />
+                        </div>
+                        <div class="col">
 
-                        <RadzenNumeric ShowUpDown="false" style="display: block" Name="id" @bind-Value=@userDto.employmentId Class="w-100" />
+                            <RadzenNumeric ShowUpDown="false" style="display: block" Name="id" @bind-Value=@userDto.employmentId Class="w-100" />
+                        </div>
                     </div>
-                </div>
-                <div class="row mb-5">
-                    <div class="col-md-4" style="align-self: center;">
-                        <RadzenLabel Text="Password" />
+                    <div class="row mb-5">
+                        <div class="col-md-4" style="align-self: center;">
+                            <RadzenLabel Text="Password" />
+                        </div>
+                        <div class="col">
+                            <RadzenTextBox style="display: block" Name="password" @bind-Value=@userDto.password Class="w-100" type="password" />
+                            <RadzenLengthValidator Component="password" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
+                        </div>
                     </div>
-                    <div class="col">
-                        <RadzenTextBox style="display: block" Name="password" @bind-Value=@userDto.password Class="w-100" type="password" />
-                        <RadzenLengthValidator Component="password" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
+                    <div class="center">
+                        <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
                     </div>
-                </div>
-                <div class="center">
-                    <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
-                </div>
-                <div class="center">
-                    <h1>@Checker</h1>
-                </div>
-            </RadzenTemplateForm>
+                    <div class="center">
+                        <h1>@Checker</h1>
+                    </div>
+                </RadzenTemplateForm>
+            </div>
         </div>
     </div>
-</div>
 
 @code {
     bool popup;
@@ -73,17 +73,17 @@
     public async Task<ActionResult<string>> LoginUs(UserDto request)
     { 
         try{
-        string sql = "select * from Users where employmentId = @employmentId;";
-        usersdb = await _data.LoadData<Userdb, dynamic>(sql, new { employmentId = userDto.employmentId }, _config.GetConnectionString("default"));
-        Userdb = usersdb[0];
-    } catch {
+            string sql = "select * from Users where employmentId = @employmentId;";
+            usersdb = await _data.LoadData<Userdb, dynamic>(sql, new { employmentId = userDto.employmentId }, _config.GetConnectionString("default"));
+            Userdb = usersdb[0];
+        } catch {
             if (request.employmentId != Userdb.employmentId)
             {
                 Debug.WriteLine("not the same");
                 Checker = "User ID is wrong";
                 return "User not found";
             }
-    }
+        }
         if (!_auth.VerifyPasswordHash(request.password, Userdb.passwordHash, Userdb.passwordSalt))
         {
             Debug.WriteLine("passwordcheck failed");
@@ -94,6 +94,7 @@
         string token = CreateToken(Userdb);
         await _localStorage.SetItemAsync("token", token);
         NavigationManager.NavigateTo("/", true);
+        isLoading = true;
         return token;
     }
     
