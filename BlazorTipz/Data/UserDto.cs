@@ -4,6 +4,6 @@
     {
         public int? employmentId { get; set; }
         public string password { get; set; } = string.Empty;
-        public string role { get; set; }
+        public string role { get; set; } = "User";
     }
 }
