@@ -45,6 +45,16 @@
                         <RadzenLengthValidator Component="password" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
                     </div>
                 </div>
+                <div class="row mb-5">
+                    <div class="col-md-4" style="align-self: center;">
+                        <RadzenLabel Text="Repeat password" />
+                    </div>
+                    <div class="col">
+                        <RadzenTextBox style="display: block" Name="RepeatPassword" @bind-Value=@userDto.RepeatPassword Class="w-100" type="password" />
+                        <RadzenLengthValidator Component="RepeatPassword" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
+                        <RadzenCompareValidator Visible=@(!string.IsNullOrEmpty(userDto.RepeatPassword)) Value=@userDto.password Component="RepeatPassword" Text="Passwords should be the same" Popup=@popup Style="position: absolute" />
+                    </div>
+                </div>
                 <div class="center">
                     <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
                 </div>
