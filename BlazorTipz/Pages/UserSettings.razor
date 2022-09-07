@@ -36,6 +36,15 @@
                         <RadzenLengthValidator Component="lName" Min="3" Text="Type a valid lastname" Popup=@popup Style="position: absolute" />
                     </div>
                 </div>
+                <div class="row mb-5">
+                    <div class="col-md-4" style="align-self: center;">
+                        <RadzenLabel Text="Password" />
+                    </div>
+                    <div class="col">
+                        <RadzenTextBox style="display: block" Name="password" @bind-Value=@userDto.password Class="w-100" type="password" />
+                        <RadzenLengthValidator Component="password" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
+                    </div>
+                </div>
                 <div class="center">
                     <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
                 </div>
@@ -50,22 +59,26 @@
     bool popup;
     UserDto userDto = new UserDto();
     User User = new User();
-    
+
     //Change users in database
     public async Task<ActionResult<User>> ChangeSettings(UserDto request)
     {
+        _auth.CreatePasswordHash(request.password, out byte[] passwordHash, out byte[] passwordSalt);
+
         var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
         var user = authstate.User;
         var name = user.Identity.Name;
-        
+
         User.employmentId = Int32.Parse(name);
         User.fName = request.fName;
         User.lName = request.lName;
-        
+        User.passwordHash = passwordHash;
+        User.passwordSalt = passwordSalt;
 
-        var sql = "update Users set fName=@fName, lName=@lName where employmentId=@employmentId;";
 
-        await _data.SaveData(sql, new { employmentId = User.employmentId, fName = User.fName, lName = User.lName }, _config.GetConnectionString("default"));
+        var sql = "update Users set fName=@fName, lName=@lName, passwordHash=@passwordHash, passwordSalt=@passwordSalt where employmentId=@employmentId;";
+
+        await _data.SaveData(sql, new { employmentId = User.employmentId, fName = User.fName, lName = User.lName, passwordSalt = User.passwordSalt, passwordHash = User.passwordHash }, _config.GetConnectionString("default"));
         NavigationManager.NavigateTo("/", true);
         return User;
     }
