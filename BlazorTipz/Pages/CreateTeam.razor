@@ -59,8 +59,44 @@
         </div>
     </div>
 </div>
-
-<h1 class="center">User List</h1><RadzenButton Click="UpdateDB" Icon="refresh" ButtonStyle="ButtonStyle.Secondary" />
+    </Authorized>
+</AuthorizeView>
+<AuthorizeView Roles="Admin , Team Leader" Context="someContext">
+    <Authorized>
+        <h1 class="center">Fill in the form</h1>
+        <p class="d-flex justify-content-center">to add a new team member! ps: to be optimized</p>
+        <div class="container my-4">
+            <div class="row">
+                <div class="col-lg-6 offset-lg-3">
+                    <RadzenTemplateForm TItem="TeamDto" Data=@teamDto Submit=AddTeamMember>
+                        <div class="row mb-5">
+                            <div class="col-md-4" style="align-self: center;">
+                                <RadzenLabel Text="Team Name" />
+                            </div>
+                            <div class="col">
+                                <RadzenTextBox style="display: block" Name="team" @bind-Value=@userdto.teamName Class="w-100" />
+                                <RadzenLengthValidator Component="team" Min="3" Text="Team name should be alteast 3 characters long" Popup=@popup Style="position: absolute" />
+                            </div>
+                        </div>
+                        <div class="row mb-5">
+                            <div class="col-md-4" style="align-self: center;">
+                                <RadzenLabel Text="Set member employee ID" />
+                            </div>
+                            <div class="col">
+                                <RadzenDropDown @bind-Value="userdto.employmentId" Placeholder="ID" Data="@people" style="width: 100%;" TextProperty="employmentId" ValueProperty="employmentId" Name="employmentId" />
+                            </div>
+                        </div>
+                        <div class="center">
+                            <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
+                        </div>
+                        <div class="center">
+                            <h1>@Checker</h1>
+                        </div>
+                    </RadzenTemplateForm>
+                </div>
+            </div>
+        </div>
+        <h1 class="center">User List</h1><RadzenButton Click="UpdateDB" Icon="refresh" ButtonStyle="ButtonStyle.Secondary" />
 
  <RadzenDataGrid AllowFiltering="true" AllowColumnResize="false" 
         FilterMode="FilterMode.Simple" PageSize="5" AllowPaging="true" AllowSorting="true" Data="@people" TItem="User" ColumnWidth="300px" 
@@ -87,6 +123,7 @@
     Team Team = new Team();
     TeamDto teamDto = new TeamDto();
     User User = new User();
+    UserDto userdto = new UserDto();
     TeamDto teamdb = new TeamDto();
     List<Userdb> usersdb;
     List<User> people;
@@ -158,5 +195,40 @@
             }
         }
         return false;
+    }
+
+    public async Task AddTeamMember()
+    {
+        try
+        {
+            User.teamid = await getTeamId(userdto.teamName);
+
+            if (checkIFNullInt(User.teamid))
+            {
+                Checker = "Team does not exist!";
+            }
+            else
+            {
+                var sql = "update Users set team='" + User.teamid + "' where employmentId='" + userdto.employmentId + "';";
+                await _data.SaveData(sql, new { team = User.teamid, empemploymentId = userdto.employmentId }, _config.GetConnectionString("default"));
+                Checker = "User added to team!";
+            }
+
+
+        }
+
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            Checker = "Team already exists!";
+        }
+    }
+    private bool checkIFNullInt(int? value) 
+    {
+        //if Null
+        if (value == null) {
+            return true;
+        }
+        return false;    
     }
 }
