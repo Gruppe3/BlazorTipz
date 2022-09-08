@@ -12,7 +12,7 @@
     <p class="d-flex justify-content-center">Welcome to your new app.</p>
     <AuthorizeView>
         <Authorized>
-            <p class="d-flex justify-content-center">You are authorized as @context.User.Identity.Name</p>
+        <p class="d-flex justify-content-center">You are authorized as @context.User.Claims.SingleOrDefault(x => x.Type.Equals("given_name")).Value @context.User.Claims.SingleOrDefault(x => x.Type.Equals("family_name")).Value </p>
 
             <div class="center">
                 <button class="btn btn-primary" @onclick="Logout"> Logout </button>
