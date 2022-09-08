@@ -9,7 +9,7 @@
     <PageTitle>Index</PageTitle>
 <AuthorizeView>
     <Authorized>
-<h1 class="center">Hello @context.User.Claims.SingleOrDefault(x => x.Type.Equals("given_name")).Value @context.User.Claims.SingleOrDefault(x => x.Type.Equals("family_name")).Value</h1>
+<h1 class="center">Hello @context.User.Claims.SingleOrDefault(x => x.Type.Equals("given_name")).Value @context.User.Claims.SingleOrDefault(x => x.Type.Equals("family_name")).Value </h1>
     <p class="d-flex justify-content-center">Welcome to your new app.</p>
     
         <p class="d-flex justify-content-center">UserId: @context.User.Identity.Name</p>
@@ -22,6 +22,7 @@
         </div>
         </Authorized>
         <NotAuthorized>
+            <h1 class="center">Please login</h1>
             <div class="center">
                 <button class="btn btn-primary" @onclick="NavigateToLogin"> Login </button>
             </div>
