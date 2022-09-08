@@ -109,12 +109,16 @@
 
             await _data.SaveData(sql3, new { team = User.teamid, empemploymentId = teamDto.teamLeader }, _config.GetConnectionString("default"));
             Checker = "Team Created and users added!";
+            if (checkIfRoleUser())
+            {
+                var sql4 = "update Users set role='Team Leader' where employmentId='" + teamDto.teamLeader + "';";
+                await _data.SaveData(sql4, new { role = "Team Leader", empemploymentId = teamDto.teamLeader }, _config.GetConnectionString("default"));
+            }
         }
         catch (Exception ex)
         {
             Debug.WriteLine(ex.Message);
-            Checker = ex.Message;
-            //"Team already exists!"
+            Checker = "Team already exists!";
         }
         return Team;
     }    
@@ -138,5 +142,21 @@
         teamdb = teamList[0];
         int? teamid = teamdb.teamid;
         return teamid;
+    }
+
+    private bool checkIfRoleUser() 
+    {
+        //search each user in people for employmentId
+        foreach (User user in people)
+        {
+            if (user.employmentId == teamDto.teamLeader)
+            {
+                if (user.role == "User")
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
