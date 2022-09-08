@@ -55,6 +55,9 @@
                     <div class="center">
                     <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
                    </div>
+                <div class="center">
+                    <h1>@Checker</h1>
+                </div>
             </RadzenTemplateForm> 
         </div>
     </div>
@@ -78,6 +81,7 @@
 @code {
     bool popup;
     bool isLoading = false;
+    public string Checker { get; set; }
 
     User User = new User();
 
@@ -103,10 +107,17 @@
         User.passwordSalt = passwordSalt;
         User.role = request.role;
 
-        var sql = "insert into Users (employmentId, passwordHash, passwordSalt, role) values (@employmentId, @passwordHash, @passwordSalt, @role);";
+        try
+        {
+            var sql = "insert into Users (employmentId, passwordHash, passwordSalt, role) values (@employmentId, @passwordHash, @passwordSalt, @role);";
 
-        await _data.SaveData(sql, new { employmentId = User.employmentId, passwordSalt = User.passwordSalt, passwordHash = User.passwordHash, role = User.role}, _config.GetConnectionString("default"));
-        
-        return User;
+            await _data.SaveData(sql, new { employmentId = User.employmentId, passwordSalt = User.passwordSalt, passwordHash = User.passwordHash, role = User.role }, _config.GetConnectionString("default"));
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            Checker = "User already exists";
+        }
+    return User;
     }    
 }
