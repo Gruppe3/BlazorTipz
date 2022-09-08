@@ -8,32 +8,20 @@
 
     <AuthorizeView Roles="Admin">
         <div class="page">
-            <div class="sidebar">
-                <NavMenu />
-            </div>
-
             <main>
                 <article class="content px-4">
+                    <NavMenu />
                     @Body
                 </article>
             </main>
         </div>
     </AuthorizeView>
 
-    <AuthorizeView Roles="Team Leader">
+    <AuthorizeView Roles="Team Leader, User">
         <div class="page">
             <main>
                 <article class="content px-4">
-                    @Body
-                </article>
-            </main>
-        </div>
-    </AuthorizeView>
-
-    <AuthorizeView Roles="User">
-        <div class="page">
-            <main>
-                <article class="content px-4">
+                    <NavMenu />
                     @Body
                 </article>
             </main>
