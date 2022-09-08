@@ -6,11 +6,11 @@
 @inject AuthenticationComponent _auth
 
 
-    <PageTitle>Index</PageTitle>
+    <PageTitle>Home</PageTitle>
 <AuthorizeView>
     <Authorized>
 <h1 class="center">Hello @context.User.Claims.SingleOrDefault(x => x.Type.Equals("given_name")).Value @context.User.Claims.SingleOrDefault(x => x.Type.Equals("family_name")).Value </h1>
-    <p class="d-flex justify-content-center">Welcome to your new app.</p>
+    <p class="d-flex justify-content-center">Welcome to Tipz!.</p>
     
         <p class="d-flex justify-content-center">UserId: @context.User.Identity.Name</p>
 
