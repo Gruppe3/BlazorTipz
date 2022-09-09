@@ -10,4 +10,8 @@
     <ProjectReference Include="..\DataLibrary\DataLibrary.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
 </Project>
