@@ -10,5 +10,6 @@
         public string RepeatPassword { get; set; }
         public string role { get; set; } = "User";
         public string teamName { get; set; } = string.Empty;
+        public int? teamid { get; set; }
     }
 }

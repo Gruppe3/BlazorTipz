@@ -52,16 +52,60 @@
                     <div class="center">
                     <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
                    </div>
-                <div class="center">
-                    <h1>@Checker</h1>
-                </div>
             </RadzenTemplateForm> 
         </div>
     </div>
 </div>
+        <h1 class="center">Fill in the form</h1>
+        <p class="d-flex justify-content-center">to add a new team member! ps: to be optimized</p>
+<div class="container my-4">
+            <div class="row">
+                <div class="col-lg-6 offset-lg-3">
+                    <RadzenTemplateForm TItem="TeamDto" Data=@teamDto Submit=AddTeamMember>
+                        <div class="row mb-5">
+                            <div class="col-md-4" style="align-self: center;">
+                                <RadzenLabel Text="Team Name" />
+                            </div>
+                            <div class="col">
+                                <RadzenDropDown @bind-Value=@userdto.teamName Placeholder="ID" Data="@teams" style="width: 100%;" TextProperty="teamName" ValueProperty="teamName" Name="teamName" />
+                                <!--<RadzenTextBox style="display: block" Name="team" @bind-Value=@userdto.teamName Class="w-100" />
+                                <RadzenLengthValidator Component="teamid" Min="3" Text="Team name should be alteast 3 characters long" Popup=@popup Style="position: absolute" />-->
+                            </div>
+                        </div>
+                      <div class="row mb-5">
+                            <div class="col-md-4" style="align-self: center;">
+                                <RadzenLabel Text="Set member employee ID" />
+                            </div>
+                            <div class="col">
+                                <RadzenDropDown @bind-Value=@(userdto.employmentId) Placeholder="ID" Data="@people" style="width: 100%;" TextProperty="employmentId" ValueProperty="employmentId" Name="employmentId" >
+                                </RadzenDropDown>
+                            </div>
+                         </div>
+                        <div class="center">
+                            <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
+                        </div>
+                        <div class="center">
+                            <h1>@Checker</h1>
+                        </div>
+                    </RadzenTemplateForm>
+                </div>
+            </div>
+        </div>
+        <h1 class="center">User List</h1><RadzenButton Click="UpdateDB" Icon="refresh" ButtonStyle="ButtonStyle.Secondary" />
+
+ <RadzenDataGrid AllowFiltering="true" AllowColumnResize="false" 
+        FilterMode="FilterMode.Simple" PageSize="5" AllowPaging="true" AllowSorting="true" Data="@people" TItem="User" ColumnWidth="300px" 
+        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+        LogicalFilterOperator="LogicalFilterOperator.Or">
+        <Columns>
+        <RadzenDataGridColumn TItem="User" Property="employmentId" Title="ID" Frozen="true" Width="70px" TextAlign="TextAlign.Center" />
+        <RadzenDataGridColumn TItem="User" Property="fName" Title="First Name" Frozen="true" Width="140px" />
+        <RadzenDataGridColumn TItem="User" Property="lName" Title="Last Name" Width="140px" />
+        </Columns>
+    </RadzenDataGrid>
     </Authorized>
 </AuthorizeView>
-<AuthorizeView Roles="Admin , Team Leader" Context="someContext">
+<AuthorizeView Roles="Team Leader" Context="someContext">
     <Authorized>
         <h1 class="center">Fill in the form</h1>
         <p class="d-flex justify-content-center">to add a new team member! ps: to be optimized</p>
@@ -74,18 +118,19 @@
                                 <RadzenLabel Text="Team Name" />
                             </div>
                             <div class="col">
-                                <RadzenTextBox style="display: block" Name="team" @bind-Value=@userdto.teamName Class="w-100" />
-                                <RadzenLengthValidator Component="team" Min="3" Text="Team name should be alteast 3 characters long" Popup=@popup Style="position: absolute" />
+                                <RadzenDropDown @bind-Value=@userdto.teamName Placeholder="ID" Data="@teams" style="width: 100%;" TextProperty="teamName" ValueProperty="teamName" Name="teamName" />
+                                <!--<RadzenTextBox style="display: block" Name="team" @bind-Value=@userdto.teamName Class="w-100" />
+                                <RadzenLengthValidator Component="teamid" Min="3" Text="Team name should be alteast 3 characters long" Popup=@popup Style="position: absolute" />-->
                             </div>
                         </div>
-                        <div class="row mb-5">
+                      <div class="row mb-5">
                             <div class="col-md-4" style="align-self: center;">
                                 <RadzenLabel Text="Set member employee ID" />
                             </div>
                             <div class="col">
                                 <RadzenDropDown @bind-Value="userdto.employmentId" Placeholder="ID" Data="@people" style="width: 100%;" TextProperty="employmentId" ValueProperty="employmentId" Name="employmentId" />
                             </div>
-                        </div>
+                         </div>
                         <div class="center">
                             <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
                         </div>
@@ -108,11 +153,12 @@
         <RadzenDataGridColumn TItem="User" Property="lName" Title="Last Name" Width="140px" />
         </Columns>
     </RadzenDataGrid>
-
 </Authorized>
-<NotAuthorized>
-    <h1 class="center">You are not Authorized for this</h1>
-</NotAuthorized>
+</AuthorizeView>
+<AuthorizeView Roles="User">
+    <Authorized>
+    <h1 class="center">You are not Authorized to view this page</h1>
+    </Authorized>
 </AuthorizeView>
 
 @code {
@@ -128,6 +174,7 @@
     List<Userdb> usersdb;
     List<User> people;
     List<TeamDto> teamList;
+    List<Team> teams;
 
     public async Task<ActionResult<Team>> RegisterTeam(TeamDto request)
     {
@@ -164,12 +211,16 @@
     {
         string sql = "select * from Users";
         people = await _data.LoadData<User, dynamic>(sql, new { }, _config.GetConnectionString("default"));
+        string sql2 = "select * from Teams";
+        teams = await _data.LoadData<Team, dynamic>(sql2, new { }, _config.GetConnectionString("default"));
     }
     //Check for updates to the database
     protected async Task UpdateDB()
     {
         string sql = "select * from Users";
         people = await _data.LoadData<User, dynamic>(sql, new { }, _config.GetConnectionString("default"));
+        string sql2 = "select * from Teams";
+        teams = await _data.LoadData<Team, dynamic>(sql2, new { }, _config.GetConnectionString("default"));
     }
 
     private async Task<int?> getTeamId(string teamname) 
@@ -179,6 +230,13 @@
         teamdb = teamList[0];
         int? teamid = teamdb.teamid;
         return teamid;
+    }
+
+    void OnChange(object value, string name)
+    {
+        var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
+
+        Debug.WriteLine($"{name} value changed to {str}");
     }
 
     private bool checkIfRoleUser() 
