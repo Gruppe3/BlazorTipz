@@ -12,88 +12,98 @@
 @using System.Text
 @using System.Security.Claims
 @using System.IdentityModel.Tokens.Jwt
+@using BlazorTipz.Components
 
 @inject NavigationManager _navigationManager
 @inject IDataAccess _data
 @inject IConfiguration _config
+@inject ILocalStorageService _localStorage
+@inject AuthenticationComponent _auth
+@inject NavigationManager NavigationManager
 
+<PageTitle>Login</PageTitle>
 
-<h1 class="center">Login</h1>
-<p class="d-flex justify-content-center">Fill your email and password</p>
-<div class="container my-4">
-    <div class="row">
-        <div class="col-lg-6 offset-lg-3">
-            <RadzenTemplateForm TItem="UserDto" Data=@userDto Submit=LoginUs>
-                <div class="row mb-5">
-                    <div class="col-md-4" style="align-self: center;">
-                        <RadzenLabel Text="ID" />
+    <h1 class="center">Login</h1>
+    <p class="d-flex justify-content-center">Fill your email and password</p>
+    <div class="container my-4">
+        <div class="row">
+            <div class="col-lg-6 offset-lg-3">
+                <RadzenTemplateForm TItem="UserDto" Data=userDto Submit=LoginUs>
+                    <div class="row mb-5">
+                        <div class="col-md-4" style="align-self: center;">
+                            <RadzenLabel Text="ID" />
+                        </div>
+                        <div class="col">
+
+                            <RadzenNumeric ShowUpDown="false" style="display: block" Name="id" @bind-Value=@userDto.employmentId Class="w-100" />
+                        </div>
                     </div>
-                    <div class="col">
-                        <RadzenNumeric style="display: block" Name="id" @bind-Value=@userDto.employmentId Class="w-100" />
+                    <div class="row mb-5">
+                        <div class="col-md-4" style="align-self: center;">
+                            <RadzenLabel Text="Password" />
+                        </div>
+                        <div class="col">
+                            <RadzenTextBox style="display: block" Name="password" @bind-Value=@userDto.password Class="w-100" type="password" />
+                            <RadzenLengthValidator Component="password" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
+                        </div>
                     </div>
-                </div>
-                <div class="row mb-5">
-                    <div class="col-md-4" style="align-self: center;">
-                        <RadzenLabel Text="Password" />
+                    <div class="center">
+                        <RadzenButton ButtonType="ButtonType.Submit" Text="Login"></RadzenButton>
                     </div>
-                    <div class="col">
-                        <RadzenTextBox style="display: block" Name="password" @bind-Value=@userDto.password Class="w-100" type="password" />
-                        <RadzenLengthValidator Component="password" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
+                    <div class="center">
+                        <h1>@Checker</h1>
                     </div>
-                </div>
-                <div class="center">
-                    <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
-                </div>
-            </RadzenTemplateForm>
+                </RadzenTemplateForm>
+            </div>
         </div>
     </div>
-</div>
 
 @code {
     bool popup;
-    bool isLoading = false;
+
+
 
     User User = new User();
     Userdb Userdb = new Userdb();
     UserDto userDto = new UserDto();
     List<Userdb> usersdb;
 
+    public string Checker { get; set; }
 
     public async Task<ActionResult<string>> LoginUs(UserDto request)
-    {
-        string sql = "select * from Users where employmentId = @employmentId;";
-        usersdb = await _data.LoadData<Userdb, dynamic>(sql, new { employmentId = userDto.employmentId }, _config.GetConnectionString("default"));
-        Userdb = usersdb[0];
-
-        if (request.employmentId != Userdb.employmentId)
-        {
-            Debug.WriteLine("not the same");
-            return "User not found";
+    { 
+        try{
+            string sql = "select * from Users where employmentId = @employmentId;";
+            usersdb = await _data.LoadData<Userdb, dynamic>(sql, new { employmentId = userDto.employmentId }, _config.GetConnectionString("default"));
+            Userdb = usersdb[0];
+        } catch {
+            if (request.employmentId != Userdb.employmentId)
+            {
+                Debug.WriteLine("not the same");
+                Checker = "User ID is wrong";
+                return "User not found";
+            }
         }
-        if (!VerifyPasswordHash(request.password, Userdb.passwordHash, Userdb.passwordSalt))
+        if (!_auth.VerifyPasswordHash(request.password, Userdb.passwordHash, Userdb.passwordSalt))
         {
             Debug.WriteLine("passwordcheck failed");
-            return "Wrong password";
+            Checker = "Wrong Password";
+            return "Wrong password";  
         }
 
         string token = CreateToken(Userdb);
+        await _localStorage.SetItemAsync("token", token);
+        NavigationManager.NavigateTo("/", true);
         return token;
     }
-
-    private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-    {
-        using (var hmac = new HMACSHA512())
-        {
-            passwordSalt = hmac.Key;
-            passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-        }
-    }
-
-    private string CreateToken(Userdb user)
+    
+    public string CreateToken(Userdb user)
     {
         var claims = new List<Claim>
             {
             new Claim(ClaimTypes.Name, user.employmentId.ToString()),
+            new Claim(JwtRegisteredClaimNames.GivenName, user.fName),
+            new Claim(JwtRegisteredClaimNames.FamilyName, user.lName),
             new Claim(ClaimTypes.Role, user.role)
         };
 
@@ -112,14 +122,5 @@
 
 
         return jwt;
-    }
-
-    private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
-    {
-        using (var hmac = new HMACSHA512(passwordSalt))
-        {
-            var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            return computedHash.SequenceEqual(passwordHash);
-        }
     }
 }

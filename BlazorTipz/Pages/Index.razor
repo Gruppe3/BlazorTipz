@@ -1,8 +1,28 @@
 ﻿@page "/"
+@using System.Diagnostics
+@using BlazorTipz.Components
+@inject ILocalStorageService _localStorage
+@inject NavigationManager NavigationManager
+@inject AuthenticationComponent _auth
 
-<PageTitle>Index</PageTitle>
 
-<h1 class="center">Hello, world!</h1>
-<p class="d-flex justify-content-center">Welcome to your new app.</p>
+    <PageTitle>Home</PageTitle>
+<AuthorizeView>
+    <Authorized>
+        <h1 class="center">Hello!</h1>
+    <p class="d-flex justify-content-center">Welcome to Tipz!.</p>
+
+        </Authorized>
+        <NotAuthorized>
+            <h1 class="center">Please login</h1>
+            <div class="center">
+                <button class="btn btn-primary" @onclick="NavigateToLogin"> Login </button>
+            </div>
+        </NotAuthorized>
+    </AuthorizeView>
 
 
+
+@code {
+    private void NavigateToLogin() { NavigationManager.NavigateTo("login"); }
+}

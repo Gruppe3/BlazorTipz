@@ -1,15 +1,55 @@
 ﻿@inherits LayoutComponentBase
 
-<PageTitle>BlazorTipz</PageTitle>
+@if (isLoaded)
+{
+    <PageTitle>BlazorTipz</PageTitle>
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
 
-    <main>
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+
+    <AuthorizeView Roles="Admin">
+        <div class="page">
+            <main>
+                <article class="content px-4">
+                    <NavMenu />
+                    @Body
+                </article>
+            </main>
+        </div>
+    </AuthorizeView>
+
+    <AuthorizeView Roles="Team Leader, User">
+        <div class="page">
+            <main>
+                <article class="content px-4">
+                    <NavMenu />
+                    @Body
+                </article>
+            </main>
+        </div>
+    </AuthorizeView>
+    <AuthorizeView>
+        <NotAuthorized>
+            <div class="page">
+                <main>
+                    <article class="content px-4">
+                        @Body
+                    </article>
+                </main>
+            </div>
+        </NotAuthorized>
+    </AuthorizeView>
+} else {
+   <div class="center">
+       <div class="spinner"></div>
+   </div>
+}
+
+
+@code{
+    bool isLoaded;
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(1000); // TODO actual initialization job
+        isLoaded = true;
+    }
+}

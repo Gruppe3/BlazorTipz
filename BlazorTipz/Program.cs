@@ -1,5 +1,7 @@
 global using Microsoft.AspNetCore.Components.Authorization;
+using Blazored.LocalStorage;
 using BlazorTipz;
+using BlazorTipz.Components;
 using BlazorTipz.Data;
 using DataLibrary;
 using Microsoft.AspNetCore.Components;
@@ -12,6 +14,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<IDataAccess, DataAccess>();
+builder.Services.AddSingleton<AuthenticationComponent>();
+builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddScoped<TokenServerAuthenticationStateProvider>();
+builder.Services.AddScoped<AuthenticationStateProvider>(provider => provider.GetRequiredService<TokenServerAuthenticationStateProvider>());
 
 var app = builder.Build();
 
