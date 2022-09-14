@@ -47,8 +47,7 @@
                             </div>
                             <div class="col">
                                 <RadzenDropDownDataGrid @bind-Value=@teamDto.teamLeader FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
-                                                        AllowFiltering="false" AllowClear="true" Data=@people TextProperty="employmentId" Placeholder="ID" ValueProperty="employmentId"
-                                                        Change=@(args => OnChange(args, "DropDownDataGrid with virtualization using IQueryable")) Class="w-100">
+                                                        AllowFiltering="false" AllowClear="true" Data=@people TextProperty="employmentId" Placeholder="ID" ValueProperty="employmentId" Class="w-100">
                                     <Columns>
                                         <RadzenDropDownDataGridColumn Property="employmentId" Title="User ID" />
                                         <RadzenDropDownDataGridColumn Property="fName" Title="Firstname" />
@@ -77,8 +76,7 @@
                             </div>
                             <div class="col">
                                 <RadzenDropDownDataGrid @bind-Value=@userdto.teamName FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
-                                                        AllowFiltering="true" AllowClear="true" Data=@teams TextProperty="teamName" Placeholder="Team" ValueProperty="teamName"
-                                                Change=@(args => OnChange(args, "DropDownDataGrid with virtualization using IQueryable")) Class="w-100">
+                                                        AllowFiltering="true" AllowClear="true" Data=@teams TextProperty="teamName" Placeholder="Team" ValueProperty="teamName" Class="w-100">
                             <Columns>
                                 <RadzenDropDownDataGridColumn Property="teamid" Title="Team ID"/>
                                 <RadzenDropDownDataGridColumn Property="teamName" Title="Team Name"/>
@@ -94,8 +92,7 @@
                             </div>
                             <div class="col">
                                 <RadzenDropDownDataGrid @bind-Value=@userdto.employmentId FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
-                                                        AllowFiltering="false" AllowClear="true" Data=@people TextProperty="employmentId" Placeholder="ID" ValueProperty="employmentId"
-                                                        Change=@(args => OnChange(args, "DropDownDataGrid with virtualization using IQueryable")) Class="w-100">
+                                                        AllowFiltering="false" AllowClear="true" Data=@people TextProperty="employmentId" Placeholder="ID" ValueProperty="employmentId" Class="w-100">
                                     <Columns>
                                         <RadzenDropDownDataGridColumn Property="employmentId" Title="User ID" />
                                         <RadzenDropDownDataGridColumn Property="fName" Title="Firstname" />
@@ -131,8 +128,7 @@
                             </div>
                             <div class="col">
                                 <RadzenDropDownDataGrid @bind-Value=@userdto.teamName FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
-                                                        AllowFiltering="true" AllowClear="true" Data=@teams TextProperty="teamName" Placeholder="Team" ValueProperty="teamName"
-                                                        Change=@(args => OnChange(args, "DropDownDataGrid with virtualization using IQueryable")) Class="w-100">
+                                                        AllowFiltering="true" AllowClear="true" Data=@teams TextProperty="teamName" Placeholder="Team" ValueProperty="teamName" Class="w-100">
                                     <Columns>
                                         <RadzenDropDownDataGridColumn Property="teamid" Title="Team ID" />
                                         <RadzenDropDownDataGridColumn Property="teamName" Title="Team Name" />
@@ -148,8 +144,7 @@
                             </div>
                             <div class="col">
                                 <RadzenDropDownDataGrid @bind-Value=@userdto.employmentId FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
-                                                        AllowFiltering="false" AllowClear="true" Data=@people TextProperty="employmentId" Placeholder="ID" ValueProperty="employmentId"
-                                                        Change=@(args => OnChange(args, "DropDownDataGrid with virtualization using IQueryable")) Class="w-100">
+                                                        AllowFiltering="false" AllowClear="true" Data=@people TextProperty="employmentId" Placeholder="ID" ValueProperty="employmentId" Class="w-100">
                                     <Columns>
                                         <RadzenDropDownDataGridColumn Property="employmentId" Title="User ID" />
                                         <RadzenDropDownDataGridColumn Property="fName" Title="Firstname" />
@@ -242,13 +237,6 @@
         teamdb = teamList[0];
         int? teamid = teamdb.teamid;
         return teamid;
-    }
-
-    void OnChange(object value, string name)
-    {
-        var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
-
-        Debug.WriteLine($"{name} value changed to {str}");
     }
 
     private bool checkIfRoleUser() 
