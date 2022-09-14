@@ -66,16 +66,15 @@
     User User = new User();
     Userdb Userdb = new Userdb();
     UserDto userDto = new UserDto();
-    List<Userdb> usersdb;
 
     public string Checker { get; set; }
 
     public async Task<ActionResult<string>> LoginUs(UserDto request)
     { 
         try{
-            string sql = "select * from Users where employmentId = @employmentId;";
-            usersdb = await _data.LoadData<Userdb, dynamic>(sql, new { employmentId = userDto.employmentId }, _config.GetConnectionString("default"));
-            Userdb = usersdb[0];
+            string sql1 = "SELECT * FROM Users WHERE employmentId = @employmentId;";
+            Userdb = await _data.LoadData<Userdb, dynamic>(sql1, new { employmentId = userDto.employmentId }, _config.GetConnectionString("default"), true);
+        
         } catch {
             if (request.employmentId != Userdb.employmentId)
             {
@@ -91,20 +90,24 @@
             return "Wrong password";  
         }
 
-        string token = CreateToken(Userdb);
+        var sql2 = "SELECT teamName FROM Teams WHERE teamId = @teamId;";
+        var teamName = await _data.LoadData<String, dynamic>(sql2, new { teamId = Userdb.teamid }, _config.GetConnectionString("default"), true);
+        
+        string token = CreateToken(Userdb, teamName);
         await _localStorage.SetItemAsync("token", token);
         NavigationManager.NavigateTo("/", true);
         return token;
     }
     
-    public string CreateToken(Userdb user)
+    public string CreateToken(Userdb user, String teamName)
     {
         var claims = new List<Claim>
             {
             new Claim(ClaimTypes.Name, user.employmentId.ToString()),
             new Claim(JwtRegisteredClaimNames.GivenName, user.fName),
             new Claim(JwtRegisteredClaimNames.FamilyName, user.lName),
-            new Claim(JwtRegisteredClaimNames.UniqueName, user.team.ToString()),
+            //new Claim(JwtRegisteredClaimNames.UniqueName, user.teamid.ToString()),
+            new Claim(JwtRegisteredClaimNames.UniqueName, teamName),
             new Claim(ClaimTypes.Role, user.role)
         };
 
