@@ -10,6 +10,6 @@ namespace BlazorTipz.Data
         public string fName { get; set; } = string.Empty;
         public string lName { get; set; } = string.Empty;
         public string role { get; set; }
-        public int? teamid { get; set; }
+        public int? teamId { get; set; }
     }
 }

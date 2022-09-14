@@ -69,7 +69,7 @@
 <div class="container my-4">
             <div class="row">
                 <div class="col-lg-6 offset-lg-3">
-                    <RadzenTemplateForm TItem="TeamDto" Data=@teamDto Submit=AddTeamMember>
+                    <RadzenTemplateForm TItem="UserDto" Data=@userdto Submit=AddTeamMember>
                        <div class="row mb-5">
                             <div class="col-md-4" style="align-self: center;">
                                 <RadzenLabel Text="Team Name" />
@@ -121,7 +121,7 @@
         <div class="container my-4">
             <div class="row">
                 <div class="col-lg-6 offset-lg-3">
-                    <RadzenTemplateForm TItem="TeamDto" Data=@teamDto Submit=AddTeamMember>
+                    <RadzenTemplateForm TItem="UserDto" Data=@userdto Submit=AddTeamMember>
                         <div class="row mb-5">
                             <div class="col-md-4" style="align-self: center;">
                                 <RadzenLabel Text="Team Name" />
@@ -182,9 +182,7 @@
     User User = new User();
     UserDto userdto = new UserDto();
     TeamDto teamdb = new TeamDto();
-    List<Userdb> usersdb;
     List<User> people;
-    List<TeamDto> teamList;
     List<Team> teams;
 
     public async Task<ActionResult<Team>> RegisterTeam(TeamDto request)
@@ -200,14 +198,15 @@
 
             User.teamid = await getTeamId(request.teamName);
 
-            var sql3 = "update Users set team='"+User.teamid+"' where employmentId='"+teamDto.teamLeader+"';";
+            var sql2 = "update Users set teamId = @teamid where employmentId = @employmentId;";
+            await _data.SaveData(sql2, new { teamid = User.teamid, employmentId = Team.teamLeader }, _config.GetConnectionString("default"));
 
-            await _data.SaveData(sql3, new { team = User.teamid, empemploymentId = teamDto.teamLeader }, _config.GetConnectionString("default"));
             Checker = "Team Created and users added!";
+
             if (checkIfRoleUser())
             {
-                var sql4 = "update Users set role='Team Leader' where employmentId='" + teamDto.teamLeader + "';";
-                await _data.SaveData(sql4, new { role = "Team Leader", empemploymentId = teamDto.teamLeader }, _config.GetConnectionString("default"));
+                var sql3 = "update Users set role='Team Leader' where employmentId = @employmentId;";
+                await _data.SaveData(sql3, new { employmentId = Team.teamLeader }, _config.GetConnectionString("default"));
             }
         }
         catch (Exception ex)
@@ -232,9 +231,8 @@
 
     private async Task<int?> getTeamId(string teamname) 
     {
-        var sql = "SELECT * FROM Teams WHERE teamName = '" + teamname +"';";
-        teamList = await _data.LoadData<TeamDto, dynamic>(sql, new { teamName = teamDto.teamName }, _config.GetConnectionString("default"));
-        teamdb = teamList[0];
+        var sql = "SELECT * FROM Teams WHERE teamName = @teamName;";
+        teamdb = await _data.LoadData<TeamDto, dynamic>(sql, new { teamName = teamname }, _config.GetConnectionString("default"), true);
         int? teamid = teamdb.teamid;
         return teamid;
     }
@@ -255,11 +253,11 @@
         return false;
     }
 
-    public async Task AddTeamMember()
+    public async Task AddTeamMember(UserDto request)
     {
         try
         {
-            User.teamid = await getTeamId(userdto.teamName);
+            User.teamid = await getTeamId(request.teamName);
 
             if (checkIFNullInt(User.teamid))
             {
@@ -267,18 +265,17 @@
             }
             else
             {
-                var sql = "update Users set team='" + User.teamid + "' where employmentId='" + userdto.employmentId + "';";
-                await _data.SaveData(sql, new { team = User.teamid, empemploymentId = userdto.employmentId }, _config.GetConnectionString("default"));
+                var sql = "update Users set teamId = @teamid where employmentId = @employmentId;";
+                await _data.SaveData(sql, new { teamid = User.teamid, employmentId = request.employmentId }, _config.GetConnectionString("default"));
                 Checker = "User added to team!";
             }
-
 
         }
 
         catch (Exception ex)
         {
             Debug.WriteLine(ex.Message);
-            Checker = "Team already exists!";
+            Checker = "User is already in that team";
         }
     }
     private bool checkIFNullInt(int? value) 

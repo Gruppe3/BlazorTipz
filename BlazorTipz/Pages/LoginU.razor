@@ -72,9 +72,9 @@
     public async Task<ActionResult<string>> LoginUs(UserDto request)
     { 
         try{
-            string sql1 = "SELECT * FROM Users WHERE employmentId = @employmentId;";
-            Userdb = await _data.LoadData<Userdb, dynamic>(sql1, new { employmentId = userDto.employmentId }, _config.GetConnectionString("default"), true);
-        
+            var sql = "SELECT * FROM Users WHERE employmentId = @employmentId;";
+            Userdb = await _data.LoadData<Userdb, dynamic>(sql, new { employmentId = userDto.employmentId }, _config.GetConnectionString("default"), true);
+
         } catch {
             if (request.employmentId != Userdb.employmentId)
             {
@@ -91,9 +91,9 @@
         }
 
         var sql2 = "SELECT teamName FROM Teams WHERE teamId = @teamId;";
-        var teamName = await _data.LoadData<String, dynamic>(sql2, new { teamId = Userdb.teamid }, _config.GetConnectionString("default"), true);
-        
-        string token = CreateToken(Userdb, teamName);
+        var teamName = await _data.LoadData<String, dynamic>(sql2, new { teamId = Userdb.teamId }, _config.GetConnectionString("default"), true);
+
+        String token = CreateToken(Userdb, teamName);
         await _localStorage.SetItemAsync("token", token);
         NavigationManager.NavigateTo("/", true);
         return token;
