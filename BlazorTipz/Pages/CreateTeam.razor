@@ -117,26 +117,11 @@
 <AuthorizeView Roles="Team Leader" Context="someContext">
     <Authorized>
         <h1 class="center">Fill in the form</h1>
-        <p class="d-flex justify-content-center">to add a new team member! ps: to be optimized</p>
+        <p class="d-flex justify-content-center">to add a new team member to @team!</p>
         <div class="container my-4">
             <div class="row">
                 <div class="col-lg-6 offset-lg-3">
                     <RadzenTemplateForm TItem="UserDto" Data=@userdto Submit=AddTeamMember>
-                        <div class="row mb-5">
-                            <div class="col-md-4" style="align-self: center;">
-                                <RadzenLabel Text="Team Name" />
-                            </div>
-                            <div class="col">
-                                <RadzenDropDownDataGrid @bind-Value=@userdto.teamName FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
-                                                        AllowFiltering="true" AllowClear="true" Data=@teams TextProperty="teamName" Placeholder="Team" ValueProperty="teamName" Class="w-100">
-                                    <Columns>
-                                        <RadzenDropDownDataGridColumn Property="teamid" Title="Team ID" />
-                                        <RadzenDropDownDataGridColumn Property="teamName" Title="Team Name" />
-                                    </Columns>
-
-                                </RadzenDropDownDataGrid>
-                            </div>
-                        </div>
 
                         <div class="row mb-5">
                             <div class="col-md-4" style="align-self: center;">
@@ -176,6 +161,7 @@
     bool popup;
     bool isLoading = false;
     public string Checker { get; set; }
+    public string team { get; set; }
 
     Team Team = new Team();
     TeamDto teamDto = new TeamDto();
@@ -203,7 +189,7 @@
 
             Checker = "Team Created and users added!";
 
-            if (checkIfRoleUser())
+            if (checkRoleUser())
             {
                 var sql3 = "update Users set role='Team Leader' where employmentId = @employmentId;";
                 await _data.SaveData(sql3, new { employmentId = Team.teamLeader }, _config.GetConnectionString("default"));
@@ -220,6 +206,11 @@
     protected override async Task OnInitializedAsync()
     {
         await UpdateDB();
+        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var user = authstate.User;
+        var name = user.Claims.SingleOrDefault(x => x.Type.Equals("unique_name")).Value;
+
+        team = name;
     }
     protected async Task UpdateDB()
     {
@@ -229,15 +220,15 @@
         teams = await _data.LoadData<Team, dynamic>(sql2, new { }, _config.GetConnectionString("default"));
     }
 
-    private async Task<int?> getTeamId(string teamname) 
+    private async Task<int?> getTeamId(string teamName) 
     {
         var sql = "SELECT * FROM Teams WHERE teamName = @teamName;";
-        teamdb = await _data.LoadData<TeamDto, dynamic>(sql, new { teamName = teamname }, _config.GetConnectionString("default"), true);
+        teamdb = await _data.LoadData<TeamDto, dynamic>(sql, new { teamName = teamName }, _config.GetConnectionString("default"), true);
         int? teamid = teamdb.teamid;
         return teamid;
     }
 
-    private bool checkIfRoleUser() 
+    private bool checkRoleUser() 
     {
         //search each user in people for employmentId
         foreach (User user in people)
@@ -253,22 +244,60 @@
         return false;
     }
 
+    private async Task<bool> checkRoleTeamLeader()
+    {
+        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var au = authstate.User;
+        var name = au.Identity.Name;
+        //search each user in people for employmentId
+        foreach (User user in people)
+        {
+            if (user.employmentId == Int32.Parse(name))
+            {
+                if (user.role == "Team Leader")
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+
     public async Task AddTeamMember(UserDto request)
     {
+
+        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var user = authstate.User;
+        var name = user.Claims.SingleOrDefault(x => x.Type.Equals("unique_name")).Value;
+
         try
         {
-            User.teamid = await getTeamId(request.teamName);
-
-            if (checkIFNullInt(User.teamid))
+            if (request.teamName == "" || request.teamName == null)
             {
-                Checker = "Team does not exist!";
+                
+                if (await checkRoleTeamLeader())
+                {
+                    var sql2 = "select teamId from Teams where teamName = @name;";
+                    User.teamid = await _data.LoadData<int?, dynamic>(sql2, new { name = name }, _config.GetConnectionString("default"), true);
+                    
+                    var sql = "update Users set teamId = @teamid where employmentId = @employmentId;";
+                    await _data.SaveData(sql, new { teamid = User.teamid, employmentId = request.employmentId }, _config.GetConnectionString("default"));
+                    Checker = "Team member added!";
+                }
+                else
+                {
+                    Checker = "Team does not exist!";
+                }
             }
-            else
-            {
+            else { 
+                User.teamid = await getTeamId(request.teamName);
                 var sql = "update Users set teamId = @teamid where employmentId = @employmentId;";
                 await _data.SaveData(sql, new { teamid = User.teamid, employmentId = request.employmentId }, _config.GetConnectionString("default"));
-                Checker = "User added to team!";
-            }
+                Checker = "Team member added to " + request.teamName +"!";
+            } 
+            //Checker = "User added to team!";
 
         }
 
@@ -278,12 +307,29 @@
             Checker = "User is already in that team";
         }
     }
-    private bool checkIFNullInt(int? value) 
+
+    private bool checkIFNullInt(string value) 
     {
         //if Null
         if (value == null) {
             return true;
         }
         return false;    
+    }
+
+    //Change team name
+    public async Task ChangeTeamName(TeamDto request)
+    {
+        try
+        {
+            var sql = "update Teams set teamName = @teamName where teamid = @teamid;";
+            await _data.SaveData(sql, new { teamName = request.teamName, teamid = request.teamid }, _config.GetConnectionString("default"));
+            Checker = "Team name changed!";
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            Checker = "Team name already exists!";
+        }
     }
 }

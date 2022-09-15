@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using System.Diagnostics
 @using BlazorTipz.Components
+@using BlazorTipz.Data
 @inject ILocalStorageService _localStorage
 @inject NavigationManager NavigationManager
 @inject AuthenticationComponent _auth
@@ -25,5 +26,9 @@
 
 
 @code {
+
+    User User = new User();
+    List<User> people;
+    
     private void NavigateToLogin() { NavigationManager.NavigateTo("login"); }
 }
