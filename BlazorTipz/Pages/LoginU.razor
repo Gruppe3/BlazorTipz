@@ -94,7 +94,7 @@
         try{
             var sql2 = "SELECT teamName FROM Teams WHERE teamId = @teamId;";
             var teamName = await _data.LoadData<String, dynamic>(sql2, new { teamId = Userdb.teamId }, _config.GetConnectionString("default"), true);
-            String token = CreateToken(Userdb, teamName);
+            String token = CreateToken(Userdb);
             await _localStorage.SetItemAsync("token", token);
             NavigationManager.NavigateTo("/", true);
             return token;
@@ -107,15 +107,14 @@
         
     }
     
-    public string CreateToken(Userdb user, String teamName)
+    public string CreateToken(Userdb user)
     {
         var claims = new List<Claim>
             {
             new Claim(ClaimTypes.Name, user.employmentId.ToString()),
             new Claim(JwtRegisteredClaimNames.GivenName, user.fName),
             new Claim(JwtRegisteredClaimNames.FamilyName, user.lName),
-            //new Claim(JwtRegisteredClaimNames.UniqueName, user.teamid.ToString()),
-            new Claim(JwtRegisteredClaimNames.UniqueName, teamName),
+            new Claim(JwtRegisteredClaimNames.UniqueName, user.teamId.ToString()),
             new Claim(ClaimTypes.Role, user.role)
         };
 
