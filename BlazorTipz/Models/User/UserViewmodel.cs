@@ -1,8 +1,11 @@
-﻿namespace BlazorTipz.Models.User
+﻿using BlazorTipz.Data;
+
+namespace BlazorTipz.Models.User
 {
-    public class UserViewmodel 
+
+    public class UserViewmodel : UserA
     {
         public string password { get; set; } = string.Empty;
-        public string RepeatPassword { get; set; }
+        public string RepeatPassword { get; set; } = string.Empty;
     }
 }

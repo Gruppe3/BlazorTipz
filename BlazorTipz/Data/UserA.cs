@@ -1,8 +1,6 @@
-﻿using BlazorTipz.Data;
-
-namespace BlazorTipz.Models.User
+﻿namespace BlazorTipz.Data
 {
-    public abstract class User
+    public abstract class UserA
     {
         public string name { get; set; } = string.Empty;
         public string employmentId { get; set; }
