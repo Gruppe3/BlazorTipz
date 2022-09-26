@@ -69,7 +69,7 @@
 
 </Authorized>
 <NotAuthorized>
-    <h1 class="center">You are not Authorized for this</h1>
+    <h1 class="center">You are not Authorized for this page</h1>
 </NotAuthorized>
 </AuthorizeView>
 
@@ -101,8 +101,7 @@
     List<Role> roles = new List<Role>()
 {
         new Role() { roleId = 1, role = "User" },
-        new Role() { roleId = 2, role = "Team Leader" },
-        new Role() { roleId = 3, role = "Admin" }
+        new Role() { roleId = 2, role = "Admin" }
         //Remember to remove team leader from the list when the app is deployed
     };
 

@@ -9,8 +9,8 @@ namespace BlazorTipz.Data
         public byte[] passwordSalt { get; set; }
         public string fName { get; set; } = string.Empty;
         public string lName { get; set; } = string.Empty;
-        public string passHash { get; set; }
-        public string passSalt { get; set; }
         public string role { get; set; }
+        public int? teamId { get; set; } 
+        public string teamName { get; set; } = string.Empty;
     }
 }

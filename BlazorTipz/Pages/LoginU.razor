@@ -51,7 +51,7 @@
                         <RadzenButton ButtonType="ButtonType.Submit" Text="Login"></RadzenButton>
                     </div>
                     <div class="center">
-                        <h1>@Checker</h1>
+                        <img src="@Link"/>
                     </div>
                 </RadzenTemplateForm>
             </div>
@@ -66,16 +66,16 @@
     User User = new User();
     Userdb Userdb = new Userdb();
     UserDto userDto = new UserDto();
-    List<Userdb> usersdb;
 
     public string Checker { get; set; }
+    public string Link { get; set; }
 
     public async Task<ActionResult<string>> LoginUs(UserDto request)
     { 
         try{
-            string sql = "select * from Users where employmentId = @employmentId;";
-            usersdb = await _data.LoadData<Userdb, dynamic>(sql, new { employmentId = userDto.employmentId }, _config.GetConnectionString("default"));
-            Userdb = usersdb[0];
+            var sql = "SELECT * FROM Users WHERE employmentId = @employmentId;";
+            Userdb = await _data.LoadData<Userdb, dynamic>(sql, new { employmentId = userDto.employmentId }, _config.GetConnectionString("default"), true);
+
         } catch {
             if (request.employmentId != Userdb.employmentId)
             {
@@ -91,10 +91,20 @@
             return "Wrong password";  
         }
 
-        string token = CreateToken(Userdb);
-        await _localStorage.SetItemAsync("token", token);
-        NavigationManager.NavigateTo("/", true);
-        return token;
+        try{
+            var sql2 = "SELECT teamName FROM Teams WHERE teamId = @teamId;";
+            var teamName = await _data.LoadData<String, dynamic>(sql2, new { teamId = Userdb.teamId }, _config.GetConnectionString("default"), true);
+            String token = CreateToken(Userdb);
+            await _localStorage.SetItemAsync("token", token);
+            NavigationManager.NavigateTo("/", true);
+            return token;
+        } catch {
+            Debug.WriteLine("token creation failed");
+            Checker = "Token creation failed, no team?";
+            Link = "https://i.imgur.com/IRoaH6N.jpg";
+            return "Token creation failed";
+        }
+        
     }
     
     public string CreateToken(Userdb user)
@@ -104,6 +114,7 @@
             new Claim(ClaimTypes.Name, user.employmentId.ToString()),
             new Claim(JwtRegisteredClaimNames.GivenName, user.fName),
             new Claim(JwtRegisteredClaimNames.FamilyName, user.lName),
+            new Claim(JwtRegisteredClaimNames.UniqueName, user.teamId.ToString()),
             new Claim(ClaimTypes.Role, user.role)
         };
 

@@ -22,7 +22,7 @@
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item dropdown ml-auto">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            @context.User.Claims.SingleOrDefault(x => x.Type.Equals("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")).Value : @context.User.Identity.Name : @context.User.Claims.SingleOrDefault(x => x.Type.Equals("given_name")).Value @context.User.Claims.SingleOrDefault(x => x.Type.Equals("family_name")).Value
+                            @context.User.Claims.SingleOrDefault(x => x.Type.Equals("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")).Value : @context.User.Identity.Name @ReturnStringU( @context.User.Claims.SingleOrDefault(x => x.Type.Equals("given_name")).Value, @context.User.Claims.SingleOrDefault(x => x.Type.Equals("family_name")).Value) @ReturnString(@context.User.Claims.SingleOrDefault(x => x.Type.Equals("unique_name")).Value)
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" href="/userSettings">Settings</a>
@@ -61,7 +61,7 @@
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            @context.User.Claims.SingleOrDefault(x => x.Type.Equals("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")).Value : @context.User.Identity.Name : @context.User.Claims.SingleOrDefault(x => x.Type.Equals("given_name")).Value @context.User.Claims.SingleOrDefault(x => x.Type.Equals("family_name")).Value
+                            @context.User.Claims.SingleOrDefault(x => x.Type.Equals("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")).Value : @context.User.Identity.Name @ReturnStringU( @context.User.Claims.SingleOrDefault(x => x.Type.Equals("given_name")).Value, @context.User.Claims.SingleOrDefault(x => x.Type.Equals("family_name")).Value) @ReturnString(@context.User.Claims.SingleOrDefault(x => x.Type.Equals("unique_name")).Value)
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" href="/userSettings">Settings</a>
@@ -99,7 +99,7 @@
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            @context.User.Claims.SingleOrDefault(x => x.Type.Equals("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")).Value : @context.User.Identity.Name : @context.User.Claims.SingleOrDefault(x => x.Type.Equals("given_name")).Value @context.User.Claims.SingleOrDefault(x => x.Type.Equals("family_name")).Value
+                            @context.User.Claims.SingleOrDefault(x => x.Type.Equals("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")).Value : @context.User.Identity.Name @ReturnStringU( @context.User.Claims.SingleOrDefault(x => x.Type.Equals("given_name")).Value, @context.User.Claims.SingleOrDefault(x => x.Type.Equals("family_name")).Value) @ReturnString(@context.User.Claims.SingleOrDefault(x => x.Type.Equals("unique_name")).Value)
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" href="/userSettings">Settings</a>
@@ -112,6 +112,9 @@
     </Authorized>
 </AuthorizeView>
 @code {
+
+    public string TeamCheck { get; set; }
+
     public async Task Logout()
     {
         await _localStorage.RemoveItemAsync("token");
@@ -119,4 +122,35 @@
     }
     private void Home() { NavigationManager.NavigateTo("/"); }
     private void Settings() { NavigationManager.NavigateTo("/userSettings"); }
+
+    //Check if string is null or empty
+    public bool IsNullOrEmpty(string str)
+    {
+        return string.IsNullOrEmpty(str);
+    }
+    
+    //Return string if not null or empty
+    public string ReturnString(string str)
+    {
+        if (string.IsNullOrEmpty(str))
+        {
+            return "";
+        }
+        else
+        {
+            return ": Team " + str;
+        }
+    }
+    
+    public string ReturnStringU(string str, string str2)
+    {
+        if (string.IsNullOrEmpty(str))
+        {
+            return "";
+        }
+        else
+        {
+            return ": " + str + " " + str2;
+        }
+    }
 }

@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using System.Diagnostics
 @using BlazorTipz.Components
+@using BlazorTipz.Data
 @inject ILocalStorageService _localStorage
 @inject NavigationManager NavigationManager
 @inject AuthenticationComponent _auth
@@ -11,6 +12,7 @@
     <Authorized>
         <h1 class="center">Hello!</h1>
     <p class="d-flex justify-content-center">Welcome to Tipz!.</p>
+        <p class="d-flex justify-content-center">You are part of team @context.User.Claims.SingleOrDefault(x => x.Type.Equals("unique_name")).Value</p>
 
         </Authorized>
         <NotAuthorized>
@@ -24,5 +26,9 @@
 
 
 @code {
+
+    User User = new User();
+    List<User> people;
+    
     private void NavigateToLogin() { NavigationManager.NavigateTo("login"); }
 }
