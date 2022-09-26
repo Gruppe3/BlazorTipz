@@ -10,4 +10,11 @@
     <ProjectReference Include="..\DataLibrary\DataLibrary.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+    <Folder Include="Models\Suggestion\" />
+    <Folder Include="Models\Team\" />
+    <Folder Include="Models\User\" />
+  </ItemGroup>
+
 </Project>
