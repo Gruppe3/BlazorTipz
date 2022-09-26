@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace BlazorTipz.Models.Team
+﻿namespace BlazorTipz.Data
 {
-    public abstract class Team
+    public abstract class TeamA
     {
         public string teamName { get; set; } = string.Empty;
         public string teamLeader { get; set; } = string.Empty;

@@ -2,8 +2,8 @@
 
 namespace BlazorTipz.Models
 {
-    public class Users
+    public class Teams
     {
-        public List<UserA> users { get; set; }
+        public List<TeamA> teams { get; set; } 
     }
 }
