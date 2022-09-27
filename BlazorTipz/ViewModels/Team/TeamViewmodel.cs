@@ -1,6 +1,6 @@
 ﻿using BlazorTipz.Data;
 
-namespace BlazorTipz.Models.Team
+namespace BlazorTipz.ViewModels.Team
 {
     public class TeamViewmodel : TeamA
     {

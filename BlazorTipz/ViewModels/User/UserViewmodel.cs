@@ -1,6 +1,6 @@
 ﻿using BlazorTipz.Data;
 
-namespace BlazorTipz.Models.User
+namespace BlazorTipz.ViewModels.User
 {
 
     public class UserViewmodel : UserA

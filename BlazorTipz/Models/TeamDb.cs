@@ -2,8 +2,7 @@
 
 namespace BlazorTipz.Models
 {
-    public class Teams
+    public class TeamDb : TeamA
     {
-        public List<TeamA> teams { get; set; } 
     }
 }

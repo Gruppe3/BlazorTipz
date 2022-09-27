@@ -1,6 +1,6 @@
 ﻿using BlazorTipz.Data;
 
-namespace BlazorTipz.Entities
+namespace BlazorTipz.Models
 {
     public class UserDb : UserA
     {

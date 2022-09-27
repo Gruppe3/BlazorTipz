@@ -11,8 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-    <Folder Include="Models\Suggestion\" />
+    <Folder Include="ViewModels\Suggestion\" />
   </ItemGroup>
 
 </Project>
