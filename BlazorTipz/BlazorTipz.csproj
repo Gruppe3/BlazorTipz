@@ -10,8 +10,4 @@
     <ProjectReference Include="..\DataLibrary\DataLibrary.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ViewModels\Suggestion\" />
-  </ItemGroup>
-
 </Project>
