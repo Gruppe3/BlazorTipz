@@ -6,5 +6,6 @@
         public string employmentId { get; set; }
         public RoleE role { get; set; } = RoleE.User;
         public string teamId { get; set; }
+        public string password { get; set; }
     }
 }
