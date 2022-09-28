@@ -22,20 +22,11 @@
             <RadzenTemplateForm TItem="UserDto" Data=userDto Submit=ChangeSettings>
                 <div class="row mb-5">
                     <div class="col-md-4" style="align-self: center;">
-                        <RadzenLabel Text="Firstname" />
+                        <RadzenLabel Text="Full name" />
                     </div>
                     <div class="col">
-                        <RadzenTextBox style="display: block" Name="fName" @bind-Value=@userDto.fName Class="w-100" />
-                        <RadzenLengthValidator Component="fName" Min="3" Text="Type a valid firstname" Popup=@popup Style="position: absolute" />
-                    </div>
-                </div>
-                <div class="row mb-5">
-                    <div class="col-md-4" style="align-self: center;">
-                        <RadzenLabel Text="Lastname" />
-                    </div>
-                    <div class="col">
-                        <RadzenTextBox style="display: block" Name="lName" @bind-Value=@userDto.lName Class="w-100" />
-                        <RadzenLengthValidator Component="lName" Min="3" Text="Type a valid lastname" Popup=@popup Style="position: absolute" />
+                        <RadzenTextBox style="display: block" Name="iName" @bind-Value=@userDto.iName Class="w-100" />
+                        <RadzenLengthValidator Component="iName" Min="3" Text="Type a valid name" Popup=@popup Style="position: absolute" />
                     </div>
                 </div>
                 <div class="row mb-5">
@@ -82,15 +73,14 @@
         var name = user.Identity.Name;
 
         User.employmentId = Int32.Parse(name);
-        User.fName = request.fName;
-        User.lName = request.lName;
+        User.iName = request.iName;
         User.passwordHash = passwordHash;
         User.passwordSalt = passwordSalt;
 
 
-        var sql = "update Users set fName=@fName, lName=@lName, passwordHash=@passwordHash, passwordSalt=@passwordSalt where employmentId=@employmentId;";
+        var sql = "update Users set iName=@iName, passwordHash=@passwordHash, passwordSalt=@passwordSalt where employmentId=@employmentId;";
 
-        await _data.SaveData(sql, new { employmentId = User.employmentId, fName = User.fName, lName = User.lName, passwordSalt = User.passwordSalt, passwordHash = User.passwordHash }, _config.GetConnectionString("default"));
+        await _data.SaveData(sql, new { employmentId = User.employmentId, iName = User.iName, passwordSalt = User.passwordSalt, passwordHash = User.passwordHash }, _config.GetConnectionString("default"));
         NavigationManager.NavigateTo("/", true);
         return User;
     }
