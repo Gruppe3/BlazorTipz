@@ -112,8 +112,7 @@
         var claims = new List<Claim>
             {
             new Claim(ClaimTypes.Name, user.employmentId.ToString()),
-            new Claim(JwtRegisteredClaimNames.GivenName, user.fName),
-            new Claim(JwtRegisteredClaimNames.FamilyName, user.lName),
+            new Claim(JwtRegisteredClaimNames.GivenName, user.iName),
             new Claim(JwtRegisteredClaimNames.UniqueName, user.teamId.ToString()),
             new Claim(ClaimTypes.Role, user.role)
         };
