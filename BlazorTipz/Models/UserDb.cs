@@ -11,10 +11,8 @@ namespace BlazorTipz.Models
 {
     public class UserDb : UserA
     {
-        private readonly IConfiguration _config =;
+        private readonly IConfiguration _config ;
         private readonly AuthenticationComponent _auth;
-
-
 
         public byte[] passwordHash { get; set; }
         public byte[] passwordSalt { get; set; }
@@ -31,9 +29,9 @@ namespace BlazorTipz.Models
                 
 
         }
-        public UserDb(UserA user, IConfiguration config)
+        public UserDb(UserA user)
         {
-            _config = config;
+           
             this.employmentId = user.employmentId;
             this.teamId = user.teamId;
             this.name = user.name;
@@ -70,11 +68,11 @@ namespace BlazorTipz.Models
 
         }
 
-        private void passwordHashing(string pass)
+        public void passwordHashing(string pass)
         {
             _auth.CreatePasswordHash(pass, out byte[] passHash, out byte[] passSalt);
             passwordHash = passHash;
             passwordSalt = passSalt;
         }
     }
-}}
+}
