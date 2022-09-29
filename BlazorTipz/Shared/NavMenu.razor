@@ -66,8 +66,7 @@
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             @context.User.Claims.SingleOrDefault(x => x.Type.Equals("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")).Value :
                             @context.User.Identity.Name :
-                            @ReturnString(@context.User.Claims.SingleOrDefault(x => x.Type.Equals("given_name")).Value) : Team 
-                            @ReturnString(@context.User.Claims.SingleOrDefault(x => x.Type.Equals("unique_name")).Value)
+                            @ReturnString(@context.User.Claims.SingleOrDefault(x => x.Type.Equals("given_name")).Value)
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" href="/userSettings">Settings</a>

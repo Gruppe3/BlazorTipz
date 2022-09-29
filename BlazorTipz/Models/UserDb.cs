@@ -49,7 +49,6 @@ namespace BlazorTipz.Models
             {
             new Claim(ClaimTypes.Name, this.employmentId),
             new Claim(JwtRegisteredClaimNames.GivenName, this.name),
-            new Claim(JwtRegisteredClaimNames.UniqueName, this.teamId),
             new Claim(ClaimTypes.Role, this.role.ToString())
         };
 
