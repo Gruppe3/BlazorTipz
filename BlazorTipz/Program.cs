@@ -3,6 +3,7 @@ using Blazored.LocalStorage;
 using BlazorTipz;
 using BlazorTipz.Components;
 using BlazorTipz.Data;
+using BlazorTipz.Models.DbRelay;
 using DataLibrary;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -14,10 +15,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages(options => options.RootDirectory = "/Views");
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<IDataAccess, DataAccess>();
+builder.Services.AddSingleton<IDbRelay, DbRelay>();
 builder.Services.AddSingleton<AuthenticationComponent>();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<TokenServerAuthenticationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(provider => provider.GetRequiredService<TokenServerAuthenticationStateProvider>());
+
 
 var app = builder.Build();
 
