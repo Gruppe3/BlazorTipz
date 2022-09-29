@@ -1,47 +1,45 @@
-﻿using BlazorTipz.Models;
+﻿using BlazorTipz.Components;
+using BlazorTipz.Models;
+using BlazorTipz.Models.DbRelay;
 using BlazorTipz.ViewModels.User;
-using DataLibrary;
+
 
 namespace BlazorTipz.ViewModels
 {
     public class UserManager : IUserManager
     {
-        private readonly IDataAccess _data;
-        private readonly IConfiguration _config;
-
-        public UserManager(IDataAccess data, IConfiguration connectionString)
+        private readonly IDbRelay _DBR;
+        private readonly AuthenticationComponent _Auth;
+        public UserManager(IDbRelay DBR, AuthenticationComponent auth)
         {
-            _data = data;
-            _config = connectionString;
+            _DBR = DBR;
+            _Auth = auth;
         }
-        public async Task Login(UserViewmodel user, out string token, out string err)
+        public async Task<(string, string)> Login(UserViewmodel user)
         {
-            token = "";
-            err = "";
-            try
+            UserDb tryUser = new UserDb(user);
+            UserDb dbUser = await _DBR.getUser(tryUser.employmentId);
+            string token;
+            string err;
+            if (dbUser == null)
             {
-                var sql = "SELECT * FROM Users WHERE employmentId = @empid;";
-
-                UserDb dbinfo = await _data.LoadData<UserDb, dynamic>(sql, new { empid = user.employmentId }, _config.GetConnectionString("default"), true);
-                if (dbinfo == null)
-                {
-                    err = "User not found";
-                    return;
-                }
-                if (!VerifyPasswordHash(user.password, dbinfo.passwordHash, dbinfo.passwordSalt))
-                {
-                    err = "Wrong password";
-                    return;
-                }
-                token = GenerateToken(dbinfo);
+                token = null;
+                err = "User not found";
+                return (token, err);
             }
-            catch (Exception ex)
+            if (_Auth.VerifyPasswordHash(user.password, dbUser.passwordHash, dbUser.passwordSalt))
             {
-                err = ex.Message;
+                dbUser.CreateToken();
+                token = dbUser.AuthToken;
+                err = null;
+                return (token, err);
+            }
+            else
+            {
+                token = null;
+                err = "Wrong password";
+                return (token, err);
             }
         }
-        {
-
-        }
-    }
+    }        
 }

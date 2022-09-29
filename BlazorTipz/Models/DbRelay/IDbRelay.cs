@@ -7,7 +7,7 @@ namespace BlazorTipz.Models.DbRelay
         //methodes for getting, setting and updating the database
 
         //User/Users
-        Task<UserDb> getSingelUserDbfromDb(string empId);
+        Task<UserDb> getUser(string empId);
         Task addUserEntryToDbFromUserDb(UserDb toSaveUser);
         Task updateUserEntryToDbFromUserDb(UserDb toSaveUser);
         Task<List<UserDb>> getActiveUsers();

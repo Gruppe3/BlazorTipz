@@ -6,13 +6,13 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using static Org.BouncyCastle.Math.EC.ECCurve;
 using Microsoft.Extensions.Configuration;
+using System.Security.Cryptography;
 
 namespace BlazorTipz.Models
 {
     public class UserDb : UserA
     {
-        private readonly IConfiguration _config ;
-        private readonly AuthenticationComponent _auth;
+        private readonly IConfiguration _config;
 
         public byte[] passwordHash { get; set; }
         public byte[] passwordSalt { get; set; }
@@ -26,18 +26,21 @@ namespace BlazorTipz.Models
         //constructor
         public UserDb()
         {
-                
-
+            _config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", true, true)
+                .Build();
         }
         public UserDb(UserA user)
         {
-           
+            _config = new ConfigurationBuilder()
+                 .AddJsonFile("appsettings.json", true, true)
+                 .Build();
+            
             this.employmentId = user.employmentId;
             this.teamId = user.teamId;
             this.name = user.name;
             this.role = user.role;
             passwordHashing(user.password);
-            CreateToken();
         }
 
         public void CreateToken()
@@ -70,9 +73,17 @@ namespace BlazorTipz.Models
 
         public void passwordHashing(string pass)
         {
-            _auth.CreatePasswordHash(pass, out byte[] passHash, out byte[] passSalt);
+            CreatePasswordHash(pass, out byte[] passHash, out byte[] passSalt);
             passwordHash = passHash;
             passwordSalt = passSalt;
+        }
+        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using (var hmac = new HMACSHA512())
+            {
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            }
         }
     }
 }

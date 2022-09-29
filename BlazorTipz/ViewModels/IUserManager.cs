@@ -5,7 +5,7 @@ namespace BlazorTipz.ViewModels
 {
     public interface IUserManager
     {
-        Task Login(UserViewmodel user, out string token, out string err);
-        
+        Task<(string,string)> Login(UserViewmodel user);
+                
     }
 }

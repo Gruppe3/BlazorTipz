@@ -13,6 +13,8 @@
 @using System.Security.Claims
 @using System.IdentityModel.Tokens.Jwt
 @using BlazorTipz.Components
+@using BlazorTipz.ViewModels
+@using BlazorTipz.ViewModels.User
 
 @inject NavigationManager _navigationManager
 @inject IDataAccess _data
@@ -20,6 +22,7 @@
 @inject ILocalStorageService _localStorage
 @inject AuthenticationComponent _auth
 @inject NavigationManager NavigationManager
+@inject IUserManager _userM
 
 <PageTitle>Login</PageTitle>
 
@@ -28,7 +31,7 @@
     <div class="container my-4">
         <div class="row">
             <div class="col-lg-6 offset-lg-3">
-                <RadzenTemplateForm TItem="UserDto" Data=userDto Submit=LoginUs>
+                <RadzenTemplateForm TItem="UserViewmodel" Data=@userDto Submit=LoginUs>
                     <div class="row mb-5">
                         <div class="col-md-4" style="align-self: center;">
                             <RadzenLabel Text="ID" />
@@ -51,7 +54,7 @@
                         <RadzenButton ButtonType="ButtonType.Submit" Text="Login"></RadzenButton>
                     </div>
                     <div class="center">
-                        <img src="@Link"/>
+                        <a>@Checker</a>
                     </div>
                 </RadzenTemplateForm>
             </div>
@@ -61,76 +64,32 @@
 @code {
     bool popup;
 
-
-
-    User User = new User();
-    Userdb Userdb = new Userdb();
-    UserDto userDto = new UserDto();
-
     public string Checker { get; set; }
     public string Link { get; set; }
 
-    public async Task<ActionResult<string>> LoginUs(UserDto request)
-    { 
-        try{
-            var sql = "SELECT * FROM Users WHERE employmentId = @employmentId;";
-            Userdb = await _data.LoadData<Userdb, dynamic>(sql, new { employmentId = userDto.employmentId }, _config.GetConnectionString("default"), true);
+    UserViewmodel userDto = new UserViewmodel();
 
-        } catch {
-            if (request.employmentId != Userdb.employmentId)
-            {
-                Debug.WriteLine("not the same");
-                Checker = "User ID is wrong";
-                return "User not found";
-            }
-        }
-        if (!_auth.VerifyPasswordHash(request.password, Userdb.passwordHash, Userdb.passwordSalt))
+    public async Task<ActionResult<string>> LoginUs(UserViewmodel request)
+    {
+        string token;
+        string err;
+        (token, err) = await _userM.Login(request);
+        if (err == null)
         {
-            Debug.WriteLine("passwordcheck failed");
-            Checker = "Wrong Password";
-            return "Wrong password";  
-        }
-
-        try{
-            var sql2 = "SELECT teamName FROM Teams WHERE teamId = @teamId;";
-            var teamName = await _data.LoadData<String, dynamic>(sql2, new { teamId = Userdb.teamId }, _config.GetConnectionString("default"), true);
-            String token = CreateToken(Userdb);
             await _localStorage.SetItemAsync("token", token);
             NavigationManager.NavigateTo("/", true);
             return token;
-        } catch {
-            Debug.WriteLine("token creation failed");
-            Checker = "Token creation failed, no team?";
-            Link = "https://i.imgur.com/IRoaH6N.jpg";
-            return "Token creation failed";
+        }
+        else if (token == null)
+        {
+            Checker = err;
+            return err;
+        }
+        else {
+            Checker = "something went horribly wrong";
+            return "Fatal";
         }
         
     }
-    
-    public string CreateToken(Userdb user)
-    {
-        var claims = new List<Claim>
-            {
-            new Claim(ClaimTypes.Name, user.employmentId.ToString()),
-            new Claim(JwtRegisteredClaimNames.GivenName, user.iName),
-            new Claim(JwtRegisteredClaimNames.UniqueName, user.teamId.ToString()),
-            new Claim(ClaimTypes.Role, user.role)
-        };
-
-        var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
-
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-        var token = new JwtSecurityToken
-            (
-                claims: claims,
-                expires: DateTime.Now.AddDays(1),
-                signingCredentials: creds
-            );
-
-        var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-
-
-        return jwt;
-    }
+  
 }
