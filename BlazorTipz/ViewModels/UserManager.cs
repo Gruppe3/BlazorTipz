@@ -10,6 +10,8 @@ namespace BlazorTipz.ViewModels
     {
         private readonly IDbRelay _DBR;
         private readonly AuthenticationComponent _Auth;
+
+        public UserViewmodel? currentUser { get; set; }
         public UserManager(IDbRelay DBR, AuthenticationComponent auth)
         {
             _DBR = DBR;
@@ -31,6 +33,9 @@ namespace BlazorTipz.ViewModels
             {
                 dbUser.CreateToken();
                 token = dbUser.AuthToken;
+                UserViewmodel userView = new UserViewmodel(dbUser);
+                currentUser = userView;
+                
                 err = null;
                 return (token, err);
             }
@@ -59,6 +64,20 @@ namespace BlazorTipz.ViewModels
             await _DBR.addUserEntries(toSave);
             err = "succsess";
             return err;
+        }
+
+        public async Task<(UserViewmodel,string)> getCurrentUser(string token)
+        {
+            string err = null;
+            string empId = _Auth.GetClaimValue(token);
+            UserDb user = await _DBR.getUser(empId);
+            if (user == null) { err = "User not found"; return (null, err); };
+            currentUser = new UserViewmodel(user);
+            return (currentUser, err);
+        }
+        public void logout()
+        {
+            currentUser = null;
         }
     }        
 }

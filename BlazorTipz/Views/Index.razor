@@ -2,9 +2,14 @@
 @using System.Diagnostics
 @using BlazorTipz.Components
 @using BlazorTipz.Data
+@using BlazorTipz.ViewModels
+@using BlazorTipz.ViewModels.User
+
 @inject ILocalStorageService _localStorage
 @inject NavigationManager NavigationManager
-@inject AuthenticationComponent _auth
+@inject IUserManager _userManager
+@inject ILocalStorageService _localStorage
+
 
 
     <PageTitle>Home</PageTitle>
@@ -26,9 +31,30 @@
 
 
 @code {
+    UserViewmodel currentUser = new UserViewmodel();
 
-    User User = new User();
-    List<User> people;
-    
+    protected override async Task OnInitializedAsync()
+    {
+        string token = await _localStorage.GetItemAsync<string>("token");
+        if (token == null || token == "")
+        {
+            NavigationManager.NavigateTo("/login", true);
+        }
+        else
+        {
+            (UserViewmodel user, string err) = await _userManager.getCurrentUser(token);
+
+            if (err != null)
+            {
+                NavigationManager.NavigateTo("/login", true);
+            }
+            else if(user == null)
+            {
+                NavigationManager.NavigateTo("/login", true);
+            }                        
+            currentUser = user;
+        }
+    }
     private void NavigateToLogin() { NavigationManager.NavigateTo("login"); }
+    
 }

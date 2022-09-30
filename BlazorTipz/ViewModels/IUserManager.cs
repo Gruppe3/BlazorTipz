@@ -6,6 +6,8 @@ namespace BlazorTipz.ViewModels
     public interface IUserManager
     {
         Task<(string,string)> Login(UserViewmodel user);
-        Task<string> registerUserSingel(UserViewmodel user);            
+        Task<string> registerUserSingel(UserViewmodel user);
+        Task<(UserViewmodel,string)> getCurrentUser(string token);
+        public void logout();
     }
 }

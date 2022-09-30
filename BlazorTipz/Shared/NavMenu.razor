@@ -1,7 +1,9 @@
 ﻿@using BlazorTipz.Components
+@using BlazorTipz.ViewModels
 
 @inject ILocalStorageService _localStorage
 @inject NavigationManager NavigationManager
+@inject IUserManager _userManager
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
@@ -124,6 +126,7 @@
     {
         await _localStorage.RemoveItemAsync("token");
         NavigationManager.NavigateTo("/login", true);
+        _userManager.logout();
     }
     private void Home() { NavigationManager.NavigateTo("/"); }
     private void Settings() { NavigationManager.NavigateTo("/userSettings"); }
