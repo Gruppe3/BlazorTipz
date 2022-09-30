@@ -33,19 +33,23 @@ namespace BlazorTipz.Models.DbRelay
             }
         }
 
-        public async Task addUserEntryToDbFromUserDb(UserDb toSaveUser)
+        public async Task addUserEntries(List<UserDb> toSaveUsers)
         {
             try
             {
-                var sql = "insert into Users (employmentId, passwordHash, passwordSalt, role) values (@employmentId, @passwordHash, @passwordSalt, @role);";
+                foreach (UserDb tsu in toSaveUsers)
+                {
+                    var sql = "insert into Users (employmentId, passwordHash, passwordSalt, role) values (@employmentId, @passwordHash, @passwordSalt, @role);";
 
-                await _data.SaveData(sql, new { 
-                    employmentId = toSaveUser.employmentId,
-                    passwordSalt = toSaveUser.passwordSalt, 
-                    passwordHash = toSaveUser.passwordHash, 
-                    role = toSaveUser.role },
-                    _config.GetConnectionString("default"));
-
+                    await _data.SaveData(sql, new
+                    {
+                        employmentId = tsu.employmentId,
+                        passwordSalt = tsu.passwordSalt,
+                        passwordHash = tsu.passwordHash,
+                        role = tsu.role.ToString()
+                    },
+                        _config.GetConnectionString("default"));
+                }
             }
             catch (Exception ex) { 
             

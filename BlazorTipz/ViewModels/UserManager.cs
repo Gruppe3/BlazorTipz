@@ -41,5 +41,24 @@ namespace BlazorTipz.ViewModels
                 return (token, err);
             }
         }
+        public async Task<string> registerUserSingel(UserViewmodel toRegisterUser)
+        {
+            string err = null;
+            if (toRegisterUser == null) { err = "No user to register"; return err; };
+            if (toRegisterUser.employmentId == null) { err = "no emplayment Id"; return err; };
+            if (toRegisterUser.password == null) { err = "no password given"; return err; };
+            
+            UserDb userDb = await _DBR.getUser(toRegisterUser.employmentId);
+            if (userDb != null) { err = "User alrady exists"; return err; }
+            
+            UserDb toSaveUser = new UserDb(toRegisterUser);
+            List<UserDb> toSave = new List<UserDb>();
+            toSave.Add(toSaveUser);
+            if (toSave.Count == 0) { err = "somthing went wrong"; return err; };
+            
+            await _DBR.addUserEntries(toSave);
+            err = "succsess";
+            return err;
+        }
     }        
 }

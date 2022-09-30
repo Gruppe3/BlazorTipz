@@ -1,26 +1,16 @@
 ﻿@page "/login"
 
-@using DataLibrary
 @using BlazorTipz.Data
 @using Microsoft.AspNetCore.Mvc
-@using Microsoft.Extensions.Configuration
 @using Microsoft.IdentityModel.Tokens
 @using Radzen
-@using System.Text.Json
-@using System.Security.Cryptography
 @using System.Diagnostics;
 @using System.Text
-@using System.Security.Claims
-@using System.IdentityModel.Tokens.Jwt
-@using BlazorTipz.Components
 @using BlazorTipz.ViewModels
 @using BlazorTipz.ViewModels.User
 
 @inject NavigationManager _navigationManager
-@inject IDataAccess _data
-@inject IConfiguration _config
 @inject ILocalStorageService _localStorage
-@inject AuthenticationComponent _auth
 @inject NavigationManager NavigationManager
 @inject IUserManager _userM
 
