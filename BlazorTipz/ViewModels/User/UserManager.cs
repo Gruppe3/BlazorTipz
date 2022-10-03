@@ -1,4 +1,5 @@
 ﻿using BlazorTipz.Components;
+using BlazorTipz.Data;
 using BlazorTipz.Models;
 using BlazorTipz.Models.DbRelay;
 
@@ -11,6 +12,7 @@ namespace BlazorTipz.ViewModels.User
         private readonly AuthenticationComponent _Auth;
 
         public UserViewmodel? CurrentUser { get; set; }
+        public List<UserViewmodel> activeUsers;
         public UserManager(IDbRelay DBR, AuthenticationComponent auth)
         {
             _DBR = DBR;
@@ -61,6 +63,7 @@ namespace BlazorTipz.ViewModels.User
             if (toSave.Count == 0) { err = "somthing went wrong"; return err; };
 
             await _DBR.addUserEntries(toSave);
+            getUsers();
             err = "succsess";
             return err;
         }
@@ -72,12 +75,14 @@ namespace BlazorTipz.ViewModels.User
             UserDb user = await _DBR.getUser(empId);
             if (user == null) { err = "User not found"; return (null, err); };
             CurrentUser = new UserViewmodel(user);
+            getUsers();
             return (CurrentUser, err);
         }
         public void logout()
         {
             CurrentUser = null;
         }
+        //need fix later, might not work in some cases
         public UserViewmodel getCurrentUser()
         {
             return CurrentUser;
@@ -101,5 +106,107 @@ namespace BlazorTipz.ViewModels.User
 
             return err;
         }
+        
+        //get all active users
+        public async Task<List<UserViewmodel>?> getUsers()
+        {
+
+            List<UserDb> dblist = await _DBR.getActiveUsers();
+            if (dblist == null) { return null; }
+            List<UserViewmodel> ActUsers = new List<UserViewmodel>();
+            foreach (UserDb u in dblist)
+            {
+                ActUsers.Add(new UserViewmodel(u));
+            }
+            activeUsers = ActUsers;
+            
+            return activeUsers;
+        }
+        
+        public async Task<List<UserViewmodel>> GetUsers()
+        {
+            if(activeUsers == null)
+            {
+                await getUsers();
+            }
+            return activeUsers;
+        }
+        
+        public async Task updateRole(UserViewmodel user, RoleE role, bool upgradeRole)
+        {
+            if(user.employmentId == string.Empty) { return; }
+            if(upgradeRole) 
+            {
+                if (role <= user.role) { return; }
+                user.role = role;
+                await _DBR.updateUserEntry(new UserDb(user));
+                await getUsers();
+            }
+            else
+            {
+                user.role = role;
+                await _DBR.updateUserEntry(new UserDb(user));
+                await getUsers();
+            }
+            
+        }
+        public async Task<UserViewmodel?> getUser(string empid)
+        {
+            if(activeUsers != null)
+            {
+                foreach(UserViewmodel u in activeUsers)
+                {
+                    if(u.employmentId == empid)
+                    {
+                        return u;
+                    }
+                }
+                return null;
+            }
+            else
+            {
+                List<UserViewmodel> searchlist = await getUsers();
+                foreach(UserViewmodel u in searchlist)
+                {
+                    if (u.employmentId == empid)
+                    {
+                        return u;
+                    }
+                }
+                return null;
+            }
+        }
+        public async Task updateUserTeam(string empid, string teamId)
+        {
+            if (activeUsers != null)
+            {
+                foreach (UserViewmodel u in activeUsers)
+                {
+                    if (u.employmentId == empid)
+                    {
+                        u.teamId = teamId;
+                        await _DBR.updateUserEntry(new UserDb(u));
+                        break;
+                    }
+                }
+                
+            }
+            else
+            {
+                List<UserViewmodel> searchlist = await getUsers();
+                foreach (UserViewmodel u in searchlist)
+                {
+                    if (u.employmentId == empid)
+                    {
+                        u.teamId = teamId;
+                        await _DBR.updateUserEntry(new UserDb(u));
+                        break;
+                    }
+                }
+                
+            }
+
+        }
+
     }
 }

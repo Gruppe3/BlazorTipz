@@ -142,7 +142,7 @@ namespace BlazorTipz.Models.DbRelay
         //team/teams
 
         //get's a single team from database
-        public async Task<TeamA> getSingleTeamDbFromDb(string teamId)
+        public async Task<TeamDb> getSingleTeamDbFromDb(string teamId)
         {
             try
             {
@@ -155,7 +155,7 @@ namespace BlazorTipz.Models.DbRelay
         }
         
         //add a single team to database
-        public async Task addTeamEntryToDbFromTeamDb(TeamDb team)
+        public async Task addTeamEntry(TeamDb team)
         {
             try 
             {
@@ -170,7 +170,7 @@ namespace BlazorTipz.Models.DbRelay
         }
 
         //update a single team in database
-        public async Task updateTeamEntryToDbFromTeamDb(TeamDb team)
+        public async Task updateTeamEntry(TeamDb team)
         {
             try
             {
@@ -179,7 +179,7 @@ namespace BlazorTipz.Models.DbRelay
                 {
                     teamName = team.teamName,
                     teamLeader = team.teamLeader,
-                    teamId = team.teamid
+                    teamId = team.teamId
                 }, _config.GetConnectionString("default"));
             }
             catch (Exception ex) { }
@@ -228,18 +228,18 @@ namespace BlazorTipz.Models.DbRelay
             catch (Exception ex) { }
         }
         //change a list of teams state to active or inactive
-        public async Task changeTeamsStateTo(List<TeamA> teams, bool state)
+        public async Task changeTeamsStateTo(List<TeamDb> teams, bool state)
         {
             try
             {
-                foreach (TeamA team in teams)
+                foreach (TeamDb team in teams)
                 {
                     var sql = "UPDATE Teams SET active = @state WHERE teamId = @teamid;";
 
                     await _data.SaveData(sql, new
                     {
                         active = state,
-                        teamId = team.teamid
+                        teamId = team.teamId
                     },
                     _config.GetConnectionString("default"));
                 }

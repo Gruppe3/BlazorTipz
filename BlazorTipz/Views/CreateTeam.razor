@@ -3,27 +3,13 @@
 @using BlazorTipz.ViewModels
 @using BlazorTipz.ViewModels.Team
 @using BlazorTipz.ViewModels.User
-@using BlazorTipz.Components
-@using DataLibrary
-@using BlazorTipz.Data
 @using Microsoft.AspNetCore.Mvc
-@using Microsoft.Extensions.Configuration
-@using Microsoft.IdentityModel.Tokens
 @using Radzen
-@using System.Text.Json
-@using System.Security.Cryptography
-@using System.Diagnostics;
-@using System.Text
-@using System.Security.Claims
-@using System.IdentityModel.Tokens.Jwt
 
 @inject NavigationManager _navigationManager
 @inject IUserManager _userManager
+@inject ITeamManager _teamManager
 
-@inject IDataAccess _data
-@inject IConfiguration _config
-@inject AuthenticationComponent _auth
-@inject TokenServerAuthenticationStateProvider GetAuthenticationStateAsync
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
@@ -36,13 +22,13 @@
 <div class="container my-4">
     <div class="row">
         <div class="col-lg-6 offset-lg-3">
-            <RadzenTemplateForm TItem="TeamDto" Data=@teamDto Submit=RegisterTeam>     
+            <RadzenTemplateForm TItem="TeamViewmodel" Data=@teamDto Submit=RegisterTeam>     
                 <div class="row mb-5">
                     <div class="col-md-4" style="align-self: center;">
                         <RadzenLabel Text="Team Name" />
                     </div>
                     <div class="col">
-                        <RadzenTextBox style="display: block" Name="team" @bind-Value=@teamDto.teamName Class="w-100" />
+                        <RadzenTextBox style="display: block" Name="team" @bind-Value=@teamDto.name Class="w-100" />
                                 <RadzenLengthValidator Component="team" Min="3" Text="Team name should be alteast 3 characters long" Popup=@popup Style="position: absolute" />
                     </div>        
                 </div>
@@ -51,12 +37,11 @@
                                 <RadzenLabel Text="Set Team Leader" />
                             </div>
                             <div class="col">
-                                <RadzenDropDownDataGrid @bind-Value=@teamDto.teamLeader FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
+                                <RadzenDropDownDataGrid @bind-Value=@teamDto.leader FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
                                                         AllowFiltering="false" AllowClear="true" Data=@people TextProperty="employmentId" Placeholder="ID" ValueProperty="employmentId" Class="w-100">
                                     <Columns>
                                         <RadzenDropDownDataGridColumn Property="employmentId" Title="User ID" />
-                                        <RadzenDropDownDataGridColumn Property="fName" Title="Firstname" />
-                                        <RadzenDropDownDataGridColumn Property="lName" Title="LastName" />
+                                        <RadzenDropDownDataGridColumn Property="Name" Title="Firstname" />
                                     </Columns>
                                     
                                 </RadzenDropDownDataGrid>
@@ -74,17 +59,17 @@
 <div class="container my-4">
             <div class="row">
                 <div class="col-lg-6 offset-lg-3">
-                    <RadzenTemplateForm TItem="UserDto" Data=@userdto Submit=AddTeamMember>
+                    <RadzenTemplateForm TItem="UserViewmodel" Data=@userDto Submit=AddTeamMember>
                        <div class="row mb-5">
                             <div class="col-md-4" style="align-self: center;">
                                 <RadzenLabel Text="Team Name" />
                             </div>
                             <div class="col">
-                                <RadzenDropDownDataGrid @bind-Value=@userdto.teamName FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
-                                                        AllowFiltering="true" AllowClear="true" Data=@teams TextProperty="teamName" Placeholder="Team" ValueProperty="teamName" Class="w-100">
+                                <RadzenDropDownDataGrid @bind-Value=@userDto.teamId FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
+                                                        AllowFiltering="true" AllowClear="true" Data=@teams TextProperty="teamName" Placeholder="Team" ValueProperty="teamid" Class="w-100">
                             <Columns>
-                                <RadzenDropDownDataGridColumn Property="teamid" Title="Team ID"/>
-                                <RadzenDropDownDataGridColumn Property="teamName" Title="Team Name"/>
+                                <RadzenDropDownDataGridColumn Property="id" Title="Team ID"/>
+                                <RadzenDropDownDataGridColumn Property="name" Title="Team Name"/>
                             </Columns>
 
                         </RadzenDropDownDataGrid>
@@ -96,12 +81,11 @@
                                 <RadzenLabel Text="Set member employee ID" />
                             </div>
                             <div class="col">
-                                <RadzenDropDownDataGrid @bind-Value=@userdto.employmentId FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
-                                                        AllowFiltering="false" AllowClear="true" Data=@people TextProperty="employmentId" Placeholder="ID" ValueProperty="employmentId" Class="w-100">
+                                <RadzenDropDownDataGrid @bind-Value=@userDto.employmentId FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
+                                                        AllowFiltering="false" AllowClear="true" Data=@people TextProperty="name" Placeholder="ID" ValueProperty="employmentId" Class="w-100">
                                     <Columns>
                                         <RadzenDropDownDataGridColumn Property="employmentId" Title="User ID" />
-                                        <RadzenDropDownDataGridColumn Property="fName" Title="Firstname" />
-                                        <RadzenDropDownDataGridColumn Property="lName" Title="LastName" />
+                                        <RadzenDropDownDataGridColumn Property="name" Title="Name" />
                                     </Columns>
 
                                 </RadzenDropDownDataGrid>
@@ -126,19 +110,18 @@
         <div class="container my-4">
             <div class="row">
                 <div class="col-lg-6 offset-lg-3">
-                    <RadzenTemplateForm TItem="UserDto" Data=@userdto Submit=AddTeamMember>
+                    <RadzenTemplateForm TItem="UserViewmodel" Data=@userDto Submit=AddTeamMember>
 
                         <div class="row mb-5">
                             <div class="col-md-4" style="align-self: center;">
                                 <RadzenLabel Text="Set member employee ID" />
                             </div>
                             <div class="col">
-                                <RadzenDropDownDataGrid @bind-Value=@userdto.employmentId FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
+                                <RadzenDropDownDataGrid @bind-Value=@userDto.employmentId FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
                                                         AllowFiltering="false" AllowClear="true" Data=@people TextProperty="employmentId" Placeholder="ID" ValueProperty="employmentId" Class="w-100">
                                     <Columns>
                                         <RadzenDropDownDataGridColumn Property="employmentId" Title="User ID" />
-                                        <RadzenDropDownDataGridColumn Property="fName" Title="Firstname" />
-                                        <RadzenDropDownDataGridColumn Property="lName" Title="LastName" />
+                                        <RadzenDropDownDataGridColumn Property="Name" Title="Firstname" />
                                     </Columns>
 
                                 </RadzenDropDownDataGrid>
@@ -168,173 +151,47 @@
     public string Checker { get; set; }
     public string team { get; set; }
 
-    Team Team = new Team();
-    TeamDto teamDto = new TeamDto();
-    User User = new User();
-    UserDto userdto = new UserDto();
-    TeamDto teamdb = new TeamDto();
-    List<User> people;
-    List<Team> teams;
+    UserViewmodel CUser;
+    UserViewmodel userDto = new UserViewmodel();
+    TeamViewmodel teamDto = new TeamViewmodel();
+    List<UserViewmodel> people = new List<UserViewmodel>();
+    List<TeamViewmodel> teams = new List<TeamViewmodel>();
 
-    public async Task<ActionResult<Team>> RegisterTeam(TeamDto request)
-    {
-
-        Team.teamName = request.teamName;
-        Team.teamLeader = request.teamLeader;
-
-        try
-        {
-            var sql = "insert into Teams (teamName, teamLeader) values (@teamName, @teamLeader);";
-            await _data.SaveData(sql, new { teamName = Team.teamName, teamLeader = Team.teamLeader }, _config.GetConnectionString("default"));
-
-            User.teamid = await getTeamId(request.teamName);
-
-            var sql2 = "update Users set teamId = @teamid where employmentId = @employmentId;";
-            await _data.SaveData(sql2, new { teamid = User.teamid, employmentId = Team.teamLeader }, _config.GetConnectionString("default"));
-
-            Checker = "Team Created and users added!";
-
-            if (checkRoleUser())
-            {
-                var sql3 = "update Users set role='Team Leader' where employmentId = @employmentId;";
-                await _data.SaveData(sql3, new { employmentId = Team.teamLeader }, _config.GetConnectionString("default"));
-            }
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine(ex.Message);
-            Checker = "Team already exists!";
-        }
-        return Team;
-    }
-
+    //checks if there is a current user
     protected override async Task OnInitializedAsync()
     {
-        await UpdateDB();
-        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
-        var user = authstate.User;
-        var name = user.Claims.SingleOrDefault(x => x.Type.Equals("unique_name")).Value;
-
-        team = name;
-    }
-    protected async Task UpdateDB()
-    {
-        string sql = "select * from Users";
-        people = await _data.LoadData<User, dynamic>(sql, new { }, _config.GetConnectionString("default"));
-        string sql2 = "select * from Teams";
-        teams = await _data.LoadData<Team, dynamic>(sql2, new { }, _config.GetConnectionString("default"));
-    }
-
-    private async Task<int?> getTeamId(string teamName) 
-    {
-        var sql = "SELECT * FROM Teams WHERE teamName = @teamName;";
-        teamdb = await _data.LoadData<TeamDto, dynamic>(sql, new { teamName = teamName }, _config.GetConnectionString("default"), true);
-        int? teamid = teamdb.teamid;
-        return teamid;
-    }
-
-    private bool checkRoleUser() 
-    {
-        //search each user in people for employmentId
-        foreach (User user in people)
+        var CurrentUser = _userManager.getCurrentUser();
+        people = await _userManager.getUsers();
+        teams = await _teamManager.getTeams();
+        if (CurrentUser == null)
         {
-            if (user.employmentId == teamDto.teamLeader)
-            {
-                if (user.role == "User")
-                {
-                    return true;
-                }
-            }
+            _navigationManager.NavigateTo("/");
         }
-        return false;
-    }
-
-    private async Task<bool> checkRoleTeamLeader()
-    {
-        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
-        var au = authstate.User;
-        var name = au.Identity.Name;
-        //search each user in people for employmentId
-        foreach (User user in people)
+        else
         {
-            if (user.employmentId == Int32.Parse(name))
-            {
-                if (user.role == "Team Leader")
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-
-
-    public async Task AddTeamMember(UserDto request)
-    {
-
-        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
-        var user = authstate.User;
-        var name = user.Claims.SingleOrDefault(x => x.Type.Equals("unique_name")).Value;
-
-        try
-        {
-            if (request.teamName == "" || request.teamName == null)
-            {
-                
-                if (await checkRoleTeamLeader())
-                {
-                    var sql2 = "select teamId from Teams where teamName = @name;";
-                    User.teamid = await _data.LoadData<int?, dynamic>(sql2, new { name = name }, _config.GetConnectionString("default"), true);
-                    
-                    var sql = "update Users set teamId = @teamid where employmentId = @employmentId;";
-                    await _data.SaveData(sql, new { teamid = User.teamid, employmentId = request.employmentId }, _config.GetConnectionString("default"));
-                    Checker = "Team member added!";
-                }
-                else
-                {
-                    Checker = "Team does not exist!";
-                }
-            }
-            else { 
-                User.teamid = await getTeamId(request.teamName);
-                var sql = "update Users set teamId = @teamid where employmentId = @employmentId;";
-                await _data.SaveData(sql, new { teamid = User.teamid, employmentId = request.employmentId }, _config.GetConnectionString("default"));
-                Checker = "Team member added to " + request.teamName +"!";
-            } 
-            //Checker = "User added to team!";
-
-        }
-
-        catch (Exception ex)
-        {
-            Debug.WriteLine(ex.Message);
-            Checker = "User is already in that team";
+            CUser = CurrentUser;  
         }
     }
-
-    private bool checkIFNullInt(string value) 
+    public async Task<ActionResult<TeamViewmodel>> RegisterTeam(TeamViewmodel request)
     {
-        //if Null
-        if (value == null) {
-            return true;
-        }
-        return false;    
+        TeamViewmodel ret;
+        string err;
+        (ret,err) = await _teamManager.createTeam(request);
+        if (err != null) {Checker = err; return null;}
+        else { Checker = "Team created"; return ret;}
     }
+    public async Task AddTeamMember(UserViewmodel request){
 
-    //Change team name
-    public async Task ChangeTeamName(TeamDto request)
-    {
-        try
+        if (request.teamId == null)
         {
-            var sql = "update Teams set teamName = @teamName where teamid = @teamid;";
-            await _data.SaveData(sql, new { teamName = request.teamName, teamid = request.teamid }, _config.GetConnectionString("default"));
-            Checker = "Team name changed!";
+            await _userManager.updateUserTeam(request.employmentId, CUser.teamId);
+            Checker = "User added to team";
         }
-        catch (Exception ex)
+        else
         {
-            Debug.WriteLine(ex.Message);
-            Checker = "Team name already exists!";
+            await _userManager.updateUserTeam(request.employmentId, request.teamId);
+            Checker = "User added to team";
         }
+        
     }
 }

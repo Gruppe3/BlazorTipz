@@ -16,13 +16,13 @@ namespace BlazorTipz.Models.DbRelay
         Task changeUsersStateTo(List<UserA> users, bool state);
 
         //team/teams
-        Task<TeamA> getSingleTeamDbFromDb(string teamId);
-        Task addTeamEntryToDbFromTeamDb(TeamDb team);
-        Task updateTeamEntryToDbFromTeamDb(TeamDb team);
+        Task<TeamDb> getSingleTeamDbFromDb(string teamId);
+        Task addTeamEntry(TeamDb team);
+        Task updateTeamEntry(TeamDb team);
         Task<List<TeamDb>> getActiveTeams();
         Task<List<TeamDb>> getInactiveTeams();
         Task changeTeamStateTo(string teamid, bool state);
-        Task changeTeamsStateTo(List<TeamA> users, bool state);
+        Task changeTeamsStateTo(List<TeamDb> users, bool state);
 
 
     }

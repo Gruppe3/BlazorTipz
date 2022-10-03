@@ -1,9 +1,9 @@
-﻿using BlazorTipz.Data;
+﻿using BlazorTipz.ViewModels.Team;
 
 namespace BlazorTipz.ViewModels
 {
     public class Teams
     {
-        public List<TeamA> teams { get; set; } 
+        public List<TeamViewmodel> teams { get; set; } 
     }
 }
