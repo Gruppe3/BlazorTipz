@@ -16,6 +16,7 @@ namespace BlazorTipz.Models
 
         public byte[] passwordHash { get; set; }
         public byte[] passwordSalt { get; set; }
+        public bool active { get; set; } = true;
 
         public string AuthToken { get; private set; }
 
