@@ -1,10 +1,9 @@
 ﻿using BlazorTipz.Components;
 using BlazorTipz.Models;
 using BlazorTipz.Models.DbRelay;
-using BlazorTipz.ViewModels.User;
 
 
-namespace BlazorTipz.ViewModels
+namespace BlazorTipz.ViewModels.User
 {
     public class UserManager : IUserManager
     {
@@ -35,7 +34,7 @@ namespace BlazorTipz.ViewModels
                 token = dbUser.AuthToken;
                 UserViewmodel userView = new UserViewmodel(dbUser);
                 CurrentUser = userView;
-                
+
                 err = null;
                 return (token, err);
             }
@@ -52,21 +51,21 @@ namespace BlazorTipz.ViewModels
             if (toRegisterUser == null) { err = "No user to register"; return err; };
             if (toRegisterUser.employmentId == null) { err = "no emplayment Id"; return err; };
             if (toRegisterUser.password == null) { err = "no password given"; return err; };
-            
+
             UserDb userDb = await _DBR.getUser(toRegisterUser.employmentId);
             if (userDb != null) { err = "User alrady exists"; return err; }
-            
+
             UserDb toSaveUser = new UserDb(toRegisterUser);
             List<UserDb> toSave = new List<UserDb>();
             toSave.Add(toSaveUser);
             if (toSave.Count == 0) { err = "somthing went wrong"; return err; };
-            
+
             await _DBR.addUserEntries(toSave);
             err = "succsess";
             return err;
         }
 
-        public async Task<(UserViewmodel,string)> getCurrentUser(string token)
+        public async Task<(UserViewmodel, string)> getCurrentUser(string token)
         {
             string err = null;
             string empId = _Auth.GetClaimValue(token);
@@ -91,7 +90,7 @@ namespace BlazorTipz.ViewModels
             if (user.password == null) { err = "no password given"; return err; };
             if (user.password != user.RepeatPassword) { err = "passwords dont match"; return err; };
             if (CurrentUser == null) { err = "not logged in correctly"; return err; }
-            
+
             CurrentUser.password = user.password;
             CurrentUser.name = user.name;
             if (CurrentUser.employmentId == null) { err = "no emplayment Id"; return err; };
@@ -99,7 +98,7 @@ namespace BlazorTipz.ViewModels
             UserDb toSave = new UserDb(CurrentUser);
             if (toSave == null) { err = "Application err"; return err; };
             await _DBR.updateUserEntry(toSave);
-            
+
             return err;
         }
     }

@@ -1,15 +1,11 @@
 ﻿@page "/userSettings"
+
 @using BlazorTipz.Data
 @using Microsoft.AspNetCore.Mvc
-@using System.Diagnostics
-@using BlazorTipz.Components
 @using BlazorTipz.ViewModels.User
-@using BlazorTipz.ViewModels
 
 @inject ILocalStorageService _localStorage
 @inject NavigationManager NavigationManager
-@inject AuthenticationComponent _auth
-@inject TokenServerAuthenticationStateProvider GetAuthenticationStateAsync
 @inject IUserManager _userManager
 
 <PageTitle>User Settings</PageTitle>

@@ -1,5 +1,8 @@
 ﻿@page "/createTeam"
 
+@using BlazorTipz.ViewModels
+@using BlazorTipz.ViewModels.Team
+@using BlazorTipz.ViewModels.User
 @using BlazorTipz.Components
 @using DataLibrary
 @using BlazorTipz.Data
@@ -15,6 +18,8 @@
 @using System.IdentityModel.Tokens.Jwt
 
 @inject NavigationManager _navigationManager
+@inject IUserManager _userManager
+
 @inject IDataAccess _data
 @inject IConfiguration _config
 @inject AuthenticationComponent _auth

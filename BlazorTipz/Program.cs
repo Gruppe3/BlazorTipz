@@ -4,7 +4,7 @@ using BlazorTipz;
 using BlazorTipz.Components;
 using BlazorTipz.Data;
 using BlazorTipz.Models.DbRelay;
-using BlazorTipz.ViewModels;
+using BlazorTipz.ViewModels.User;
 using DataLibrary;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
