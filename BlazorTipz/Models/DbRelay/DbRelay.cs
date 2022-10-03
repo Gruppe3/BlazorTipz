@@ -60,17 +60,49 @@ namespace BlazorTipz.Models.DbRelay
         {
             try
             {
-                var sql = "update Users set passwordHash = @passwordHash, name = @name, passwordSalt = @passwordSalt, role = @role where employmentId = @employmentId;";
-
-                await _data.SaveData(sql, new
+                if (toSaveUser.passwordHash != null)
                 {
-                    employmentId = toSaveUser.employmentId,
-                    name = toSaveUser.name,
-                    passwordSalt = toSaveUser.passwordSalt,
-                    passwordHash = toSaveUser.passwordHash,
-                    role = toSaveUser.role.ToString()
-                },
-                    _config.GetConnectionString("default"));
+                    if (toSaveUser.passwordSalt != null)
+                    {
+                        var sql = "update Users set passwordHash = @passwordHash, name = @name, passwordSalt = @passwordSalt, role = @role where employmentId = @employmentId;";
+
+                        await _data.SaveData(sql, new
+                        {
+                            employmentId = toSaveUser.employmentId,
+                            name = toSaveUser.name,
+                            passwordSalt = toSaveUser.passwordSalt,
+                            passwordHash = toSaveUser.passwordHash,
+                            role = toSaveUser.role.ToString()
+                        },
+                            _config.GetConnectionString("default"));
+                    }
+                }
+                else if(toSaveUser.teamId != null)
+                {
+                    var sql = "update Users set name = @name, role = @role, teamId = @teamId where employmentId = @employmentId;";
+
+                    await _data.SaveData(sql, new
+                    {
+                        employmentId = toSaveUser.employmentId,
+                        name = toSaveUser.name,
+                        role = toSaveUser.role.ToString(),
+                        teamId = toSaveUser.teamId
+                    },
+                            _config.GetConnectionString("default"));
+
+                }
+                else
+                {
+                    var sql = "update Users set name = @name, role = @role where employmentId = @employmentId;";
+
+                    await _data.SaveData(sql, new
+                    {
+                        employmentId = toSaveUser.employmentId,
+                        name = toSaveUser.name,
+                        role = toSaveUser.role.ToString()
+                    },
+                            _config.GetConnectionString("default"));
+                }
 
             }
             catch (Exception ex)
@@ -159,7 +191,7 @@ namespace BlazorTipz.Models.DbRelay
         {
             try 
             {
-                var sql = "INSERT INTO Team (teamName, teamLeader) VALUES (@teamName, @teamLeader)";
+                var sql = "INSERT INTO Teams (teamName, teamLeader) VALUES (@teamName, @teamLeader)";
                 await _data.SaveData(sql, new
                 {
                     teamName = team.teamName,
@@ -174,7 +206,7 @@ namespace BlazorTipz.Models.DbRelay
         {
             try
             {
-                var sql = "UPDATE Team SET teamName = @teamName, teamLeader = @teamLeader WHERE teamId = @teamId";
+                var sql = "UPDATE Teams SET teamName = @teamName, teamLeader = @teamLeader WHERE teamId = @teamId";
                 await _data.SaveData(sql, new
                 {
                     teamName = team.teamName,

@@ -9,5 +9,6 @@
         Task<TeamViewmodel> getTeam(string teamId);
         Task<List<TeamViewmodel>> getTeams();
         Task updateTeam(TeamViewmodel team);
+        Task<List<TeamViewmodel>> updateTeamsList();
     }
 }

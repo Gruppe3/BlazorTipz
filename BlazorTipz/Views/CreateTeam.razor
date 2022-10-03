@@ -41,7 +41,7 @@
                                                         AllowFiltering="false" AllowClear="true" Data=@people TextProperty="employmentId" Placeholder="ID" ValueProperty="employmentId" Class="w-100">
                                     <Columns>
                                         <RadzenDropDownDataGridColumn Property="employmentId" Title="User ID" />
-                                        <RadzenDropDownDataGridColumn Property="Name" Title="Firstname" />
+                                        <RadzenDropDownDataGridColumn Property="name" Title="Firstname" />
                                     </Columns>
                                     
                                 </RadzenDropDownDataGrid>
@@ -66,7 +66,7 @@
                             </div>
                             <div class="col">
                                 <RadzenDropDownDataGrid @bind-Value=@userDto.teamId FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
-                                                        AllowFiltering="true" AllowClear="true" Data=@teams TextProperty="teamName" Placeholder="Team" ValueProperty="teamid" Class="w-100">
+                                                        AllowFiltering="true" AllowClear="true" Data=@teams TextProperty="name" Placeholder="Team" ValueProperty="id" Class="w-100">
                             <Columns>
                                 <RadzenDropDownDataGridColumn Property="id" Title="Team ID"/>
                                 <RadzenDropDownDataGridColumn Property="name" Title="Team Name"/>
@@ -103,7 +103,7 @@
         </div>
     </Authorized>
 </AuthorizeView>
-<AuthorizeView Roles="Team Leader" Context="someContext">
+<AuthorizeView Roles="TeamLeader" Context="someContext">
     <Authorized>
         <h1 class="center">Fill in the form</h1>
         <p class="d-flex justify-content-center">to add a new team member to @team!</p>
@@ -121,7 +121,7 @@
                                                         AllowFiltering="false" AllowClear="true" Data=@people TextProperty="employmentId" Placeholder="ID" ValueProperty="employmentId" Class="w-100">
                                     <Columns>
                                         <RadzenDropDownDataGridColumn Property="employmentId" Title="User ID" />
-                                        <RadzenDropDownDataGridColumn Property="Name" Title="Firstname" />
+                                        <RadzenDropDownDataGridColumn Property="name" Title="Firstname" />
                                     </Columns>
 
                                 </RadzenDropDownDataGrid>
@@ -152,6 +152,7 @@
     public string team { get; set; }
 
     UserViewmodel CUser;
+    TeamViewmodel Cteam;
     UserViewmodel userDto = new UserViewmodel();
     TeamViewmodel teamDto = new TeamViewmodel();
     List<UserViewmodel> people = new List<UserViewmodel>();
@@ -161,16 +162,19 @@
     protected override async Task OnInitializedAsync()
     {
         var CurrentUser = _userManager.getCurrentUser();
-        people = await _userManager.getUsers();
-        teams = await _teamManager.getTeams();
-        if (CurrentUser == null)
+        people = await _userManager.updateUsersList();
+        teams = await _teamManager.updateTeamsList();
+        if (CurrentUser != null)
         {
-            _navigationManager.NavigateTo("/");
+            CUser = CurrentUser;
+            Cteam = await _teamManager.getTeam(CUser.teamId);
+            team = Cteam.name;
         }
         else
         {
-            CUser = CurrentUser;  
+            _navigationManager.NavigateTo("/");
         }
+        
     }
     public async Task<ActionResult<TeamViewmodel>> RegisterTeam(TeamViewmodel request)
     {

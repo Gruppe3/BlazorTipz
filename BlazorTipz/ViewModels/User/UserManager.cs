@@ -12,7 +12,7 @@ namespace BlazorTipz.ViewModels.User
         private readonly AuthenticationComponent _Auth;
 
         public UserViewmodel? CurrentUser { get; set; }
-        public List<UserViewmodel> activeUsers;
+        public List<UserViewmodel>? ActiveUsers { get; set; }
         public UserManager(IDbRelay DBR, AuthenticationComponent auth)
         {
             _DBR = DBR;
@@ -63,7 +63,7 @@ namespace BlazorTipz.ViewModels.User
             if (toSave.Count == 0) { err = "somthing went wrong"; return err; };
 
             await _DBR.addUserEntries(toSave);
-            getUsers();
+            await getUsers();
             err = "succsess";
             return err;
         }
@@ -75,7 +75,7 @@ namespace BlazorTipz.ViewModels.User
             UserDb user = await _DBR.getUser(empId);
             if (user == null) { err = "User not found"; return (null, err); };
             CurrentUser = new UserViewmodel(user);
-            getUsers();
+            await getUsers();
             return (CurrentUser, err);
         }
         public void logout()
@@ -108,30 +108,45 @@ namespace BlazorTipz.ViewModels.User
         }
         
         //get all active users
-        public async Task<List<UserViewmodel>?> getUsers()
+        public async Task<List<UserViewmodel>> getUsers()
         {
-
-            List<UserDb> dblist = await _DBR.getActiveUsers();
-            if (dblist == null) { return null; }
-            List<UserViewmodel> ActUsers = new List<UserViewmodel>();
-            foreach (UserDb u in dblist)
+            if (ActiveUsers == null)
             {
-                ActUsers.Add(new UserViewmodel(u));
+                List<UserDb> dblist = await _DBR.getActiveUsers();
+                if (dblist == null) { return null; }
+                List<UserViewmodel> ActUsers = new List<UserViewmodel>();
+                foreach (UserDb u in dblist)
+                {
+                    UserViewmodel user = new UserViewmodel(u);
+                    ActUsers.Add(user);
+                }
+                ActiveUsers = ActUsers;
             }
-            activeUsers = ActUsers;
-            
-            return activeUsers;
+            return ActiveUsers;
         }
+        
         
         public async Task<List<UserViewmodel>> GetUsers()
         {
-            if(activeUsers == null)
+            if (ActiveUsers == null)
             {
-                await getUsers();
+                List<UserViewmodel> UList = await getUsers();
+                ActiveUsers = UList;
+                return UList;
+
             }
-            return activeUsers;
+            else
+            {
+                return ActiveUsers;
+            }
         }
-        
+        public async Task<List<UserViewmodel>> updateUsersList()
+        {
+            ActiveUsers = null;
+            List<UserViewmodel> Users = await GetUsers();
+            return Users;
+        }
+
         public async Task updateRole(UserViewmodel user, RoleE role, bool upgradeRole)
         {
             if(user.employmentId == string.Empty) { return; }
@@ -140,21 +155,21 @@ namespace BlazorTipz.ViewModels.User
                 if (role <= user.role) { return; }
                 user.role = role;
                 await _DBR.updateUserEntry(new UserDb(user));
-                await getUsers();
+                updateUsersList();
             }
             else
             {
                 user.role = role;
                 await _DBR.updateUserEntry(new UserDb(user));
-                await getUsers();
+                updateUsersList();
             }
             
         }
         public async Task<UserViewmodel?> getUser(string empid)
         {
-            if(activeUsers != null)
+            if(ActiveUsers != null)
             {
-                foreach(UserViewmodel u in activeUsers)
+                foreach(UserViewmodel u in ActiveUsers)
                 {
                     if(u.employmentId == empid)
                     {
@@ -178,9 +193,9 @@ namespace BlazorTipz.ViewModels.User
         }
         public async Task updateUserTeam(string empid, string teamId)
         {
-            if (activeUsers != null)
+            if (ActiveUsers != null)
             {
-                foreach (UserViewmodel u in activeUsers)
+                foreach (UserViewmodel u in ActiveUsers)
                 {
                     if (u.employmentId == empid)
                     {

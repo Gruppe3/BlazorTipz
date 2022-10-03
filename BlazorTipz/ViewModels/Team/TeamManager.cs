@@ -31,6 +31,12 @@ namespace BlazorTipz.ViewModels.Team
             }
             return Teams;
         }
+        public async Task<List<TeamViewmodel>> updateTeamsList()
+        {
+            Teams = null;
+            List<TeamViewmodel> teams = await getTeams();
+            return teams;
+        }
         public async Task<TeamViewmodel> getTeam(string teamId)
         {
 
@@ -121,7 +127,7 @@ namespace BlazorTipz.ViewModels.Team
 
             TeamDb dbTeam = new TeamDb(team);
             await _DBR.addTeamEntry(dbTeam);
-            await getTeams();
+            await updateTeamsList();
             string teamid = getTeamId(team.name, team.leader);
             if (teamid == string.Empty) { return (null, "Team creation error"); }
             TeamViewmodel rTeam = await getTeam(teamid);

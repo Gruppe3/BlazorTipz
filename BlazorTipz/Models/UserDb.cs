@@ -41,7 +41,11 @@ namespace BlazorTipz.Models
             this.teamId = user.teamId;
             this.name = user.name;
             this.role = user.role;
-            passwordHashing(user.password);
+            if (user.password != null)
+            {
+                passwordHashing(user.password);
+            }
+            
         }
 
         public void CreateToken()

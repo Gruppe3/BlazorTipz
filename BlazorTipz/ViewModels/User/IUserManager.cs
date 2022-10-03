@@ -14,6 +14,7 @@ namespace BlazorTipz.ViewModels.User
         Task updateRole(UserViewmodel user, RoleE role, bool upgradeRole);
         Task<UserViewmodel?> getUser(string empid);
         Task updateUserTeam(string empid, string teamId);
-        Task<List<UserViewmodel>?> getUsers();
+        Task<List<UserViewmodel>> getUsers();
+        Task<List<UserViewmodel>> updateUsersList();
     }
 }
