@@ -9,7 +9,7 @@ namespace BlazorTipz.Models.DbRelay
         //User/Users
         Task<UserDb> getUser(string empId);
         Task addUserEntries(List<UserDb> toSaveUsers);
-        Task updateUserEntryToDbFromUserDb(UserDb toSaveUser);
+        Task updateUserEntry(UserDb toSaveUser);
         Task<List<UserDb>> getActiveUsers();
         Task<List<UserDb>> getInactiveUsers();
         Task changeUserStateTo(string empid, bool state);

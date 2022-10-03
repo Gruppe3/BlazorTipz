@@ -1,16 +1,16 @@
 ﻿@page "/userSettings"
-@using DataLibrary
 @using BlazorTipz.Data
 @using Microsoft.AspNetCore.Mvc
 @using System.Diagnostics
 @using BlazorTipz.Components
+@using BlazorTipz.ViewModels.User
+@using BlazorTipz.ViewModels
 
-@inject IDataAccess _data
-@inject IConfiguration _config
 @inject ILocalStorageService _localStorage
 @inject NavigationManager NavigationManager
 @inject AuthenticationComponent _auth
 @inject TokenServerAuthenticationStateProvider GetAuthenticationStateAsync
+@inject IUserManager _userManager
 
 <PageTitle>User Settings</PageTitle>
 
@@ -19,14 +19,14 @@
 <div class="container my-4">
     <div class="row">
         <div class="col-lg-6 offset-lg-3">
-            <RadzenTemplateForm TItem="UserDto" Data=userDto Submit=ChangeSettings>
+            <RadzenTemplateForm TItem="UserViewmodel" Data=userDto Submit=ChangeSettings>
                 <div class="row mb-5">
                     <div class="col-md-4" style="align-self: center;">
                         <RadzenLabel Text="Full name" />
                     </div>
                     <div class="col">
-                        <RadzenTextBox style="display: block" Name="iName" @bind-Value=@userDto.iName Class="w-100" />
-                        <RadzenLengthValidator Component="iName" Min="3" Text="Type a valid name" Popup=@popup Style="position: absolute" />
+                        <RadzenTextBox style="display: block" Name="name" @bind-Value=@userDto.name Class="w-100" />
+                        <RadzenLengthValidator Component="name" Min="3" Text="Type a valid name" Popup=@popup Style="position: absolute" />
                     </div>
                 </div>
                 <div class="row mb-5">
@@ -49,6 +49,9 @@
                     </div>
                 </div>
                 <div class="center">
+                    <h1>@Checker</h1>
+                </div>
+                <div class="center">
                     <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
                 </div>
                 <div class="center">
@@ -60,31 +63,37 @@
 </div>
 @code {
     bool popup;
-    UserDto userDto = new UserDto();
-    User User = new User();
+    
+    public string Checker { get; set; }
+    UserViewmodel userDto = new UserViewmodel();
+    UserViewmodel? CUser;
 
-    //Change users in database
-    public async Task<ActionResult<User>> ChangeSettings(UserDto request)
-    {
-        _auth.CreatePasswordHash(request.password, out byte[] passwordHash, out byte[] passwordSalt);
-
-        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
-        var user = authstate.User;
-        var name = user.Identity.Name;
-
-        User.employmentId = Int32.Parse(name);
-        User.iName = request.iName;
-        User.passwordHash = passwordHash;
-        User.passwordSalt = passwordSalt;
-
-
-        var sql = "update Users set iName=@iName, passwordHash=@passwordHash, passwordSalt=@passwordSalt where employmentId=@employmentId;";
-
-        await _data.SaveData(sql, new { employmentId = User.employmentId, iName = User.iName, passwordSalt = User.passwordSalt, passwordHash = User.passwordHash }, _config.GetConnectionString("default"));
-        NavigationManager.NavigateTo("/", true);
-        return User;
+    //checks if there is a current user
+    protected override async Task OnInitializedAsync() {
+        var CurrentUser = _userManager.getCurrentUser();
+        if (CurrentUser == null)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+        else{
+            CUser = CurrentUser;
+        }
     }
 
+    //changes the current user details
+    public async Task<ActionResult<UserA>> ChangeSettings(UserViewmodel request){
+        string err =  await _userManager.updateCurrentUser(request);
+        if (err != null)
+        {
+            Checker = err;
+            return new BadRequestObjectResult(Checker);
+        }
+        CUser = _userManager.getCurrentUser();
+        if (CUser.password != request.RepeatPassword) { Checker = "not changed correctly, try again"; return new BadRequestObjectResult(Checker); }
+        return CUser;
+    }
+    
+    // navigate back to home, when used
     private void back() { NavigationManager.NavigateTo("/", true); }
-
+    
 }

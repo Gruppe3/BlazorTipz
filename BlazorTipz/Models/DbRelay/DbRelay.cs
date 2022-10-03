@@ -56,18 +56,19 @@ namespace BlazorTipz.Models.DbRelay
             }
         }
         //update user
-        public async Task updateUserEntryToDbFromUserDb(UserDb toSaveUser)
+        public async Task updateUserEntry(UserDb toSaveUser)
         {
             try
             {
-                var sql = "update Users set passwordHash = @passwordHash, passwordSalt = @passwordSalt, role = @role where employmentId = @employmentId;";
+                var sql = "update Users set passwordHash = @passwordHash, name = @name, passwordSalt = @passwordSalt, role = @role where employmentId = @employmentId;";
 
                 await _data.SaveData(sql, new
                 {
                     employmentId = toSaveUser.employmentId,
+                    name = toSaveUser.name,
                     passwordSalt = toSaveUser.passwordSalt,
                     passwordHash = toSaveUser.passwordHash,
-                    role = toSaveUser.role
+                    role = toSaveUser.role.ToString()
                 },
                     _config.GetConnectionString("default"));
 

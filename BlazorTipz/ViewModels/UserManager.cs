@@ -11,7 +11,7 @@ namespace BlazorTipz.ViewModels
         private readonly IDbRelay _DBR;
         private readonly AuthenticationComponent _Auth;
 
-        public UserViewmodel? currentUser { get; set; }
+        public UserViewmodel? CurrentUser { get; set; }
         public UserManager(IDbRelay DBR, AuthenticationComponent auth)
         {
             _DBR = DBR;
@@ -34,7 +34,7 @@ namespace BlazorTipz.ViewModels
                 dbUser.CreateToken();
                 token = dbUser.AuthToken;
                 UserViewmodel userView = new UserViewmodel(dbUser);
-                currentUser = userView;
+                CurrentUser = userView;
                 
                 err = null;
                 return (token, err);
@@ -72,12 +72,35 @@ namespace BlazorTipz.ViewModels
             string empId = _Auth.GetClaimValue(token);
             UserDb user = await _DBR.getUser(empId);
             if (user == null) { err = "User not found"; return (null, err); };
-            currentUser = new UserViewmodel(user);
-            return (currentUser, err);
+            CurrentUser = new UserViewmodel(user);
+            return (CurrentUser, err);
         }
         public void logout()
         {
-            currentUser = null;
+            CurrentUser = null;
         }
-    }        
+        public UserViewmodel getCurrentUser()
+        {
+            return CurrentUser;
+        }
+
+        public async Task<string> updateCurrentUser(UserViewmodel user)
+        {
+            string err = null;
+            if (user == null) { err = "No user to update"; return err; };
+            if (user.password == null) { err = "no password given"; return err; };
+            if (user.password != user.RepeatPassword) { err = "passwords dont match"; return err; };
+            if (CurrentUser == null) { err = "not logged in correctly"; return err; }
+            
+            CurrentUser.password = user.password;
+            CurrentUser.name = user.name;
+            if (CurrentUser.employmentId == null) { err = "no emplayment Id"; return err; };
+
+            UserDb toSave = new UserDb(CurrentUser);
+            if (toSave == null) { err = "Application err"; return err; };
+            await _DBR.updateUserEntry(toSave);
+            
+            return err;
+        }
+    }
 }
