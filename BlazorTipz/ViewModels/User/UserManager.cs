@@ -21,7 +21,7 @@ namespace BlazorTipz.ViewModels.User
         public async Task<(string, string)> Login(UserViewmodel user)
         {
             UserDb tryUser = new UserDb(user);
-            UserDb dbUser = await _DBR.getUser(tryUser.employmentId);
+            UserDb dbUser = await _DBR.getLoginUser(tryUser.employmentId);
             string token;
             string err;
             if (dbUser == null)
@@ -54,7 +54,7 @@ namespace BlazorTipz.ViewModels.User
             if (toRegisterUser.employmentId == null) { err = "no emplayment Id"; return err; };
             if (toRegisterUser.password == null) { err = "no password given"; return err; };
 
-            UserDb userDb = await _DBR.getUser(toRegisterUser.employmentId);
+            UserDb userDb = await _DBR.lookUpUser(toRegisterUser.employmentId);
             if (userDb != null) { err = "User alrady exists"; return err; }
 
             UserDb toSaveUser = new UserDb(toRegisterUser);
@@ -72,7 +72,7 @@ namespace BlazorTipz.ViewModels.User
         {
             string err = null;
             string empId = _Auth.GetClaimValue(token);
-            UserDb user = await _DBR.getUser(empId);
+            UserDb user = await _DBR.getLoginUser(empId);
             if (user == null) { err = "User not found"; return (null, err); };
             CurrentUser = new UserViewmodel(user);
             await getUsers();
@@ -108,7 +108,7 @@ namespace BlazorTipz.ViewModels.User
         }
         
         //get all active users
-        public async Task<List<UserViewmodel>> getUsers()
+        private async Task<List<UserViewmodel>> getUsers()
         {
             if (ActiveUsers == null)
             {
