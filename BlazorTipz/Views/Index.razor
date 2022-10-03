@@ -1,0 +1,58 @@
+﻿@page "/"
+
+@using BlazorTipz.ViewModels.User
+
+
+@inject ILocalStorageService _localStorage
+@inject NavigationManager NavigationManager
+@inject IUserManager _userManager
+@inject ILocalStorageService _localStorage
+
+
+
+    <PageTitle>Home</PageTitle>
+<AuthorizeView>
+    <Authorized>
+        <h1 class="center">Hello!</h1>
+    <p class="d-flex justify-content-center">Welcome to Tipz!.</p>
+        
+
+        </Authorized>
+        <NotAuthorized>
+            <h1 class="center">Please login</h1>
+            <div class="center">
+                <button class="btn btn-primary" @onclick="NavigateToLogin"> Login </button>
+            </div>
+        </NotAuthorized>
+    </AuthorizeView>
+
+
+
+@code {
+    UserViewmodel currentUser = new UserViewmodel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        string token = await _localStorage.GetItemAsync<string>("token");
+        if (token == null || token == "")
+        {
+            NavigationManager.NavigateTo("/login", true);
+        }
+        else
+        {
+            (UserViewmodel user, string err) = await _userManager.getCurrentUser(token);
+
+            if (err != null)
+            {
+                NavigationManager.NavigateTo("/login", true);
+            }
+            else if(user == null)
+            {
+                NavigationManager.NavigateTo("/login", true);
+            }                        
+            currentUser = user;
+        }
+    }
+    private void NavigateToLogin() { NavigationManager.NavigateTo("login"); }
+    
+}

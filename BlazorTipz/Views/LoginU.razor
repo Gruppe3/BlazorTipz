@@ -1,0 +1,77 @@
+﻿@page "/login"
+
+@using Microsoft.AspNetCore.Mvc
+@using Radzen
+@using BlazorTipz.ViewModels.User
+
+@inject ILocalStorageService _localStorage
+@inject NavigationManager NavigationManager
+@inject IUserManager _userM
+
+<PageTitle>Login</PageTitle>
+
+    <h1 class="center">Login</h1>
+    <p class="d-flex justify-content-center">Fill your email and password</p>
+    <div class="container my-4">
+        <div class="row">
+            <div class="col-lg-6 offset-lg-3">
+                <RadzenTemplateForm TItem="UserViewmodel" Data=@userDto Submit=LoginUs>
+                    <div class="row mb-5">
+                        <div class="col-md-4" style="align-self: center;">
+                            <RadzenLabel Text="ID" />
+                        </div>
+                        <div class="col">
+
+                            <RadzenNumeric ShowUpDown="false" style="display: block" Name="id" @bind-Value=@userDto.employmentId Class="w-100" />
+                        </div>
+                    </div>
+                    <div class="row mb-5">
+                        <div class="col-md-4" style="align-self: center;">
+                            <RadzenLabel Text="Password" />
+                        </div>
+                        <div class="col">
+                            <RadzenTextBox style="display: block" Name="password" @bind-Value=@userDto.password Class="w-100" type="password" />
+                            <RadzenLengthValidator Component="password" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
+                        </div>
+                    </div>
+                    <div class="center">
+                        <RadzenButton ButtonType="ButtonType.Submit" Text="Login"></RadzenButton>
+                    </div>
+                    <div class="center">
+                        <a>@Checker</a>
+                    </div>
+                </RadzenTemplateForm>
+            </div>
+        </div>
+    </div>
+
+@code {
+    bool popup;
+
+    public string Checker { get; set; }
+    public string Link { get; set; }
+
+    UserViewmodel userDto = new UserViewmodel();
+
+    public async Task<ActionResult<string>> LoginUs(UserViewmodel request)
+    {
+        string token;
+        string err;
+        (token, err) = await _userM.Login(request);
+        if (err == null)
+        {
+            await _localStorage.SetItemAsync("token", token);
+            NavigationManager.NavigateTo("/", true);
+            return token;
+        }
+        else if (token == null)
+        {
+            Checker = err;
+            return err;
+        }
+        else {
+            Checker = "something went horribly wrong";
+            return "Fatal";
+        }   
+    }
+}
