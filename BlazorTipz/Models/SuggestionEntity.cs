@@ -1,4 +1,5 @@
 ﻿using BlazorTipz.Data;
+using BlazorTipz.ViewModels.Suggestion;
 
 namespace BlazorTipz.Models
 {
@@ -22,5 +23,18 @@ namespace BlazorTipz.Models
         {
             
         }
+
+        //public SuggestionEntity(SuggViewmodel sugg)
+        //{
+        //    this.owner = sugg.OwnerTeam;
+        //    this.sugTitle = sugg.Title;
+        //    this.sugDesc = sugg.Description;
+        //    this.JustDoIt = sugg.JustDoIt;
+        //    this.Category = sugg.Category;
+        //    this.creator = sugg.Creator;
+        //    this.status = sugg.Status;
+        //    this.createdAt = sugg.StartDate;
+        //    this.lastChanged = sugg.UpdatedDate;
+        //}
     }
 }
