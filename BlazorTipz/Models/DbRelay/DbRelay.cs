@@ -46,11 +46,12 @@ namespace BlazorTipz.Models.DbRelay
             {
                 foreach (UserDb tsu in toSaveUsers)
                 {
-                    var sql = "INSERT IGNORE INTO Users (employmentId, passwordHash, passwordSalt, role) VALUES (@employmentId, @passwordHash, @passwordSalt, @role);";
+                    var sql = "INSERT IGNORE INTO Users (employmentId, name, passwordHash, passwordSalt, role) VALUES (@employmentId, @name, @passwordHash, @passwordSalt, @role);";
 
                     await _data.SaveData(sql, new
                     {
                         employmentId = tsu.employmentId,
+                        name = tsu.name,
                         passwordSalt = tsu.passwordSalt,
                         passwordHash = tsu.passwordHash,
                         role = tsu.role.ToString()

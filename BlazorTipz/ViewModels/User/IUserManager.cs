@@ -16,5 +16,6 @@ namespace BlazorTipz.ViewModels.User
         Task<UserViewmodel?> getUser(string empid);
         Task updateUserTeam(string empid, string teamId);
         Task<List<UserViewmodel>> updateUsersList();
+        String generatePassword();
     }
 }
