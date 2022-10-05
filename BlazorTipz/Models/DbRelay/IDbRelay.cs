@@ -14,7 +14,7 @@ namespace BlazorTipz.Models.DbRelay
         Task<List<UserDb>> getActiveUsers();
         Task<List<UserDb>> getInactiveUsers();
         Task changeUserStateTo(string empid, bool state);
-        Task changeUsersStateTo(List<UserA> users, bool state);
+        Task changeUsersStateTo(List<UserDb> users, bool state);
 
         //team/teams
         Task<TeamDb> getSingleTeamDbFromDb(string teamId);

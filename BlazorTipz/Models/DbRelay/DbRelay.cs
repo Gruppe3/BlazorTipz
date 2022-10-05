@@ -153,11 +153,11 @@ namespace BlazorTipz.Models.DbRelay
                 _config.GetConnectionString("default"));
             } catch (Exception ex) { }
         }
-        public async Task changeUsersStateTo(List<UserA> users, bool state)
+        public async Task changeUsersStateTo(List<UserDb> users, bool state)
         {
             try
             {
-                foreach (UserA user in users)
+                foreach (UserDb user in users)
                 {
                     var sql = "UPDATE Users SET active = @state WHERE employmentId = @empid;";
                     
