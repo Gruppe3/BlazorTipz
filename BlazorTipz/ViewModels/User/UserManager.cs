@@ -85,7 +85,7 @@ namespace BlazorTipz.ViewModels.User
             return err;
         }
 
-        //Gets Current user
+        //Get the current user with the given token.
         public async Task<(UserViewmodel, string)> getCurrentUser(string token)
         {
             string err = null;
@@ -126,7 +126,7 @@ namespace BlazorTipz.ViewModels.User
             return err;
         }
         
-        //get all active users
+        //Get all active users
         private async Task<List<UserViewmodel>> getUsers()
         {
             if (ActiveUsers == null)
@@ -143,8 +143,7 @@ namespace BlazorTipz.ViewModels.User
             }
             return ActiveUsers;
         }
-        
-        
+        // Returns a list of all active users.
         public async Task<List<UserViewmodel>> GetUsers()
         {
             if (ActiveUsers == null)
@@ -159,6 +158,7 @@ namespace BlazorTipz.ViewModels.User
                 return ActiveUsers;
             }
         }
+        // Updates the list of users.
         public async Task<List<UserViewmodel>> updateUsersList()
         {
             ActiveUsers = null;
@@ -166,7 +166,7 @@ namespace BlazorTipz.ViewModels.User
             return Users;
         }
 
-        //Updates roles
+        // Updates a users roles
         public async Task updateRole(UserViewmodel user, RoleE role, bool upgradeRole)
         {
             if(user.employmentId == string.Empty) { return; }
@@ -185,6 +185,7 @@ namespace BlazorTipz.ViewModels.User
             }
             
         }
+        // Returns the user with the given empid.
         public async Task<UserViewmodel?> getUser(string empid)
         {
             if(ActiveUsers != null)
@@ -211,6 +212,7 @@ namespace BlazorTipz.ViewModels.User
                 return null;
             }
         }
+        // Updates a users team.
         public async Task updateUserTeam(string empid, string teamId)
         {
             if (ActiveUsers != null)
