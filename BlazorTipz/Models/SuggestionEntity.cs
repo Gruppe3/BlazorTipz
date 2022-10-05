@@ -1,4 +1,6 @@
-﻿namespace BlazorTipz.Models
+﻿using BlazorTipz.Data;
+
+namespace BlazorTipz.Models
 {
     public class SuggestionEntity
     {
@@ -6,7 +8,7 @@
         public string owner { get; set; }
         public string creator { get; set; }
         public string completer { get; set; }
-        public string status { get; set; }
+        public SuggStatus status { get; set; }
         public string sugTitle { get; set; }
         public string sugDesc { get; set; }
         public string createdAt { get; set; }

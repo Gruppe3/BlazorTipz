@@ -288,13 +288,14 @@ namespace BlazorTipz.Models.DbRelay
         {
             try
             {
-                var sql = "INSERT INTO Suggestions (owner, creator, sugTitle, sugDesc, Category, JustDoIt) values (@owner, @creator, @sugTitle, @sugDesc @Category, @JustDoIt);";
+                var sql = "INSERT INTO Suggestions (owner, creator, sugTitle, sugDesc, status, Category, JustDoIt) values (@owner, @creator, @sugTitle, @sugDesc, @status, @Category, @JustDoIt);";
                 await _data.SaveData(sql, new
                 {
                     owner = suggestion.owner,
                     creator = suggestion.creator,
                     sugTitle = suggestion.sugTitle,
                     sugDesc = suggestion.sugDesc,
+                    status = suggestion.status.ToString(),
                     Category = suggestion.Category,
                     JustDoIt = suggestion.JustDoIt
                 },
