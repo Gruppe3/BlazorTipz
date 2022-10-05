@@ -84,7 +84,7 @@
     }
 
     //changes the current user details
-    public async Task<ActionResult<UserA>> ChangeSettings(UserViewmodel request)
+    public async Task<ActionResult<UserViewmodel>> ChangeSettings(UserViewmodel request)
     {
         string err = await _userManager.updateCurrentUser(request);
 
