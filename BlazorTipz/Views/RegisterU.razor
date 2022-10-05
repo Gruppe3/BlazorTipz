@@ -1,77 +1,81 @@
-﻿@page "/register"
+﻿<!--Namespace-->
+@page "/register"
 
+<!--Accesses classes defined here-->
 @using BlazorTipz.Data
 @using Microsoft.AspNetCore.Mvc
 @using Radzen
 @using BlazorTipz.ViewModels.User
 
-
+<!--Injects from program-->
 @inject NavigationManager _navigationManager
-@inject IUserManager _userM 
+@inject IUserManager _userM
 
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
 <PageTitle>Register</PageTitle>
 
+<!--Kun Admin rollen kan se-->
 <AuthorizeView Roles="Admin" Context="someContext">
     <Authorized>
         <h1 class="center">Fill in the form</h1>
         <p class="d-flex justify-content-center">to register a user</p>
-<div class="container my-4">
-    <div class="row">
-        <div class="col-lg-6 offset-lg-3">
-            <RadzenTemplateForm TItem="UserViewmodel" Data=@userDto Submit=registerUser>
-                 <div class="row mb-5">
-                    <div class="col-md-4" style="align-self: center;">
-                        <RadzenLabel Text="ID" />
+        <div class="container my-4">
+            <div class="row">
+                <div class="col-lg-6 offset-lg-3">
+                    <RadzenTemplateForm TItem="UserViewmodel" Data=@userDto Submit=registerUser>
+                        <div class="row mb-5">
+                            <div class="col-md-4" style="align-self: center;">
+                                <RadzenLabel Text="ID" />
+                            </div>
+                            <div class="col">
+                                <RadzenNumeric style="display: block" Name="id" @bind-Value=@userDto.employmentId Class="w-100" />
+                            </div>
+                        </div>
+                        <div class="row mb-5">
+                            <div class="col-md-4" style="align-self: center;">
+                                <RadzenLabel Text="Password" />
+                            </div>
+                            <div class="col">
+                                <RadzenTextBox style="display: block" Name="password" @bind-Value=@userDto.password Class="w-100" type="password" />
+                                <RadzenLengthValidator Component="password" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
+                            </div>
+                        </div>
+                        <div class="row mb-5">
+                            <div class="col-md-4" style="align-self: center;">
+                                <RadzenLabel Text="Set role" />
+                            </div>
+                            <div class="col">
+                                <!--Tar inn en liste roles-->
+                                <RadzenDropDown @bind-Value="userDto.role" Placeholder="User" Data="@roles" style="width: 100%;" TextProperty="role" ValueProperty="role" Name="Role" />
+                            </div>
+                        </div>
+                        <div class="center">
+                            <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
+                        </div>
+                        <div class="center">
+                            <h1>@Checker</h1>
+                        </div>
+                    </RadzenTemplateForm>
+                    <div>
+                        <p>Liste går her. Har ikke liste enda</p>
                     </div>
-                    <div class="col">
-                        <RadzenNumeric style="display: block" Name="id" @bind-Value=@userDto.employmentId Class="w-100" />
-                    </div>
-                </div>       
-                <div class="row mb-5">
-                    <div class="col-md-4" style="align-self: center;">
-                        <RadzenLabel Text="Password" />
-                    </div>
-                    <div class="col">
-                        <RadzenTextBox style="display: block" Name="password" @bind-Value=@userDto.password Class="w-100" type="password" />
-                        <RadzenLengthValidator Component="password" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
-                    </div>        
                 </div>
-                <div class="row mb-5">
-                    <div class="col-md-4" style="align-self: center;">
-                        <RadzenLabel Text="Set role" /> 
-                    </div>
-                    <div class="col">
-                        <RadzenDropDown @bind-Value="userDto.role" Placeholder="User" Data="@roles" style="width: 100%;" TextProperty="role" ValueProperty="role" Name="Role" />
-                    </div>
-                </div>
-                    <div class="center">
-                    <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
-                   </div>
-                <div class="center">
-                    <h1>@Checker</h1>
-                </div>
-            </RadzenTemplateForm>
-            <div>
-                <p>Liste går her. Har ikke liste enda</p>
             </div>
         </div>
-    </div>
-</div>
 
-</Authorized>
-<NotAuthorized>
-    <h1 class="center">You are not Authorized for this page</h1>
-</NotAuthorized>
+    </Authorized>
+    <NotAuthorized>
+        <h1 class="center">You are not Authorized for this page</h1>
+    </NotAuthorized>
 </AuthorizeView>
 
-<!--    
+<!--
 <h1 class="center">User List</h1><RadzenButton Click="UpdateDB" Icon="refresh" ButtonStyle="ButtonStyle.Secondary" />
 </div>
- <RadzenDataGrid AllowFiltering="true" AllowColumnResize="false" 
-        FilterMode="FilterMode.Simple" PageSize="5" AllowPaging="true" AllowSorting="true" Data="@people" TItem="User" ColumnWidth="300px" 
+ <RadzenDataGrid AllowFiltering="true" AllowColumnResize="false"
+        FilterMode="FilterMode.Simple" PageSize="5" AllowPaging="true" AllowSorting="true" Data="@people" TItem="User" ColumnWidth="300px"
         FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
         LogicalFilterOperator="LogicalFilterOperator.Or">
         <Columns>
@@ -87,9 +91,12 @@
     public string Checker { get; set; }
 
     UserViewmodel userDto = new UserViewmodel();
+    //Lager en liste
     List<RoleE> roles = new List<RoleE> { RoleE.User, RoleE.Admin };
 
-    public async Task<ActionResult<string>> registerUser(UserViewmodel request) {
+    //Sender resuest til registerUserSingel
+    public async Task<ActionResult<string>> registerUser(UserViewmodel request)
+    {
 
         string err = await _userM.registerUserSingel(request);
         Checker = err;

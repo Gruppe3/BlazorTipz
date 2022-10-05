@@ -4,6 +4,7 @@ namespace BlazorTipz.ViewModels.User
 {
     public interface IUserManager
     {
+        //These methods are available for anyone implementing this interface
         UserViewmodel getCurrentUser();
         Task<(string, string)> Login(UserViewmodel user);
         Task<string> registerUserSingel(UserViewmodel user);

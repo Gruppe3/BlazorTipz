@@ -7,13 +7,18 @@ using System.Security.Claims;
 using static Org.BouncyCastle.Math.EC.ECCurve;
 using Microsoft.Extensions.Configuration;
 using System.Security.Cryptography;
+using BlazorTipz.ViewModels.User;
 
 namespace BlazorTipz.Models
 {
-    public class UserDb : UserA
+    public class UserDb 
     {
         private readonly IConfiguration _config;
-
+        public string name { get; set; } = string.Empty;
+        public string employmentId { get; set; }
+        public RoleE role { get; set; } = RoleE.User;
+        public string teamId { get; set; }
+        public string password { get; set; }
         public byte[] passwordHash { get; set; }
         public byte[] passwordSalt { get; set; }
         public bool active { get; set; } = true;
@@ -31,7 +36,7 @@ namespace BlazorTipz.Models
                 .AddJsonFile("appsettings.json", true, true)
                 .Build();
         }
-        public UserDb(UserA user)
+        public UserDb(UserViewmodel user)
         {
             _config = new ConfigurationBuilder()
                  .AddJsonFile("appsettings.json", true, true)

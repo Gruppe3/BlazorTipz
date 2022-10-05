@@ -2,6 +2,7 @@
 {
     public interface ITeamManager
     {
+        //These methods are available for anyone implementing this interface
         List<TeamViewmodel>? Teams { get; set; }
 
         Task<(TeamViewmodel?, string?)> createTeam(TeamViewmodel team);

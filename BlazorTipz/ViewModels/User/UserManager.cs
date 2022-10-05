@@ -8,31 +8,44 @@ namespace BlazorTipz.ViewModels.User
 {
     public class UserManager : IUserManager
     {
+        //
         private readonly IDbRelay _DBR;
         private readonly AuthenticationComponent _Auth;
 
+        //Current user logged in
         public UserViewmodel? CurrentUser { get; set; }
+
+        //A list of all active users
         public List<UserViewmodel>? ActiveUsers { get; set; }
         public UserManager(IDbRelay DBR, AuthenticationComponent auth)
         {
             _DBR = DBR;
             _Auth = auth;
         }
+
+        //Login function
         public async Task<(string, string)> Login(UserViewmodel user)
         {
+            //User entity
             UserDb tryUser = new UserDb(user);
+            //Sends emplyment id to userdb through interface relay
             UserDb dbUser = await _DBR.getLoginUser(tryUser.employmentId);
             string token;
             string err;
+
+            //If doesn´t exist
             if (dbUser == null)
             {
                 token = null;
                 err = "User not found";
                 return (token, err);
             }
+            //Verifies password typed in
             if (_Auth.VerifyPasswordHash(user.password, dbUser.passwordHash, dbUser.passwordSalt))
             {
                 dbUser.CreateToken();
+
+                //setter token
                 token = dbUser.AuthToken;
                 UserViewmodel userView = new UserViewmodel(dbUser);
                 CurrentUser = userView;
@@ -40,6 +53,8 @@ namespace BlazorTipz.ViewModels.User
                 err = null;
                 return (token, err);
             }
+
+            //If it does not match it´s wrong
             else
             {
                 token = null;
@@ -47,6 +62,8 @@ namespace BlazorTipz.ViewModels.User
                 return (token, err);
             }
         }
+
+        //register singel user function
         public async Task<string> registerUserSingel(UserViewmodel toRegisterUser)
         {
             string err = null;
@@ -68,6 +85,7 @@ namespace BlazorTipz.ViewModels.User
             return err;
         }
 
+        //Get the current user with the given token.
         public async Task<(UserViewmodel, string)> getCurrentUser(string token)
         {
             string err = null;
@@ -88,6 +106,7 @@ namespace BlazorTipz.ViewModels.User
             return CurrentUser;
         }
 
+        //Updates current user
         public async Task<string> updateCurrentUser(UserViewmodel user)
         {
             string err = null;
@@ -107,7 +126,7 @@ namespace BlazorTipz.ViewModels.User
             return err;
         }
         
-        //get all active users
+        //Get all active users
         private async Task<List<UserViewmodel>> getUsers()
         {
             if (ActiveUsers == null)
@@ -124,8 +143,7 @@ namespace BlazorTipz.ViewModels.User
             }
             return ActiveUsers;
         }
-        
-        
+        // Returns a list of all active users.
         public async Task<List<UserViewmodel>> GetUsers()
         {
             if (ActiveUsers == null)
@@ -140,6 +158,7 @@ namespace BlazorTipz.ViewModels.User
                 return ActiveUsers;
             }
         }
+        // Updates the list of users.
         public async Task<List<UserViewmodel>> updateUsersList()
         {
             ActiveUsers = null;
@@ -147,6 +166,7 @@ namespace BlazorTipz.ViewModels.User
             return Users;
         }
 
+        // Updates a users roles
         public async Task updateRole(UserViewmodel user, RoleE role, bool upgradeRole)
         {
             if(user.employmentId == string.Empty) { return; }
@@ -165,6 +185,7 @@ namespace BlazorTipz.ViewModels.User
             }
             
         }
+        // Returns the user with the given empid.
         public async Task<UserViewmodel?> getUser(string empid)
         {
             if(ActiveUsers != null)
@@ -191,6 +212,7 @@ namespace BlazorTipz.ViewModels.User
                 return null;
             }
         }
+        // Updates a users team.
         public async Task updateUserTeam(string empid, string teamId)
         {
             if (ActiveUsers != null)

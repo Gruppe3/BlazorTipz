@@ -1,11 +1,14 @@
-﻿@page "/createTeam"
+﻿<!--Injects from program-->
+@page "/createTeam"
 
+<!--Accesses classes defined here-->
 @using BlazorTipz.ViewModels
 @using BlazorTipz.ViewModels.Team
 @using BlazorTipz.ViewModels.User
 @using Microsoft.AspNetCore.Mvc
 @using Radzen
 
+<!--Injects from program-->
 @inject NavigationManager _navigationManager
 @inject IUserManager _userManager
 @inject ITeamManager _teamManager
@@ -19,19 +22,19 @@
     <Authorized>
         <h1 class="center">Fill in the form</h1>
         <p class="d-flex justify-content-center">to create a new team!</p>
-<div class="container my-4">
-    <div class="row">
-        <div class="col-lg-6 offset-lg-3">
-            <RadzenTemplateForm TItem="TeamViewmodel" Data=@teamDto Submit=RegisterTeam>     
-                <div class="row mb-5">
-                    <div class="col-md-4" style="align-self: center;">
-                        <RadzenLabel Text="Team Name" />
-                    </div>
-                    <div class="col">
-                        <RadzenTextBox style="display: block" Name="team" @bind-Value=@teamDto.name Class="w-100" />
+        <div class="container my-4">
+            <div class="row">
+                <div class="col-lg-6 offset-lg-3">
+                    <RadzenTemplateForm TItem="TeamViewmodel" Data=@teamDto Submit=RegisterTeam>
+                        <div class="row mb-5">
+                            <div class="col-md-4" style="align-self: center;">
+                                <RadzenLabel Text="Team Name" />
+                            </div>
+                            <div class="col">
+                                <RadzenTextBox style="display: block" Name="team" @bind-Value=@teamDto.name Class="w-100" />
                                 <RadzenLengthValidator Component="team" Min="3" Text="Team name should be alteast 3 characters long" Popup=@popup Style="position: absolute" />
-                    </div>        
-                </div>
+                            </div>
+                        </div>
                         <div class="row mb-5">
                             <div class="col-md-4" style="align-self: center;">
                                 <RadzenLabel Text="Set Team Leader" />
@@ -43,40 +46,40 @@
                                         <RadzenDropDownDataGridColumn Property="employmentId" Title="User ID" />
                                         <RadzenDropDownDataGridColumn Property="name" Title="Firstname" />
                                     </Columns>
-                                    
+
                                 </RadzenDropDownDataGrid>
                             </div>
                         </div>
-                    <div class="center">
-                    <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
-                   </div>
-            </RadzenTemplateForm> 
+                        <div class="center">
+                            <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
+                        </div>
+                    </RadzenTemplateForm>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
         <h1 class="center">Fill in the form</h1>
         <p class="d-flex justify-content-center">to add a new team member! ps: to be optimized</p>
-<div class="container my-4">
+        <div class="container my-4">
             <div class="row">
                 <div class="col-lg-6 offset-lg-3">
                     <RadzenTemplateForm TItem="UserViewmodel" Data=@userDto Submit=AddTeamMember>
-                       <div class="row mb-5">
+                        <div class="row mb-5">
                             <div class="col-md-4" style="align-self: center;">
                                 <RadzenLabel Text="Team Name" />
                             </div>
                             <div class="col">
                                 <RadzenDropDownDataGrid @bind-Value=@userDto.teamId FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
                                                         AllowFiltering="true" AllowClear="true" Data=@teams TextProperty="name" Placeholder="Team" ValueProperty="id" Class="w-100">
-                            <Columns>
-                                <RadzenDropDownDataGridColumn Property="id" Title="Team ID"/>
-                                <RadzenDropDownDataGridColumn Property="name" Title="Team Name"/>
-                            </Columns>
+                                    <Columns>
+                                        <RadzenDropDownDataGridColumn Property="id" Title="Team ID" />
+                                        <RadzenDropDownDataGridColumn Property="name" Title="Team Name" />
+                                    </Columns>
 
-                        </RadzenDropDownDataGrid>
+                                </RadzenDropDownDataGrid>
                             </div>
                         </div>
-                
-                      <div class="row mb-5">
+
+                        <div class="row mb-5">
                             <div class="col-md-4" style="align-self: center;">
                                 <RadzenLabel Text="Set member employee ID" />
                             </div>
@@ -90,7 +93,7 @@
 
                                 </RadzenDropDownDataGrid>
                             </div>
-                         </div>
+                        </div>
                         <div class="center">
                             <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
                         </div>
@@ -137,11 +140,11 @@
                 </div>
             </div>
         </div>
-</Authorized>
+    </Authorized>
 </AuthorizeView>
 <AuthorizeView Roles="User">
     <Authorized>
-    <h1 class="center">You are not Authorized to view this page</h1>
+        <h1 class="center">You are not Authorized to view this page</h1>
     </Authorized>
 </AuthorizeView>
 
@@ -174,17 +177,22 @@
         {
             _navigationManager.NavigateTo("/");
         }
-        
+
     }
+
+    //Registeres Team and connects a user as Team Leader
     public async Task<ActionResult<TeamViewmodel>> RegisterTeam(TeamViewmodel request)
     {
         TeamViewmodel ret;
         string err;
-        (ret,err) = await _teamManager.createTeam(request);
-        if (err != null) {Checker = err; return null;}
-        else { Checker = "Team created"; return ret;}
+        (ret, err) = await _teamManager.createTeam(request);
+        if (err != null) { Checker = err; return null; }
+        else { Checker = "Team created"; return ret; }
     }
-    public async Task AddTeamMember(UserViewmodel request){
+
+    //Registeres a member to a selected team
+    public async Task AddTeamMember(UserViewmodel request)
+    {
 
         if (request.teamId == null)
         {
@@ -196,6 +204,6 @@
             await _userManager.updateUserTeam(request.employmentId, request.teamId);
             Checker = "User added to team";
         }
-        
+
     }
 }
