@@ -282,6 +282,37 @@ namespace BlazorTipz.Models.DbRelay
             catch (Exception ex) { }
         }
 
+        // Suggestions
+        // Save a single suggestion to database
+        public async Task saveSuggestion(SuggestionEntity suggestion)
+        {
+            try
+            {
+                var sql = "INSERT INTO Suggestions (owner, creator, sugTitle, sugDesc, Category, JustDoIt) values (@owner, @creator, @sugTitle, @sugDesc @Category, @JustDoIt);";
+                await _data.SaveData(sql, new
+                {
+                    owner = suggestion.owner,
+                    creator = suggestion.creator,
+                    sugTitle = suggestion.sugTitle,
+                    sugDesc = suggestion.sugDesc,
+                    Category = suggestion.Category,
+                    JustDoIt = suggestion.JustDoIt
+                },
+                _config.GetConnectionString("default"));
+            }
+            catch (Exception ex)
+            {
+     
+            }
+        }
 
+        // Saves a list of suggestions
+        public async Task saveSuggestionList(List<SuggestionEntity> suggestions)
+        {
+           foreach (SuggestionEntity sug in suggestions)
+            {
+                await saveSuggestion(sug);
+            }
+        }
     }
 }
