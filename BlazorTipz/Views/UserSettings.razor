@@ -1,9 +1,12 @@
-﻿@page "/userSettings"
+﻿<!--Namespace-->
+@page "/userSettings"
 
+<!--Accesses classes defined here-->
 @using BlazorTipz.Data
 @using Microsoft.AspNetCore.Mvc
 @using BlazorTipz.ViewModels.User
 
+<!--Injects from program-->
 @inject ILocalStorageService _localStorage
 @inject NavigationManager NavigationManager
 @inject IUserManager _userManager
@@ -59,26 +62,32 @@
 </div>
 @code {
     bool popup;
-    
+
     public string Checker { get; set; }
     UserViewmodel userDto = new UserViewmodel();
     UserViewmodel? CUser;
 
     //checks if there is a current user
-    protected override async Task OnInitializedAsync() {
+    protected override async Task OnInitializedAsync()
+    {
+
+        //checks if currentUser is null 
         var CurrentUser = _userManager.getCurrentUser();
         if (CurrentUser == null)
         {
             NavigationManager.NavigateTo("/");
         }
-        else{
+        else
+        {
             CUser = CurrentUser;
         }
     }
 
     //changes the current user details
-    public async Task<ActionResult<UserA>> ChangeSettings(UserViewmodel request){
-        string err =  await _userManager.updateCurrentUser(request);
+    public async Task<ActionResult<UserA>> ChangeSettings(UserViewmodel request)
+    {
+        string err = await _userManager.updateCurrentUser(request);
+
         if (err != null)
         {
             Checker = err;
@@ -88,8 +97,8 @@
         if (CUser.password != request.RepeatPassword) { Checker = "not changed correctly, try again"; return new BadRequestObjectResult(Checker); }
         return CUser;
     }
-    
+
     // navigate back to home, when used
     private void back() { NavigationManager.NavigateTo("/", true); }
-    
+
 }

@@ -16,6 +16,7 @@ namespace BlazorTipz.ViewModels.Team
             _DBR = DBR;
             _UM = UM;
         }
+        // Returns a list of all active teams.
         public async Task<List<TeamViewmodel>> getTeams()
         {
             if (Teams == null)
@@ -31,12 +32,14 @@ namespace BlazorTipz.ViewModels.Team
             }
             return Teams;
         }
+        // Updates the list of available teams.
         public async Task<List<TeamViewmodel>> updateTeamsList()
         {
             Teams = null;
             List<TeamViewmodel> teams = await getTeams();
             return teams;
         }
+        // Returns the team with the given ID.
         public async Task<TeamViewmodel> getTeam(string teamId)
         {
 
@@ -55,6 +58,7 @@ namespace BlazorTipz.ViewModels.Team
             }
             return team;
         }
+        // Returns a list of all inactive teams.
         public async Task<List<TeamViewmodel>> getInactiveTeams()
         {
             List<TeamViewmodel> teams = new List<TeamViewmodel>();
@@ -66,7 +70,7 @@ namespace BlazorTipz.ViewModels.Team
             }
             return teams;
         }
-        //update team
+        // Update team
         public async Task updateTeam(TeamViewmodel team)
         {
             TeamDb dbTeam = new TeamDb(team);
@@ -80,6 +84,7 @@ namespace BlazorTipz.ViewModels.Team
                 await getTeams();
             }
         }
+        // Gets the team id for a given team name and leader.
         private string getTeamId(string teamName, string teamLeader)
         {
             string teamId = string.Empty;
@@ -96,6 +101,7 @@ namespace BlazorTipz.ViewModels.Team
             }
             return teamId;
         }
+        // Updates the teams of the given viewmodel.
         private bool updateTeams(TeamViewmodel team)
         {
             if (Teams == null) { return false; }
