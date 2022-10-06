@@ -35,13 +35,21 @@
                         </div>
                         <div class="row mb-5">
                             <div class="col-md-4" style="align-self: center;">
+                                <RadzenLabel Text="Name" />
+                            </div>
+                            <div class="col">
+                                <RadzenTextBox style="display: block" Name="name" @bind-Value=@userDto.name Class="w-100" />
+                            </div>
+                        </div>
+                        <div class="row mb-5">
+                            <div class="col-md-4" style="align-self: center;">
                                 <RadzenLabel Text="Password" />
                             </div>
                             <div class="col">
-                                <RadzenTextBox style="display: block" Name="password" @bind-Value=@userDto.password Class="w-100" type="password" />
-                                <RadzenLengthValidator Component="password" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
-                            </div>
+                                <p>@password</p>
+                            </div>   
                         </div>
+                        
                         <div class="row mb-5">
                             <div class="col-md-4" style="align-self: center;">
                                 <RadzenLabel Text="Set role" />
@@ -89,7 +97,8 @@
     bool popup;
     bool isLoading = false;
     public string Checker { get; set; }
-
+    bool passwordVisible = true;
+    string password = string.Empty;
     UserViewmodel userDto = new UserViewmodel();
     //Lager en liste
     List<RoleE> roles = new List<RoleE> { RoleE.User, RoleE.Admin };
@@ -97,9 +106,14 @@
     //Sender resuest til registerUserSingel
     public async Task<ActionResult<string>> registerUser(UserViewmodel request)
     {
+        String genPass = _userM.generatePassword();
+        request.password = genPass;
+        password = genPass;
 
         string err = await _userM.registerUserSingel(request);
-        Checker = err;
+        Checker = err +" med Password "+ password;
         return err;
     }
-}
+
+
+    }

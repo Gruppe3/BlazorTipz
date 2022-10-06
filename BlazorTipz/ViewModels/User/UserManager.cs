@@ -23,6 +23,10 @@ namespace BlazorTipz.ViewModels.User
             _Auth = auth;
         }
 
+        public UserManager()
+        {
+        }
+
         //Login function
         public async Task<(string, string)> Login(UserViewmodel user)
         {
@@ -69,6 +73,7 @@ namespace BlazorTipz.ViewModels.User
             string err = null;
             if (toRegisterUser == null) { err = "No user to register"; return err; };
             if (toRegisterUser.employmentId == null) { err = "no emplayment Id"; return err; };
+            if (toRegisterUser.name == null) { err = "no name"; return err; };
             if (toRegisterUser.password == null) { err = "no password given"; return err; };
 
             UserDb userDb = await _DBR.lookUpUser(toRegisterUser.employmentId);
@@ -243,6 +248,30 @@ namespace BlazorTipz.ViewModels.User
                 
             }
 
+        }
+
+        // Generate password for user
+        public string generatePassword()
+        {
+            string password = "";
+            Random rnd = new Random();
+            for (int i = 0; i < 8; i++)
+            {
+                int num = rnd.Next(0, 3);
+                switch (num)
+                {
+                    case 0:
+                        password += rnd.Next(0, 10);
+                        break;
+                    case 1:
+                        password += (char)rnd.Next(65, 91);
+                        break;
+                    case 2:
+                        password += (char)rnd.Next(97, 123);
+                        break;
+                }
+            }
+            return password;
         }
 
     }
