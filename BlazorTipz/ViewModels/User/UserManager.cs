@@ -23,10 +23,6 @@ namespace BlazorTipz.ViewModels.User
             _Auth = auth;
         }
 
-        public UserManager()
-        {
-        }
-
         //Login function
         public async Task<(string, string)> Login(UserViewmodel user)
         {
