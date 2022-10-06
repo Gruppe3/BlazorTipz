@@ -6,9 +6,10 @@
 @inject NavigationManager NavigationManager
 @inject IUserManager _userManager
 @inject ITeamManager _teamManager
+@inject IJSRuntime JsRuntime
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
+<link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+<link rel="stylesheet" href="css/Navbar.css" />
 <AuthorizeView Roles="User">
     <Authorized>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark rounded">
@@ -43,44 +44,45 @@
 </AuthorizeView>
 <AuthorizeView Roles="Admin">
     <Authorized>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark rounded">
-            <a class="navbar-brand"></a>
-                <img src="images/NordicDoorTipzLogo.png" alt="Logo" width="15%" height="10%" />
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                <ul class="navbar-nav">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item dropdown active">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Admin Panel
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" href="/register">Register user</a>
-                            <a class="dropdown-item" href="/createTeam">Create team</a>
-                        </div>
-                    </li>
-                     
-                </ul>
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            @currentUser.role.ToString() :
-                            @currentUser.employmentId :
-                            @currentUser.name : Team
-                            @currentTeam.name
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" href="/userSettings">Settings</a>
-                            <a class="dropdown-item" @onclick="Logout" href="">Logout</a>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-         </nav>
+        <!--=============== NAV ===============-->
+        <div class="nav" id="nav">
+            <nav class="nav__content">
+                <div class="nav__toggle" id="nav-toggle">
+                    <i class='bx bx-align-left'></i>
+                </div>
+
+                <a class="nav__logo">
+                    <i class='bx bx-user-circle'></i>
+                    <span class="nav__logo-name">@currentUser.name</span>
+                </a>
+
+                <div class="nav__list">
+                    <a href="/" class="nav__link active-link">
+                        <i class='bx bx-grid-alt'></i>
+                        <span class="nav__name">Dashboard</span>
+                    </a>
+
+                    <a href="/register" class="nav__link">
+                        <i class='bx bx-user-plus'></i>
+                        <span class="nav__name">Register User</span>
+                    </a>
+
+                    <a href="/createTeam" class="nav__link">
+                        <i class='bx bx-group'></i>
+                        <span class="nav__name">Register Team</span>
+                    </a>
+
+                    <a href="/userSettings" class="nav__link">
+                        <i class='bx bx-cog'></i>
+                        <span class="nav__name">Settings</span>
+                    </a>
+                    <a href="/" @onclick="Logout" class="nav__link">
+                        <i class='bx bx-log-out'></i>
+                        <span class="nav__name">Logout</span>
+                    </a>
+                </div>
+            </nav>
+        </div>
     </Authorized>
 </AuthorizeView>
 <AuthorizeView Roles="TeamLeader">
@@ -186,4 +188,13 @@
             return ": " + str;
         }
     }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JsRuntime.InvokeVoidAsync("import", "./js/main.js");
+        }
+    }
+    
 }
