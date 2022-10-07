@@ -6,14 +6,14 @@ namespace BlazorTipz.ViewModels.User
     {
         UserViewmodel? CurrentUser { get; set; }
 
-        List<UserViewmodel>? usersToRegister { get; }
-
         //These methods are available for anyone implementing this interface
         UserViewmodel getCurrentUser();
 
         //first return "string?" = "token", second return "string?" = errorMsg
         Task<(string, string)> Login(UserViewmodel user);
-        
+
+        List<UserViewmodel> getRegisterUserList();
+
         //first return "string?" = errmsg, second return "string?" = sucsessMsg
         Task<(string?, string?)> registerUserSingel(UserViewmodel user);
         Task<(string?, string?)> registerMultiple(List<UserViewmodel>? usersToReg);

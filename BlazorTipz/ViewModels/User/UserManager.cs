@@ -18,7 +18,7 @@ namespace BlazorTipz.ViewModels.User
         //A list of all active users
         public List<UserViewmodel>? ActiveUsers { get; set; }
 
-        public List<UserViewmodel>? usersToRegister { get; private set; } = new List<UserViewmodel>();
+        private List<UserViewmodel>? UsersToRegister {  get; set; } = new List<UserViewmodel>();
         //constructor
         public UserManager(IDbRelay DBR, AuthenticationComponent auth)
         {
@@ -108,9 +108,9 @@ namespace BlazorTipz.ViewModels.User
                 }
                 return (err, "Succsess");
             } 
-            else if (usersToRegister != null)
+            else if (UsersToRegister != null)
             {
-                foreach (UserViewmodel user in usersToRegister)
+                foreach (UserViewmodel user in UsersToRegister)
                 {
                     (retErr, filler) = await registerUserSingel(user);
                     if (retErr != null) { return ("Nr: " + itNum + ", Failed with: " + retErr, null); }
@@ -123,6 +123,15 @@ namespace BlazorTipz.ViewModels.User
                 return ("No one to register",null);
             }
         }
+        public List<UserViewmodel> getRegisterUserList()
+        {
+            if (UsersToRegister == null)
+            {
+                List<UserViewmodel> list = new List<UserViewmodel>();
+                UsersToRegister = list;
+            }
+            return UsersToRegister;
+        }
         public string stageToRegisterList(UserViewmodel user)
         {
             if (user == null) { return "no user to stage"; }
@@ -130,20 +139,20 @@ namespace BlazorTipz.ViewModels.User
             if (user.name == string.Empty) { return "Not supplied a name"; }
             //check if user is in list, update instead of add
             bool hit = false;
-            foreach(UserViewmodel u in usersToRegister)
+            foreach(UserViewmodel u in UsersToRegister)
             {
-                //if(u.employmentId == user.employmentId)
-                //{
-                //    u.name = user.name;
-                //    u.password = user.password;
-                //    hit = true; break;
-                //}
+                if (u.employmentId == user.employmentId)
+                {
+                    u.name = user.name;
+                    u.password = user.password;
+                    hit = true; break;
+                }
             }
             if (!hit)
             {
                 //adds new user to list
-                user.listnum = usersToRegister.Count + 1;
-                usersToRegister.Add(user);
+                user.listnum = UsersToRegister.Count + 1;
+                UsersToRegister.Add(user);
                 return "User succsessfully added to list of pepole to register";
             } else { return "User in list updated"; }
         }
@@ -151,13 +160,14 @@ namespace BlazorTipz.ViewModels.User
         public void deleteFromRegisterList(string emipd)
         {
             //search for user to delete
-            foreach(UserViewmodel user in usersToRegister)
+            foreach(UserViewmodel user in UsersToRegister)
             {
                 if(user.employmentId == emipd)
                 {
-                    usersToRegister.RemoveAt(user.listnum - 1);
+                    UsersToRegister.RemoveAt(user.listnum - 1);
                 }
             }
+            
         }
 
         //Get the current user with the given token.

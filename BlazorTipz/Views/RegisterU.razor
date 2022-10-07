@@ -69,13 +69,15 @@
                                 <th>Role</th>
                                 <th>Passord</th>
                             </tr>
-                            @foreach (UserViewmodel us in Users)
+                            @foreach (UserViewmodel us in UsersList)
                             {
-                                <td>@us.listnum</td>
-                                <td>@us.name</td>
-                                <td>@us.employmentId</td>
-                                <td>@us.role.ToString()</td>
-                                <td>@us.password</td>
+                                <tr>
+                                    <td>@us.listnum</td>
+                                    <td>@us.name</td>
+                                    <td>@us.employmentId</td>
+                                    <td>@us.role.ToString()</td>
+                                    <td>@us.password</td>
+                                </tr>
                             }
                         </table>
                     </div>
@@ -84,7 +86,7 @@
                             <p>@Checker2</p>
                         </div>
                         <div class="center">
-                            <RadzenButton Click="Register" Text="Register list" ButtonStyle="ButtonStyle.Primary" />
+                            <RadzenButton Click="RegisterUsers" Text="Register list" ButtonStyle="ButtonStyle.Primary" />
                         </div>
                     </div>
                 </div>
@@ -120,7 +122,7 @@
     UserViewmodel userDto = new UserViewmodel();
     //Lager en liste
     List<RoleE> roles = new List<RoleE> { RoleE.User, RoleE.Admin };
-    List<UserViewmodel> Users;
+    List<UserViewmodel> UsersList;
 
     //checks if there is a current user
     protected override async Task OnInitializedAsync()
@@ -128,26 +130,29 @@
         //checks if currentUser is null
         var CurrentUser = _userM.getCurrentUser();
         if (CurrentUser == null) { _navigationManager.NavigateTo("/"); }
-        else { Users = _userM.usersToRegister; }
+        else { UsersList = _userM.getRegisterUserList(); }
     }
     public async Task<ActionResult<string?>> registerUser()
     {
+
         string genPass = _userM.generatePassword();
         userDto.password = genPass;
 
-        string ret = _userM.stageToRegisterList(userDto);
+        UserViewmodel usToList = userDto;
+        string ret = _userM.stageToRegisterList(usToList);
         Checker = ret ;
+        userDto = new UserViewmodel();
         return ret;
     }
 
 
     //Sender resuest til registerUserSingel
-    public async Task<ActionResult<string>> Register()
+    public async Task<ActionResult<string>> RegisterUsers()
     {
 
         (string err,string suc )= await _userM.registerMultiple(null);
         Checker2 = err;
-        Users = _userM.usersToRegister;
+        UsersList = _userM.getRegisterUserList();
         if (suc != null){ Checker = suc; return suc; }
         return err;
     }
