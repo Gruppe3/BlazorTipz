@@ -17,6 +17,9 @@ namespace BlazorTipz.ViewModels.User
 
         //A list of all active users
         public List<UserViewmodel>? ActiveUsers { get; set; }
+
+        private List<UserViewmodel>? UsersToRegister {  get; set; } = new List<UserViewmodel>();
+        //constructor
         public UserManager(IDbRelay DBR, AuthenticationComponent auth)
         {
             _DBR = DBR;
@@ -64,26 +67,107 @@ namespace BlazorTipz.ViewModels.User
         }
 
         //register singel user function
-        public async Task<string> registerUserSingel(UserViewmodel toRegisterUser)
+        //first return "string?" = errmsg, second return "string?" = sucsessMsg
+        public async Task<(string?,string?)> registerUserSingel(UserViewmodel toRegisterUser)
         {
             string err = null;
-            if (toRegisterUser == null) { err = "No user to register"; return err; };
-            if (toRegisterUser.employmentId == null) { err = "no emplayment Id"; return err; };
-            if (toRegisterUser.name == null) { err = "no name"; return err; };
-            if (toRegisterUser.password == null) { err = "no password given"; return err; };
+            if (toRegisterUser == null) { err = "No user to register"; return (err, null); };
+            if (toRegisterUser.employmentId == null) { err = "no emplayment Id"; return (err, null); };
+            if (toRegisterUser.name == null) { err = "no name"; return (err, null); };
+            if (toRegisterUser.password == null) { err = "no password given"; return (err, null); };
 
             UserDb userDb = await _DBR.lookUpUser(toRegisterUser.employmentId);
-            if (userDb != null) { err = "User alrady exists"; return err; }
+            if (userDb != null) { err = "User alrady exists"; return (err, null); }
 
             UserDb toSaveUser = new UserDb(toRegisterUser);
             List<UserDb> toSave = new List<UserDb>();
             toSave.Add(toSaveUser);
-            if (toSave.Count == 0) { err = "somthing went wrong"; return err; };
+            if (toSave.Count == 0) { err = "somthing went wrong"; return (err, null); };
 
             await _DBR.addUserEntries(toSave);
             await getUsers();
-            err = "succsess";
-            return err;
+            string suc = "succsess";
+            return (err, suc);
+        }
+
+        //take in a list of users, and registers them
+        //first return "string?" = errmsg, second return "string?" = sucsessMsg
+        public async Task<(string?,string?)> registerMultiple(List<UserViewmodel>? usersToReg)
+        {
+            string err = null;
+            string retErr= null;
+            string filler;
+            int itNum = 1;
+            if(usersToReg != null) 
+            {
+                foreach(UserViewmodel user in usersToReg)
+                {
+                    (retErr, filler) = await registerUserSingel(user);
+                    if(retErr != null) { return ("Nr: " + itNum +", Failed with: " + retErr,null); }
+                    itNum++;
+                }
+                return (err, "Succsess");
+            } 
+            else if (UsersToRegister != null)
+            {
+                foreach (UserViewmodel user in UsersToRegister)
+                {
+                    (retErr, filler) = await registerUserSingel(user);
+                    if (retErr != null) { return ("Nr: " + itNum + ", Failed with: " + retErr, null); }
+                    itNum++;
+                }
+                return (err, "Succsess");
+            }
+            else
+            {
+                return ("No one to register",null);
+            }
+        }
+        public List<UserViewmodel> getRegisterUserList()
+        {
+            if (UsersToRegister == null)
+            {
+                List<UserViewmodel> list = new List<UserViewmodel>();
+                UsersToRegister = list;
+            }
+            return UsersToRegister;
+        }
+        public string stageToRegisterList(UserViewmodel user)
+        {
+            if (user == null) { return "no user to stage"; }
+            if (user.employmentId==null) { return "Not supplied EmploymentID"; }
+            if (user.name == string.Empty) { return "Not supplied a name"; }
+            //check if user is in list, update instead of add
+            bool hit = false;
+            foreach(UserViewmodel u in UsersToRegister)
+            {
+                if (u.employmentId == user.employmentId)
+                {
+                    u.name = user.name;
+                    u.password = user.password;
+                    hit = true; break;
+                }
+            }
+            if (!hit)
+            {
+                //adds new user to list
+                user.listnum = UsersToRegister.Count + 1;
+                UsersToRegister.Add(user);
+                return "User succsessfully added to list of pepole to register";
+            } else { return "User in list updated"; }
+        }
+        //deletes a specified element form usersToRegister list.
+        public void deleteFromRegisterList(string emipd)
+        {
+            //search for user to delete
+            foreach(UserViewmodel user in UsersToRegister)
+            {
+                if(user.employmentId == emipd)
+                {
+                    UsersToRegister.RemoveAt(user.listnum - 1);
+                }
+            }
+            
         }
 
         //Get the current user with the given token.

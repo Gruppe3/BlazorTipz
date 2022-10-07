@@ -43,15 +43,6 @@
                         </div>
                         <div class="row mb-5">
                             <div class="col-md-4" style="align-self: center;">
-                                <RadzenLabel Text="Password" />
-                            </div>
-                            <div class="col">
-                                <p>@password</p>
-                            </div>   
-                        </div>
-                        
-                        <div class="row mb-5">
-                            <div class="col-md-4" style="align-self: center;">
                                 <RadzenLabel Text="Set role" />
                             </div>
                             <div class="col">
@@ -67,7 +58,36 @@
                         </div>
                     </RadzenTemplateForm>
                     <div>
-                        <p>Liste går her. Har ikke liste enda</p>
+                        <p>Liste for over de som skal registreres</p>
+                    </div>
+                    <div>
+                        <table>
+                            <tr>
+                                <th>Nr</th>
+                                <th>Name</th>
+                                <th>EmpID</th>
+                                <th>Role</th>
+                                <th>Passord</th>
+                            </tr>
+                            @foreach (UserViewmodel us in UsersList)
+                            {
+                                <tr>
+                                    <td>@us.listnum</td>
+                                    <td>@us.name</td>
+                                    <td>@us.employmentId</td>
+                                    <td>@us.role.ToString()</td>
+                                    <td>@us.password</td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                    <div>
+                        <div>
+                            <p>@Checker2</p>
+                        </div>
+                        <div class="center">
+                            <RadzenButton Click="RegisterUsers" Text="Register list" ButtonStyle="ButtonStyle.Primary" />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -97,23 +117,43 @@
     bool popup;
     bool isLoading = false;
     public string Checker { get; set; }
+    public string Checker2 { get; set; }
     bool passwordVisible = true;
-    string password = string.Empty;
     UserViewmodel userDto = new UserViewmodel();
     //Lager en liste
     List<RoleE> roles = new List<RoleE> { RoleE.User, RoleE.Admin };
+    List<UserViewmodel> UsersList;
+
+    //checks if there is a current user
+    protected override async Task OnInitializedAsync()
+    {
+        //checks if currentUser is null
+        var CurrentUser = _userM.getCurrentUser();
+        if (CurrentUser == null) { _navigationManager.NavigateTo("/"); }
+        else { UsersList = _userM.getRegisterUserList(); }
+    }
+    public async Task<ActionResult<string?>> registerUser()
+    {
+
+        string genPass = _userM.generatePassword();
+        userDto.password = genPass;
+
+        UserViewmodel usToList = userDto;
+        string ret = _userM.stageToRegisterList(usToList);
+        Checker = ret ;
+        userDto = new UserViewmodel();
+        return ret;
+    }
+
 
     //Sender resuest til registerUserSingel
-    public async Task<ActionResult<string>> registerUser(UserViewmodel request)
+    public async Task<ActionResult<string>> RegisterUsers()
     {
-        String genPass = _userM.generatePassword();
-        request.password = genPass;
-        password = genPass;
 
-        string err = await _userM.registerUserSingel(request);
-        Checker = err +" med Password "+ password;
+        (string err,string suc )= await _userM.registerMultiple(null);
+        Checker2 = err;
+        UsersList = _userM.getRegisterUserList();
+        if (suc != null){ Checker = suc; return suc; }
         return err;
     }
-
-
-    }
+}

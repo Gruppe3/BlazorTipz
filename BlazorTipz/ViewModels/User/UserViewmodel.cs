@@ -12,7 +12,7 @@ namespace BlazorTipz.ViewModels.User
         public string teamId { get; set; }
         public string password { get; set; }
         public string RepeatPassword { get; set; } = string.Empty;
-        
+        public int listnum { get; set; } = 0;   
         
         public UserViewmodel()
         {
