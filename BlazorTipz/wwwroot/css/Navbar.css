@@ -1,0 +1,195 @@
+﻿
+/*=============== VARIABLES CSS ===============*/
+:root {
+    /*========== Colors ==========*/
+    /*Color mode HSL(hue, saturation, lightness)*/
+    --first-color: hsl(228, 81%, 49%);
+    --title-color: hsl(228, 12%, 15%);
+    --text-color: hsl(0, 0%, 100%);
+    --body-color: hsl(236, 28%, 19%);
+    --container-color: #fff;
+    --primary-color: hsl(264, 0%, 17%);
+    --secondary-color: hsl(264, 0%, 17%);
+    /*========== Font and typography ==========*/
+    /*.5rem = 8px | 1rem = 16px ...*/
+    --body-font: 'Poppins', sans-serif;
+    --normal-font-size: .938rem;
+}
+
+/* Responsive typography */
+@media screen and (min-width: 968px) {
+    :root {
+        --normal-font-size: 1rem;
+    }
+}
+
+/*=============== BASE ===============*/
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    position: relative;
+    font-family: var(--body-font);
+    font-size: var(--normal-font-size);
+    background-color: var(--body-color);
+    color: var(--text-color);
+}
+
+h1 {
+    color: var(--text-color);
+}
+
+a {
+    font-size:17px;
+    text-decoration: none;
+}
+
+/*=============== NAV ===============*/
+.container {
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+.section {
+    padding: 2rem 0;
+}
+
+.nav__content {
+    position: relative;
+    width: 100%;
+}
+
+@media screen and (min-width: 320px) {
+    .nav__logo,
+    .nav__toggle,
+    .nav__name {
+        display: none;
+    }
+
+    .nav__list {
+        position: fixed;
+        bottom: 2rem;
+        background-color: var(--primary-color);
+        box-shadow: 0 8px 24px hsla(228, 81%, 24%, .15);
+        width: 90%;
+        padding: 30px 40px;
+        border-radius: 1rem;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        column-gap: 36px;
+        transition: .4s;
+        max-width: 400px;
+    }
+
+        .nav__list a {
+            text-decoration: none;
+            color: var(--text-color);
+        }
+
+            .nav__list a:hover {
+                color: var(--first-color);
+            }
+
+    .nav__user {
+        float: right;
+        margin-right: auto;
+        top: 1rem;
+        right: 1;
+        background-color: var(--primary-color);
+        box-shadow: 0 8px 24px hsla(228, 81%, 24%, .15);
+        padding: 20px 20px;
+        border-radius: 1rem;
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        column-gap: 10px;
+        transition: .4s;
+    }
+
+        .nav__user a {
+            text-decoration: none;
+            color: var(--text-color);
+        }
+
+            .nav__user a:hover {
+                color: var(--first-color);
+            }
+
+    .nav__panel {
+        float: left;
+        margin-right: auto;
+        top: 1rem;
+        left: 1;
+        background-color: var(--primary-color);
+        box-shadow: 0 8px 24px hsla(228, 81%, 24%, .15);
+        padding: 20px 20px;
+        border-radius: 1rem;
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        column-gap: 15px;
+        transition: .4s;
+    }
+
+        .nav__panel a {
+            text-decoration: none;
+            color: var(--text-color);
+        }
+
+    .nav__panell a:hover {
+        color: var(--first-color);
+    }
+}
+
+
+.nav__link {
+    display: flex;
+    color: var(--text-color);
+    font-weight: 500;
+    transition: .3s;
+}
+
+    .nav__link i {
+        font-size: 1.5rem;
+    }
+
+    .nav__link:hover {
+        color: var(--first-color);
+    }
+
+.nav__add {
+    display: flex;
+    color: var(--text-color);
+    font-weight: 500;
+    transition: .3s;
+}
+
+    .nav__add i {
+        font-size: 3rem;
+    }
+
+    .nav__add:hover {
+        color: var(--first-color);
+    }
+
+/* Active link */
+.active-link {
+    color: var(--first-color);
+}
+
+/*=============== BREAKPOINTS ===============*/
+/* For small devices */
+@media screen and (max-width: 320px) {
+    .nav__list {
+        column-gap: 20px;
+    }
+}
