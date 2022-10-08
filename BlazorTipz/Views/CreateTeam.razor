@@ -14,7 +14,6 @@
 @inject ITeamManager _teamManager
 
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
 <PageTitle>Create Team</PageTitle>
 
@@ -22,7 +21,7 @@
     <Authorized>
         <h1 class="center">Fill in the form</h1>
         <p class="d-flex justify-content-center">to create a new team!</p>
-        <div class="container my-4">
+        <div class="justify-content-center">
             <div class="row">
                 <div class="col-lg-6 offset-lg-3">
                     <RadzenTemplateForm TItem="TeamViewmodel" Data=@teamDto Submit=RegisterTeam>
@@ -59,7 +58,7 @@
         </div>
         <h1 class="center">Fill in the form</h1>
         <p class="d-flex justify-content-center">to add a new team member! ps: to be optimized</p>
-        <div class="container my-4">
+        <div class="justify-content-center">
             <div class="row">
                 <div class="col-lg-6 offset-lg-3">
                     <RadzenTemplateForm TItem="UserViewmodel" Data=@userDto Submit=AddTeamMember>

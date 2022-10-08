@@ -32,6 +32,7 @@
             <div class="page">
                 <main>
                     <article class="content px-4">
+                        <NavMenu />
                         @Body
                     </article>
                 </main>
@@ -39,6 +40,7 @@
         </NotAuthorized>
     </AuthorizeView>
 } else {
+    <link rel="stylesheet" href="css/Navbar.css" />
    <div class="center">
        <div class="spinner"></div>
    </div>
