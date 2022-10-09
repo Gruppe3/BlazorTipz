@@ -63,10 +63,9 @@ a {
 }
 
 @media screen and (min-width: 320px) {
-    .nav__logo,
-    .nav__toggle,
+
     .nav__name {
-        display: none;
+        margin-left: 10px;
     }
 
     .nav__list {
@@ -99,9 +98,35 @@ a {
 
     .nav__user {
         float: right;
+        margin-right: 20px;
+        top: 6rem;
+        right: 0.5rem;
+        display: none;
+        background-color: var(--primary-color);
+        box-shadow: 0 8px 24px hsla(228, 81%, 24%, .15);
+        padding: 20px 20px;
+        border-radius: 1rem;
+        position: fixed;
+        justify-content: center;
+        align-items: center;
+        column-gap: 10px;
+        transition: .4s;
+    }
+
+        .nav__user a {
+            margin-top: 1rem;
+            text-decoration: none;
+            color: var(--text-color);
+        }
+
+            .nav__user a:hover {
+                color: var(--first-color);
+            }
+
+    .nav__umenu {
+        float: right;
         margin-right: auto;
         top: 1rem;
-        right: 1;
         background-color: var(--primary-color);
         box-shadow: 0 8px 24px hsla(228, 81%, 24%, .15);
         padding: 20px 20px;
@@ -114,20 +139,20 @@ a {
         transition: .4s;
     }
 
-        .nav__user a {
+        .nav__umenu a {
+            margin: auto;
             text-decoration: none;
             color: var(--text-color);
         }
 
-            .nav__user a:hover {
+            .nav__umenu a:hover {
                 color: var(--first-color);
             }
 
-    .nav__panel {
+    .nav__tmenu {
         float: left;
-        margin-right: auto;
+        margin-left: auto;
         top: 1rem;
-        left: 1;
         background-color: var(--primary-color);
         box-shadow: 0 8px 24px hsla(228, 81%, 24%, .15);
         padding: 20px 20px;
@@ -136,11 +161,39 @@ a {
         display: flex;
         justify-content: center;
         align-items: center;
-        column-gap: 15px;
+        column-gap: 10px;
+        transition: .4s;
+    }
+
+        .nav__tmenu a {
+            margin: auto;
+            text-decoration: none;
+            color: var(--text-color);
+        }
+
+            .nav__tmenu a:hover {
+                color: var(--first-color);
+            }
+
+    .nav__panel {
+        float: left;
+        margin-left: 20px;
+        top: 6rem;
+        left: 0.5rem;
+        display: none;
+        background-color: var(--primary-color);
+        box-shadow: 0 8px 24px hsla(228, 81%, 24%, .15);
+        padding: 20px 20px;
+        border-radius: 1rem;
+        position: fixed;
+        justify-content: center;
+        align-items: center;
+        column-gap: 10px;
         transition: .4s;
     }
 
         .nav__panel a {
+            margin-top: 1rem;
             text-decoration: none;
             color: var(--text-color);
         }
@@ -153,6 +206,8 @@ a {
 
 .nav__link {
     display: flex;
+    margin: auto;
+    cursor: pointer;
     color: var(--text-color);
     font-weight: 500;
     transition: .3s;
