@@ -1,23 +1,19 @@
-﻿/*=============== LINK ACTIVE ===============*/
-const linkColor = document.querySelectorAll('.nav__link')
-
-function colorLink() {
-    linkColor.forEach(l => l.classList.remove('active-link'))
-    this.classList.add('active-link')
-}
-
-linkColor.forEach(l => l.addEventListener('click', colorLink))
-
-/*=============== SHOW HIDDEN MENU ===============*/
-const showMenu = (toggleId, navbarId) => {
-    const toggle = document.getElementById(toggleId),
-        navbar = document.getElementById(navbarId)
-
-    if (toggle && navbar) {
-        toggle.addEventListener('click', () => {
-            /* Show menu */
-            navbar.classList.toggle('show-menu')
-        })
+﻿const targetDiv = document.getElementById("user");
+const btn = document.getElementById("toggleu");
+btn.onclick = function () {
+    if (targetDiv.style.display !== "none") {
+        targetDiv.style.display = "none";
+    } else {
+        targetDiv.style.display = "block";
     }
-}
-showMenu('nav-toggle', 'nav')
+};
+
+const targetDiv2 = document.getElementById("team");
+const btn2 = document.getElementById("togglet");
+btn2.onclick = function () {
+    if (targetDiv2.style.display !== "none") {
+        targetDiv2.style.display = "none";
+    } else {
+        targetDiv2.style.display = "block";
+    }
+};

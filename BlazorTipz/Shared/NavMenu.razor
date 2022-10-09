@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="css/Navbar.css" />
 <AuthorizeView Roles="User">
     <Authorized>
+        <h1 style="opacity:0;">:)</h1>
         <!--=============== NAV ===============-->
         <div class="nav" id="nav">
             <nav class="nav__content">
@@ -20,7 +21,7 @@
                     <a href="/" class="nav__link active-link">
                         <i class='bx bx-grid-alt'></i>
                     </a>
-                    <a href="/" class="nav__add active-link">
+                    <a href="/suggestion" class="nav__add active-link">
                         <i class='bx bx-plus-circle'></i>
                     </a>
                     <a href="/" class="nav__link active-link">
@@ -33,13 +34,21 @@
 
         <div class="nav" id="nav">
             <nav class="nav__content">
-                <div class="nav__user">
+                <div class="nav__umenu" id="toggleu">
+                    <a class="nav__link">
+                        <i class='bx bx-user'></i>
+                    </a>
+                </div>
+                <div class="nav__user" id="user">
                     <a>@currentUser.name</a>
+                    <br />
                     <a href="/userSettings" class="nav__link">
                         <i class='bx bx-cog'></i>
+                        <span class="nav__name">Settings</span>
                     </a>
                     <a href="/" @onclick="Logout" class="nav__link">
                         <i class='bx bx-log-out'></i>
+                        <span class="nav__name">Logout</span>
                     </a>
                 </div>
             </nav>
@@ -48,7 +57,7 @@
 </AuthorizeView>
 <AuthorizeView Roles="Admin">
     <Authorized>
-
+        <h1 style="opacity:0;">:)</h1>
         <!--=============== NAV ===============-->
         <div class="nav" id="nav">
             <nav class="nav__content">
@@ -57,7 +66,7 @@
                     <a href="/" class="nav__link active-link">
                         <i class='bx bx-grid-alt'></i>
                     </a>
-                    <a href="/" class="nav__add active-link">
+                    <a href="/suggestion" class="nav__add active-link">
                         <i class='bx bx-plus-circle'></i>
                     </a>
                     <a href="/" class="nav__link active-link">
@@ -70,17 +79,31 @@
 
         <div class="nav" id="nav">
             <nav class="nav__content">
-                <div class="nav__user">
+                <div class="nav__umenu" id="toggleu">
+                    <a class="nav__link">
+                        <i class='bx bx-user'></i>
+                    </a>
+                </div>
+                <div class="nav__user" id="user">
                     <a>@currentUser.name</a>
+                    <br />
                     <a href="/userSettings" class="nav__link">
                         <i class='bx bx-cog'></i>
+                        <span class="nav__name">Settings</span>
                     </a>
                     <a href="/" @onclick="Logout" class="nav__link">
                         <i class='bx bx-log-out'></i>
+                        <span class="nav__name">Logout</span>
                     </a>
                 </div>
 
-                <div class="nav__panel">
+                <div class="nav__tmenu" id="togglet">
+                    <a class="nav__link">
+                        <i class='bx bx-dock-top'></i>
+                    </a>
+                </div>
+                <div class="nav__panel" id="team">
+                    <a>Admin Panel</a>
                     <a href="/register" class="nav__link">
                         <i class='bx bx-user-plus'></i>
                         <span class="nav__name">Register User</span>
@@ -97,6 +120,7 @@
 </AuthorizeView>
 <AuthorizeView Roles="TeamLeader">
     <Authorized>
+        <h1 style="opacity:0;">:)</h1>
         <!--=============== NAV ===============-->
         <div class="nav" id="nav">
             <nav class="nav__content">
@@ -105,7 +129,7 @@
                     <a href="/" class="nav__link active-link">
                         <i class='bx bx-grid-alt'></i>
                     </a>
-                    <a href="/" class="nav__add active-link">
+                    <a href="/suggestion" class="nav__add active-link">
                         <i class='bx bx-plus-circle'></i>
                     </a>
                     <a href="/" class="nav__link active-link">
@@ -118,20 +142,34 @@
 
         <div class="nav" id="nav">
             <nav class="nav__content">
-                <div class="nav__user">
+                <div class="nav__umenu" id="toggleu">
+                    <a class="nav__link">
+                        <i class='bx bx-user'></i>
+                    </a>
+                </div>
+                <div class="nav__user" id="user">
                     <a>@currentUser.name</a>
+                    <br />
                     <a href="/userSettings" class="nav__link">
                         <i class='bx bx-cog'></i>
+                        <span class="nav__name">Settings</span>
                     </a>
                     <a href="/" @onclick="Logout" class="nav__link">
                         <i class='bx bx-log-out'></i>
+                        <span class="nav__name">Logout</span>
                     </a>
                 </div>
 
-                <div class="nav__panel">
+                <div class="nav__tmenu" id="togglet">
+                    <a class="nav__link">
+                        <i class='bx bx-dock-top'></i>
+                    </a>
+                </div>
+                <div class="nav__panel" id="team">
+                    <a>Team Panel</a>
                     <a href="/createTeam" class="nav__link">
                         <i class='bx bx-group'></i>
-                        <span class="nav__name">Register Team</span>
+                        <span class="nav__name">Team Settings</span>
                     </a>
                 </div>
             </nav>
