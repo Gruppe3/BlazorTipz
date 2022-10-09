@@ -73,7 +73,18 @@
                                     <td>@us.employmentId</td>
                                     <td>@us.role.ToString()</td>
                                     <td>@us.password</td>
-                                    <td @onclick="DeleteUser"><i class='bx bx-trash pointer'></i></td>
+                                    <td >
+                                        <RadzenTemplateForm TItem="UserViewmodel" Data=@us Submit=DeleteUser>
+                                                    <RadzenNumeric style="display: none" Name="id" @bind-Value=@us.employmentId Class="w-100" />
+                                            <div class="center">
+                                                <RadzenButton ButtonType="ButtonType.Submit"><i class='bx bx-trash pointer'></i></RadzenButton>
+                                            </div>
+                                        </RadzenTemplateForm>
+                                       <!-- <form @onclick="DeleteUser">
+                                            <input type="hidden" name="employmentId" value="@us.employmentId" />
+                                            <i class='bx bx-trash pointer'></i>
+                                         </form>-->
+                                    </td>
                                 </tr>
                             }
                         </table>
@@ -157,9 +168,12 @@
     }
 
     //Delete user from list
-    public async Task<ActionResult<string>> DeleteUser()
+    public async Task<ActionResult<string>> DeleteUser(UserViewmodel request)
     {
-        Checker = "Not working yet :)";
-        return null;
+        _userM.deleteFromRegisterList(request.employmentId);
+        UsersList = _userM.getRegisterUserList();
+        //Break foreach loop
+        return "User deleted";
+       
     }
 }
