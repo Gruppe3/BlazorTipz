@@ -145,6 +145,7 @@ namespace BlazorTipz.ViewModels.User
                 {
                     u.name = user.name;
                     u.password = user.password;
+                    u.role = user.role;
                     hit = true; break;
                 }
             }
