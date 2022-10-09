@@ -157,16 +157,27 @@ namespace BlazorTipz.ViewModels.User
                 return "User succsessfully added to list of pepole to register";
             } else { return "User in list updated"; }
         }
+        private void updateListnum()
+        {
+            foreach (UserViewmodel u in UsersToRegister)
+            {
+                u.listnum = UsersToRegister.IndexOf(u) + 1;
+            }
+        }
         //deletes a specified element form usersToRegister list.
         public void deleteFromRegisterList(string emipd)
         {
+            int i = 0;
             //search for user to delete
             foreach(UserViewmodel user in UsersToRegister)
             {
                 if(user.employmentId == emipd)
                 {
-                    UsersToRegister.RemoveAt(user.listnum - 1);
+                    UsersToRegister.RemoveAt(i);
+                    updateListnum();
+                    break;
                 }
+                i++;
             }
             
         }

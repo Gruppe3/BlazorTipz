@@ -80,10 +80,6 @@
                                                 <RadzenButton ButtonType="ButtonType.Submit"><i class='bx bx-trash pointer'></i></RadzenButton>
                                             </div>
                                         </RadzenTemplateForm>
-                                       <!-- <form @onclick="DeleteUser">
-                                            <input type="hidden" name="employmentId" value="@us.employmentId" />
-                                            <i class='bx bx-trash pointer'></i>
-                                         </form>-->
                                     </td>
                                 </tr>
                             }
@@ -130,6 +126,7 @@
 
     bool passwordVisible = true;
     UserViewmodel userDto = new UserViewmodel();
+    UserViewmodel userTemp = new UserViewmodel();
     //Lager en liste
     List<RoleE> roles = new List<RoleE> { RoleE.User, RoleE.Admin };
     List<UserViewmodel> UsersList;
@@ -170,7 +167,8 @@
     //Delete user from list
     public async Task<ActionResult<string>> DeleteUser(UserViewmodel request)
     {
-        _userM.deleteFromRegisterList(request.employmentId);
+        userTemp = request;
+        _userM.deleteFromRegisterList(userTemp.employmentId);
         UsersList = _userM.getRegisterUserList();
         //Break foreach loop
         return "User deleted";
