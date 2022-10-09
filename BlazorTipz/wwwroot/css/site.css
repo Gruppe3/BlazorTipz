@@ -2,8 +2,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
 
 
-@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
-
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
@@ -118,4 +116,28 @@ a, .btn-link {
 
     .blazor-error-boundary::after {
         content: "An error has occurred."
+    }
+
+table {
+    text-align: center;
+    border-collapse: collapse;
+    background: var(--primary-color);
+    box-shadow: 0 8px 24px hsla(228, 81%, 24%, .15);
+    padding: 30px 40px;
+    border-radius: 1rem;
+    width: 100%;
+    margin: 0 auto;
+    column-gap: 36px;
+    transition: .4s;
+    /* add this */
+    overflow: hidden
+}
+
+    table td, table th {
+        padding: 8px;
+    }
+
+    table th {
+        padding-top: 12px;
+        padding-bottom: 12px;
     }

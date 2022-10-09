@@ -49,23 +49,20 @@
                             </div>
                         </div>
                         <div class="center">
-                            <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
-                        </div>
-                        <div class="center">
-                            <h1>@Checker</h1>
+                            <RadzenButton ButtonType="ButtonType.Submit" Text="Add to list"></RadzenButton>
                         </div>
                     </RadzenTemplateForm>
-                    <div>
+                    <div class="center">
                         <p>Liste for over de som skal registreres</p>
                     </div>
                     <div>
-                        <table>
+                        <table class="regT">
                             <tr>
                                 <th>Nr</th>
                                 <th>Name</th>
                                 <th>EmpID</th>
                                 <th>Role</th>
-                                <th>Passord</th>
+                                <th>Password</th>
                             </tr>
                             @foreach (UserViewmodel us in UsersList)
                             {
@@ -80,11 +77,11 @@
                         </table>
                     </div>
                     <div>
-                        <div>
-                            <p>@Checker2</p>
+                        <div class="center">
+                            <p>@Checker</p>
                         </div>
                         <div class="center">
-                            <RadzenButton Click="RegisterUsers" Text="Register list" ButtonStyle="ButtonStyle.Primary" />
+                            <RadzenButton Click="RegisterUsers" Text="Register" ButtonStyle="ButtonStyle.Primary" />
                         </div>
                     </div>
                 </div>
@@ -117,7 +114,7 @@
     bool popup;
     bool isLoading = false;
     public string Checker { get; set; }
-    public string Checker2 { get; set; }
+
     bool passwordVisible = true;
     UserViewmodel userDto = new UserViewmodel();
     //Lager en liste
@@ -151,7 +148,7 @@
     {
 
         (string err,string suc )= await _userM.registerMultiple(null);
-        Checker2 = err;
+        Checker = err;
         UsersList = _userM.getRegisterUserList();
         if (suc != null){ Checker = suc; return suc; }
         return err;
