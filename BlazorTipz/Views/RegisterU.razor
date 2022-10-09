@@ -63,6 +63,7 @@
                                 <th>EmpID</th>
                                 <th>Role</th>
                                 <th>Password</th>
+                                <th>Delete</th>
                             </tr>
                             @foreach (UserViewmodel us in UsersList)
                             {
@@ -72,6 +73,7 @@
                                     <td>@us.employmentId</td>
                                     <td>@us.role.ToString()</td>
                                     <td>@us.password</td>
+                                    <td @onclick="DeleteUser"><i class='bx bx-trash pointer'></i></td>
                                 </tr>
                             }
                         </table>
@@ -152,5 +154,12 @@
         UsersList = _userM.getRegisterUserList();
         if (suc != null){ Checker = suc; return suc; }
         return err;
+    }
+
+    //Delete user from list
+    public async Task<ActionResult<string>> DeleteUser()
+    {
+        Checker = "Not working yet :)";
+        return null;
     }
 }
