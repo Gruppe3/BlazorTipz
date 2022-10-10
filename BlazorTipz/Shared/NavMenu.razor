@@ -1,13 +1,16 @@
 ﻿@using BlazorTipz.Components
-@using BlazorTipz.ViewModels.User;
+@using BlazorTipz.Data
+@using BlazorTipz.ViewModels
+@using BlazorTipz.ViewModels.User
 @using BlazorTipz.ViewModels.Suggestion
-@using BlazorTipz.ViewModels.Team;
+@using BlazorTipz.ViewModels.Team
 @using Microsoft.AspNetCore.Mvc
 
 @inject ILocalStorageService _localStorage
 @inject NavigationManager NavigationManager
 @inject IUserManager _userManager
 @inject ITeamManager _teamManager
+@inject ISuggestionManager _suggestionManager
 @inject IJSRuntime JsRuntime
 
 <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
@@ -29,7 +32,7 @@
                                 </div>
                                 <div class="col">
                                     <!--Binder til userDto.emplymentId-->
-                                    <RadzenTextBox style="display: block" Name="title" Class="w-100" />
+                                    <RadzenTextBox style="display: block" @bind-Value=@suggDto.Title Name="title" Class="w-100" />
                                 </div>
                             </div>
                             <!--Just do it checkbox-->
@@ -38,7 +41,7 @@
                                     <RadzenLabel Text="Just Do It" />
                                 </div>
                                 <div class="col">
-                                    <RadzenCheckBox @bind-Value=@checkBox1Value Name="CheckBox1" TValue="bool" Change=@(args => OnChange(args, "CheckBox1 CheckBox")) />
+                                    <RadzenCheckBox @bind-Value=@suggDto.JustDoIt Name="CheckBox1" TValue="bool" Change=@(args => OnChange(args, "CheckBox1 CheckBox")) />
                                     <RadzenLabel Text="Just Do It" Component="CheckBox1" Style="margin-left: 8px; vertical-align: middle;" />
                                 </div>
                             </div>
@@ -51,7 +54,7 @@
                                     <RadzenDropDownDataGrid @bind-Value=@suggDto.OwnerTeam FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
                                                             AllowFiltering="true" AllowClear="true" Data=@teams TextProperty="name" Placeholder="Team" ValueProperty="id" Class="w-100">
                                         <Columns>
-                                            <RadzenDropDownDataGridColumn Property="id" Title="Team ID" />
+                                            <RadzenDropDownDataGridColumn Property="id" Title="Team ID"  />
                                             <RadzenDropDownDataGridColumn Property="name" Title="Team Name" />
                                         </Columns>
 
@@ -64,8 +67,12 @@
                                     <RadzenLabel Text="Kategori" />
                                 </div>
                                 <div class="col">
-                                    <!--Binder til userDto.emplymentId-->
-                                    <RadzenTextBox style="display: block" Name="title" Class="w-100" />
+                                    <RadzenDropDownDataGrid @bind-Value=@suggDto.category FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
+                                                            AllowFiltering="true" AllowClear="true" Data=@Categories TextProperty="Name" Placeholder="Kategori" Class="w-100">
+                                        <Columns>
+                                            <RadzenDropDownDataGridColumn Property="Name" Title="Kategori" />
+                                        </Columns>
+                                    </RadzenDropDownDataGrid>
                                 </div>
                             </div>
                             <!--Description-->
@@ -74,8 +81,11 @@
                                     <RadzenLabel Text="Description" />
                                 </div>
                                 <div class="col">
-                                    <RadzenTextArea Style="min-height:10rem" Change=@(args => OnChange(args, "TextArea")) Class="w-100" />
+                                    <RadzenTextArea Style="min-height:10rem" @bind-Value=@suggDto.Description Change=@(args => OnChange(args, "TextArea")) Class="w-100" />
                                 </div>
+                            </div>
+                            <div class="center">
+                                <p>@Feedback</p>
                             </div>
                             <!--Button-->
                             <div class="center">
@@ -272,13 +282,15 @@
     SuggViewmodel suggDto = new SuggViewmodel();
     List<SuggViewmodel> team = new List<SuggViewmodel>();
     List<TeamViewmodel> teams = new List<TeamViewmodel>();
+    List<Category> Categories;
 
-    bool checkBox1Value;
+
     public string TeamCheck { get; set; }
     public string teamU { get; set; }
     private string ShowSug { get; set; } = "none";
     private string ShowUser { get; set; } = "none";
     private string ShowTeam { get; set; } = "none";
+    private string Feedback { get; set; }
 
     public async Task Logout()
     {
@@ -303,7 +315,7 @@
             currentTeam = team;
 
         }
-        
+
         var CurrentUser = _userManager.getCurrentUser();
 
         teams = await _teamManager.updateTeamsList();
@@ -317,10 +329,9 @@
         {
             NavigationManager.NavigateTo("/");
         }
+        Categories = _suggestionManager.GetCategories();
+        suggDto.OwnerTeam = Cteam.id;
     }
-
-
-
 
     private void ShowSugg(){
 
@@ -330,10 +341,10 @@
             ShowSug = "block";
         }
 
-        
+
         StateHasChanged();
     }
-    
+
     private void ShowTeamP()
     {
 
@@ -373,7 +384,25 @@
 
     public async Task<ActionResult<string>> submit(SuggViewmodel request)
     {
-        return null;
+        SuggViewmodel suggToSave = new SuggViewmodel();
+        suggToSave.Title = request.Title;
+        suggToSave.Description = request.Description;
+        suggToSave.OwnerTeam = request.OwnerTeam;
+        suggToSave.Creator = _userManager.getCurrentUser().employmentId;
+        suggToSave.JustDoIt = request.JustDoIt;
+        suggToSave.category = request.category;
+        suggToSave.StartDate = DateTime.Now.ToLocalTime().ToString("yyyyMMddHHmmss");
+        if (suggToSave.JustDoIt == true) { suggToSave.Status = SuggStatus.Plan; } else { suggToSave.Status = SuggStatus.Waiting; }
+
+        string? err = await _suggestionManager.saveSuggestion(suggToSave);
+        if(err != null){
+            Feedback = err;
+            return err;
+        } else{
+            Feedback = "Forslag lagret";
+            return "Sucsess";
+        }
+        
     }
 
 }

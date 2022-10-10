@@ -24,6 +24,7 @@ namespace BlazorTipz.ViewModels.Suggestion
             }
             
             SuggestionEntity suggEntity = new SuggestionEntity(sugg);
+            suggEntity.Category = searchForCategoryId(sugg.category);
             if (suggEntity == null) { err = "Program failure"; return err; }
             await _DBR.saveSuggestion(suggEntity);
 
@@ -44,6 +45,21 @@ namespace BlazorTipz.ViewModels.Suggestion
                 cats.Add(cat);
             }
             return cats;
+        }
+        private string searchForCategoryId(Category cat)
+        {
+            {
+                string id = "";
+                foreach (CategoriEntity c in _AS.GetCategories())
+                {
+                    if (c.Name == cat.Name)
+                    {
+                        id = c.Id;
+                        break;
+                    }
+                }
+                return id;
+            }
         }
         
         private string? validateSuggestion(SuggViewmodel sugg)
