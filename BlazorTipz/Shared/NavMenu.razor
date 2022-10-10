@@ -15,7 +15,7 @@
 
 <div class="nav" >
     <nav class="nav__content2">
-        <div class="nav__sugg" id="sug">
+        <div class="nav__sugg" style="display: @ShowSug">
             <p class="d-flex justify-content-center">Enter a suggestion</p>
             <div class="justify-content-center">
                 <div class="row">
@@ -100,8 +100,8 @@
                     <a href="/" class="nav__link active-link">
                         <i class='bx bx-grid-alt'></i>
                     </a>
-                    <div id="togglesug">
-                        <a href="javascript:void(0);" class="nav__add active-link">
+                    <div>
+                        <a href="javascript:void(0);" class="nav__add active-link" @onclick="@ShowSugg">
                             <i class='bx bx-plus-circle'></i>
                         </a>
                     </div>
@@ -113,14 +113,14 @@
             </nav>
         </div>
 
-        <div class="nav" id="nav">
+        <div class="nav">
             <nav class="nav__content">
-                <div class="nav__umenu" id="toggleu">
-                    <a href="javascript:void(0);" class="nav__link">
+                <div class="nav__umenu">
+                    <a href="javascript:void(0);" class="nav__link" @onclick="@ShowUserP">
                         <i class='bx bx-user'></i>
                     </a>
                 </div>
-                <div class="nav__user" id="user">
+                <div class="nav__user" id="user" style="display: @ShowUser">
                     <a>@currentUser.name</a>
                     <br />
                     <a href="/userSettings" class="nav__link">
@@ -131,14 +131,6 @@
                         <i class='bx bx-log-out'></i>
                         <span class="nav__name">Logout</span>
                     </a>
-                </div>
-
-                <!--Making the JavaScript Gods Happy-->
-                <div class="nav__tmenu" id="togglet" style="display:none;">
-                    <a href="javascript:void(0);" class="nav__link">
-                    </a>
-                </div>
-                <div class="nav__panel" id="team">
                 </div>
             </nav>
         </div>
@@ -157,11 +149,9 @@
                     <a href="/" class="nav__link active-link">
                         <i class='bx bx-grid-alt'></i>
                     </a>
-                    <div id="togglesug">
-                        <a href="javascript:void(0);" class="nav__add active-link">
+                    <a href="javascript:void(0);" class="nav__add active-link" @onclick="@ShowSugg">
                             <i class='bx bx-plus-circle'></i>
                         </a>
-                    </div>
                     <a href="/" class="nav__link active-link">
                         <i class='bx bx-bar-chart-alt-2'></i>
                     </a>
@@ -172,12 +162,12 @@
 
         <div class="nav" id="nav">
             <nav class="nav__content">
-                <div class="nav__umenu" id="toggleu">
-                    <a href="javascript:void(0);" class="nav__link">
+                <div class="nav__umenu">
+                    <a href="javascript:void(0);" class="nav__link" @onclick="@ShowUserP">
                         <i class='bx bx-user'></i>
                     </a>
                 </div>
-                <div class="nav__user" id="user">
+                <div class="nav__user" id="user" style="display: @ShowUser">
                     <a>@currentUser.name</a>
                     <br />
                     <a href="/userSettings" class="nav__link">
@@ -190,12 +180,13 @@
                     </a>
                 </div>
 
-                <div class="nav__tmenu" id="togglet">
-                    <a href="javascript:void(0);" class="nav__link">
+                <div class="nav__tmenu">
+                    <a href="javascript:void(0);" class="nav__link" @onclick="@ShowTeamP">
                         <i class='bx bx-dock-top'></i>
                     </a>
                 </div>
-                <div class="nav__panel" id="team">
+                <div class="nav__panel" style="display: @ShowTeam">
+                    
                     <a>Admin Panel</a>
                     <a href="/register" class="nav__link">
                         <i class='bx bx-user-plus'></i>
@@ -221,8 +212,8 @@
                     <a href="/" class="nav__link active-link">
                         <i class='bx bx-grid-alt'></i>
                     </a>
-                    <div id="togglesug">
-                        <a href="javascript:void(0);" class="nav__add active-link">
+                    <div>
+                        <a href="javascript:void(0);" class="nav__add active-link" @onclick="@ShowSugg">
                             <i class='bx bx-plus-circle'></i>
                         </a>
                     </div>
@@ -236,12 +227,12 @@
 
         <div class="nav" id="nav">
             <nav class="nav__content">
-                <div class="nav__umenu" id="toggleu">
-                    <a href="javascript:void(0);" class="nav__link">
+                <div class="nav__umenu">
+                    <a href="javascript:void(0);" class="nav__link" @onclick="@ShowUserP">
                         <i class='bx bx-user'></i>
                     </a>
                 </div>
-                <div class="nav__user" id="user">
+                <div class="nav__user" id="user" style="display: @ShowUser">
                     <a>@currentUser.name</a>
                     <br />
                     <a href="/userSettings" class="nav__link">
@@ -254,16 +245,18 @@
                     </a>
                 </div>
 
-                <div class="nav__tmenu" id="togglet">
-                    <a href="javascript:void(0);" class="nav__link">
+                <div class="nav__tmenu">
+                    <a href="javascript:void(0);" class="nav__link" @onclick="@ShowTeamP">
                         <i class='bx bx-dock-top'></i>
                     </a>
                 </div>
-                <div class="nav__panel" id="team">
+                <div class="nav__panel" style="display: @ShowTeam">
+
                     <a>Team Panel</a>
+
                     <a href="/manageTeam" class="nav__link">
                         <i class='bx bx-group'></i>
-                        <span class="nav__name">Team Settings</span>
+                        <span class="nav__name">Register Team</span>
                     </a>
                 </div>
             </nav>
@@ -283,6 +276,9 @@
     bool checkBox1Value;
     public string TeamCheck { get; set; }
     public string teamU { get; set; }
+    private string ShowSug { get; set; } = "none";
+    private string ShowUser { get; set; } = "none";
+    private string ShowTeam { get; set; } = "none";
 
     public async Task Logout()
     {
@@ -324,12 +320,50 @@
     }
 
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await JsRuntime.InvokeVoidAsync("import", "./js/main.js");
+
+
+    private void ShowSugg(){
+
+        if(ShowSug != "none"){
+            ShowSug = "none";
+        } else {
+            ShowSug = "block";
         }
+
+        
+        StateHasChanged();
+    }
+    
+    private void ShowTeamP()
+    {
+
+        if (ShowTeam != "none")
+        {
+            ShowTeam = "none";
+        }
+        else
+        {
+            ShowTeam = "block";
+        }
+
+
+        StateHasChanged();
+    }
+
+    private void ShowUserP()
+    {
+
+        if (ShowUser != "none")
+        {
+            ShowUser = "none";
+        }
+        else
+        {
+            ShowUser = "block";
+        }
+
+
+        StateHasChanged();
     }
 
     void OnChange(object value, string name)
