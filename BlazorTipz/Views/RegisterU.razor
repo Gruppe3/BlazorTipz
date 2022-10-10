@@ -24,11 +24,13 @@
                 <div class="col-lg-6 offset-lg-3">
                     <RadzenTemplateForm TItem="UserViewmodel" Data=@userDto Submit=registerUser>
                         <div class="row mb-5">
-                            <div class="col-md-4" style="align-self: center;">
+                            <div class="col-md-4">
                                 <RadzenLabel Text="ID" />
                             </div>
-                            <div class="col">
-                                <RadzenNumeric style="display: block" Name="id" @bind-Value=@userDto.employmentId Class="w-100" />
+                            <div class="col" style="align-self: center;">
+                                <RadzenMask Mask="******" CharacterPattern="[0-9]" Placeholder="000000" Name="id"
+                                            @bind-Value=@userDto.employmentId Class="w-100" />
+                                <RadzenLengthValidator Component="id" Min="6" Text="Needs to be 6 characters" Popup=@popup Style="position: absolute" />
                             </div>
                         </div>
                         <div class="row mb-5">
@@ -37,6 +39,7 @@
                             </div>
                             <div class="col">
                                 <RadzenTextBox style="display: block" Name="name" @bind-Value=@userDto.name Class="w-100" />
+                                <RadzenRequiredValidator Component="name" Text="Name is required" Popup=@popup Style="position: absolute" />
                             </div>
                         </div>
                         <div class="row mb-5">
