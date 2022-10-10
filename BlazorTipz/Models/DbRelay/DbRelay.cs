@@ -70,7 +70,7 @@ namespace BlazorTipz.Models.DbRelay
                 {
                     if (toSaveUser.passwordSalt != null)
                     {
-                        var sql = "UPDATE Users SET passwordHash = @passwordHash, name = @name, passwordSalt = @passwordSalt, role = @role WHERE employmentId = @employmentId;";
+                        var sql = "UPDATE Users SET passwordHash = @passwordHash, name = @name, passwordSalt = @passwordSalt, role = @role, firstTimeLogin = @firstTimeLogin WHERE employmentId = @employmentId;";
 
                         await _data.SaveData(sql, new
                         {
@@ -78,7 +78,8 @@ namespace BlazorTipz.Models.DbRelay
                             name = toSaveUser.name,
                             passwordSalt = toSaveUser.passwordSalt,
                             passwordHash = toSaveUser.passwordHash,
-                            role = toSaveUser.role.ToString()
+                            role = toSaveUser.role.ToString(),
+                            firstTimeLogin = toSaveUser.firstTimeLogin
                         },
                             _config.GetConnectionString("default"));
                     }

@@ -22,7 +22,7 @@ namespace BlazorTipz.Models
         public byte[] passwordHash { get; set; }
         public byte[] passwordSalt { get; set; }
         public bool active { get; set; } = true;
-
+        public bool firstTimeLogin { get; set; }
         public string AuthToken { get; private set; }
 
         //inject _data
@@ -46,6 +46,7 @@ namespace BlazorTipz.Models
             this.teamId = user.teamId;
             this.name = user.name;
             this.role = user.role;
+            this.firstTimeLogin = user.firstTimeLogin;
             if (user.password != null)
             {
                 passwordHashing(user.password);

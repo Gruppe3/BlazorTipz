@@ -214,6 +214,7 @@ namespace BlazorTipz.ViewModels.User
 
             CurrentUser.password = user.password;
             CurrentUser.name = user.name;
+            CurrentUser.firstTimeLogin = user.firstTimeLogin;
             if (CurrentUser.employmentId == null) { err = "no emplayment Id"; return err; };
 
             UserDb toSave = new UserDb(CurrentUser);
