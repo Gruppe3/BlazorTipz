@@ -48,14 +48,15 @@
         {
             (UserViewmodel user, string err) = await _userManager.getCurrentUser(token);
 
-            if (err != null)
+            if (err != null || user == null)
             {
                 NavigationManager.NavigateTo("/login", true);
             }
-            else if (user == null)
+            if (user.firstTimeLogin == true)
             {
-                NavigationManager.NavigateTo("/login", true);
+                NavigationManager.NavigateTo("/userSettings");
             }
+            
             //Sets currentUser to user
             currentUser = user;
         }

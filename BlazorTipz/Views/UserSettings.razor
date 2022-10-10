@@ -89,12 +89,22 @@
     //changes the current user details
     public async Task<ActionResult<UserViewmodel>> ChangeSettings(UserViewmodel request)
     {
+        if (request.firstTimeLogin == true)
+        {
+            request.firstTimeLogin = false;
+        }
+        
         string err = await _userManager.updateCurrentUser(request);
 
         if (err != null)
         {
             Checker = err;
             return new BadRequestObjectResult(Checker);
+        }
+        else
+        {
+            Checker = "User updated";
+            return new OkObjectResult(Checker);
         }
         CUser = _userManager.getCurrentUser();
         if (CUser.password != request.RepeatPassword) { Checker = "not changed correctly, try again"; return new BadRequestObjectResult(Checker); }
