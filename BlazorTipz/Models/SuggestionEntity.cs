@@ -5,6 +5,7 @@ namespace BlazorTipz.Models
 {
     public class SuggestionEntity
     {
+        //db colums
         public string sugId { get; set; }
         public string owner { get; set; }
         public string creator { get; set; }
@@ -18,6 +19,8 @@ namespace BlazorTipz.Models
         public bool JustDoIt { get; set; }
         public string BeforeImage { get; set; }
         public string AfterImage { get; set; }
+        //ekstra fields
+        public CategoriEntity CategoryEntity { get; set; }
 
         public SuggestionEntity()
         {
@@ -30,11 +33,12 @@ namespace BlazorTipz.Models
             this.sugTitle = sugg.Title;
             this.sugDesc = sugg.Description;
             this.JustDoIt = sugg.JustDoIt;
-            this.Category = sugg.Category;
             this.creator = sugg.Creator;
             this.status = sugg.Status;
             this.createdAt = sugg.StartDate;
             this.lastChanged = sugg.UpdatedDate;
+
+            this.CategoryEntity = new CategoriEntity(sugg.category);
         }
     }
 }
