@@ -62,6 +62,13 @@ a {
     width: 100%;
 }
 
+.nav__content2 {
+    position: fixed;
+    width: 100%;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
 @media screen and (min-width: 320px) {
 
     .nav__name {
@@ -96,6 +103,24 @@ a {
             .nav__list a:hover {
                 color: var(--first-color);
             }
+
+    .nav__sugg {
+        position: fixed;
+        background-color: var(--primary-color);
+        box-shadow: 0 8px 24px hsla(228, 81%, 24%, .15);
+        padding: 30px 40px;
+        border-radius: 1rem;
+        width: 70%;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        column-gap: 36px;
+        transition: .4s;
+        z-index: 3;
+    }
 
     .nav__user {
         float: right;

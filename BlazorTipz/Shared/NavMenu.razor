@@ -1,6 +1,8 @@
 ﻿@using BlazorTipz.Components
 @using BlazorTipz.ViewModels.User;
+@using BlazorTipz.ViewModels.Suggestion
 @using BlazorTipz.ViewModels.Team;
+@using Microsoft.AspNetCore.Mvc
 
 @inject ILocalStorageService _localStorage
 @inject NavigationManager NavigationManager
@@ -10,20 +12,99 @@
 
 <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
 <link rel="stylesheet" href="css/Navbar.css" />
+
+<div class="nav" >
+    <nav class="nav__content2">
+        <div class="nav__sugg" id="sug">
+            <p class="d-flex justify-content-center">Enter a suggestion</p>
+            <div class="justify-content-center">
+                <div class="row">
+                    <div class="col-lg-6 offset-lg-3">
+                        <!--Wants type SuggViewmodel, field object is suggDto-->
+                        <RadzenTemplateForm TItem="SuggViewmodel" Data=@suggDto Submit=submit>
+                            <!--Title on suggestion-->
+                            <div class="row mb-5">
+                                <div class="col-md-4" style="align-self: center;">
+                                    <RadzenLabel Text="Tittel" />
+                                </div>
+                                <div class="col">
+                                    <!--Binder til userDto.emplymentId-->
+                                    <RadzenTextBox style="display: block" Name="title" Class="w-100" />
+                                </div>
+                            </div>
+                            <!--Just do it checkbox-->
+                            <div class="row mb-5">
+                                <div class="col-md-4" style="align-self: center;">
+                                    <RadzenLabel Text="Just Do It" />
+                                </div>
+                                <div class="col">
+                                    <RadzenCheckBox @bind-Value=@checkBox1Value Name="CheckBox1" TValue="bool" Change=@(args => OnChange(args, "CheckBox1 CheckBox")) />
+                                    <RadzenLabel Text="Just Do It" Component="CheckBox1" Style="margin-left: 8px; vertical-align: middle;" />
+                                </div>
+                            </div>
+                            <!--Team dropdown-->
+                            <div class="row mb-5">
+                                <div class="col-md-4" style="align-self: center;">
+                                    <RadzenLabel Text="Team Name" />
+                                </div>
+                                <div class="col">
+                                    <RadzenDropDownDataGrid @bind-Value=@suggDto.OwnerTeam FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
+                                                            AllowFiltering="true" AllowClear="true" Data=@teams TextProperty="name" Placeholder="Team" ValueProperty="id" Class="w-100">
+                                        <Columns>
+                                            <RadzenDropDownDataGridColumn Property="id" Title="Team ID" />
+                                            <RadzenDropDownDataGridColumn Property="name" Title="Team Name" />
+                                        </Columns>
+
+                                    </RadzenDropDownDataGrid>
+                                </div>
+                            </div>
+                            <!--Category-->
+                            <div class="row mb-5">
+                                <div class="col-md-4" style="align-self: center;">
+                                    <RadzenLabel Text="Kategori" />
+                                </div>
+                                <div class="col">
+                                    <!--Binder til userDto.emplymentId-->
+                                    <RadzenTextBox style="display: block" Name="title" Class="w-100" />
+                                </div>
+                            </div>
+                            <!--Description-->
+                            <div class="row mb-5">
+                                <div class="col-md-4" style="align-self: center;">
+                                    <RadzenLabel Text="Description" />
+                                </div>
+                                <div class="col">
+                                    <RadzenTextArea Style="min-height:10rem" Change=@(args => OnChange(args, "TextArea")) Class="w-100" />
+                                </div>
+                            </div>
+                            <!--Button-->
+                            <div class="center">
+                                <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
+                            </div>
+                        </RadzenTemplateForm>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+
 <AuthorizeView Roles="User">
     <Authorized>
         <h1 style="opacity:0;">:)</h1>
         <!--=============== NAV ===============-->
-        <div class="nav" id="nav">
+        <div class="nav">
             <nav class="nav__content">
 
                 <div class="nav__list">
                     <a href="/" class="nav__link active-link">
                         <i class='bx bx-grid-alt'></i>
                     </a>
-                    <a href="/suggestion" class="nav__add active-link">
-                        <i class='bx bx-plus-circle'></i>
-                    </a>
+                    <div id="togglesug">
+                        <a href="javascript:void(0);" class="nav__add active-link">
+                            <i class='bx bx-plus-circle'></i>
+                        </a>
+                    </div>
                     <a href="/" class="nav__link active-link">
                         <i class='bx bx-bar-chart-alt-2'></i>
                     </a>
@@ -69,16 +150,18 @@
     <Authorized>
         <h1 style="opacity:0;">:)</h1>
         <!--=============== NAV ===============-->
-        <div class="nav" id="nav">
+        <div class="nav">
             <nav class="nav__content">
 
                 <div class="nav__list">
                     <a href="/" class="nav__link active-link">
                         <i class='bx bx-grid-alt'></i>
                     </a>
-                    <a href="/suggestion" class="nav__add active-link">
-                        <i class='bx bx-plus-circle'></i>
-                    </a>
+                    <div id="togglesug">
+                        <a href="javascript:void(0);" class="nav__add active-link">
+                            <i class='bx bx-plus-circle'></i>
+                        </a>
+                    </div>
                     <a href="/" class="nav__link active-link">
                         <i class='bx bx-bar-chart-alt-2'></i>
                     </a>
@@ -132,16 +215,17 @@
     <Authorized>
         <h1 style="opacity:0;">:)</h1>
         <!--=============== NAV ===============-->
-        <div class="nav" id="nav">
+        <div class="nav">
             <nav class="nav__content">
-
                 <div class="nav__list">
                     <a href="/" class="nav__link active-link">
                         <i class='bx bx-grid-alt'></i>
                     </a>
-                    <a href="/suggestion" class="nav__add active-link">
-                        <i class='bx bx-plus-circle'></i>
-                    </a>
+                    <div id="togglesug">
+                        <a href="javascript:void(0);" class="nav__add active-link">
+                            <i class='bx bx-plus-circle'></i>
+                        </a>
+                    </div>
                     <a href="/" class="nav__link active-link">
                         <i class='bx bx-bar-chart-alt-2'></i>
                     </a>
@@ -190,8 +274,15 @@
     public UserViewmodel currentUser = new UserViewmodel();
     public TeamViewmodel currentTeam = new TeamViewmodel();
 
+    UserViewmodel CUser;
+    TeamViewmodel Cteam;
+    SuggViewmodel suggDto = new SuggViewmodel();
+    List<SuggViewmodel> team = new List<SuggViewmodel>();
+    List<TeamViewmodel> teams = new List<TeamViewmodel>();
+
+    bool checkBox1Value;
     public string TeamCheck { get; set; }
-    public string team { get; set; }
+    public string teamU { get; set; }
 
     public async Task Logout()
     {
@@ -216,38 +307,22 @@
             currentTeam = team;
 
         }
+        
+        var CurrentUser = _userManager.getCurrentUser();
+
+        teams = await _teamManager.updateTeamsList();
+        if (CurrentUser != null)
+        {
+            CUser = CurrentUser;
+            Cteam = await _teamManager.getTeam(CUser.teamId);
+            teamU = Cteam.name;
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/");
+        }
     }
 
-    ////Check if string is null or empty
-    //public bool IsNullOrEmpty(string str)
-    //{
-    //    return string.IsNullOrEmpty(str);
-    //}
-
-    ////Return string if not null or empty
-    //public string ReturnString(string str)
-    //{
-    //    if (string.IsNullOrEmpty(str))
-    //    {
-    //        return "";
-    //    }
-    //    else
-    //    {
-    //        return str;
-    //    }
-    //}
-
-    //public string ReturnStringU(string str)
-    //{
-    //    if (string.IsNullOrEmpty(str))
-    //    {
-    //        return "";
-    //    }
-    //    else
-    //    {
-    //        return ": " + str;
-    //    }
-    //}
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -255,6 +330,16 @@
         {
             await JsRuntime.InvokeVoidAsync("import", "./js/main.js");
         }
+    }
+
+    void OnChange(object value, string name)
+    {
+        var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
+    }
+
+    public async Task<ActionResult<string>> submit(SuggViewmodel request)
+    {
+        return null;
     }
 
 }

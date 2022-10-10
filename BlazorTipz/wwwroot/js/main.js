@@ -17,3 +17,13 @@ btn2.onclick = function () {
         targetDiv2.style.display = "block";
     }
 };
+
+const targetDiv3 = document.getElementById("sug");
+const btn3 = document.getElementById("togglesug");
+btn3.onclick = function () {
+    if (targetDiv3.style.display !== "none") {
+        targetDiv3.style.display = "none";
+    } else {
+        targetDiv3.style.display = "block";
+    }
+};
