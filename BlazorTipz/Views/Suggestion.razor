@@ -1,0 +1,131 @@
+﻿@page "/suggestion"
+
+@using BlazorTipz.ViewModels
+@using BlazorTipz.ViewModels.Suggestion
+@using BlazorTipz.ViewModels.Team
+@using BlazorTipz.ViewModels.User
+@using Microsoft.AspNetCore.Mvc
+@using Radzen
+
+@inject IUserManager _userManager
+@inject ITeamManager _teamManager
+@inject NavigationManager _navigationManager
+
+<style>
+    form .row {
+        margin-bottom: 16px;
+    }
+</style>
+
+
+<p class="d-flex justify-content-center">Enter a suggestion</p>
+<div class="justify-content-center">
+    <div class="row">
+        <div class="col-lg-6 offset-lg-3">
+            <!--Wants type SuggViewmodel, field object is suggDto-->
+            <RadzenTemplateForm TItem="SuggViewmodel" Data=@suggDto Submit=submit>
+                <!--Title on suggestion-->
+                <div class="row mb-5">
+                    <div class="col-md-4" style="align-self: center;">
+                        <RadzenLabel Text="Tittel" />
+                    </div>
+                    <div class="col">
+                        <!--Binder til userDto.emplymentId-->
+                        <RadzenTextBox style="display: block" Name="title" Class="w-100" />
+                    </div>
+                </div>
+                <!--Just do it checkbox-->
+                <div class="row mb-5">
+                    <div class="col-md-4" style="align-self: center;">
+                        <RadzenLabel Text="Just Do It" />
+                    </div>
+                    <div class="col">
+                        <RadzenCheckBox @bind-Value=@checkBox1Value Name="CheckBox1" TValue="bool" Change=@(args => OnChange(args, "CheckBox1 CheckBox")) />
+                        <RadzenLabel Text="Just Do It" Component="CheckBox1" Style="margin-left: 8px; vertical-align: middle;" />
+                    </div>
+                </div>
+                <!--Team dropdown-->
+                <div class="row mb-5">
+                    <div class="col-md-4" style="align-self: center;">
+                        <RadzenLabel Text="Team Name" />
+                    </div>
+                    <div class="col">
+                        <RadzenDropDownDataGrid @bind-Value=@suggDto.OwnerTeam FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
+                                                AllowFiltering="true" AllowClear="true" Data=@teams TextProperty="name" Placeholder="Team" ValueProperty="id" Class="w-100">
+                            <Columns>
+                                <RadzenDropDownDataGridColumn Property="id" Title="Team ID" />
+                                <RadzenDropDownDataGridColumn Property="name" Title="Team Name" />
+                            </Columns>
+
+                        </RadzenDropDownDataGrid>
+                    </div>
+                </div>
+                <!--Category-->
+                <div class="row mb-5">
+                    <div class="col-md-4" style="align-self: center;">
+                        <RadzenLabel Text="Kategori" />
+                    </div>
+                    <div class="col">
+                        <!--Binder til userDto.emplymentId-->
+                        <RadzenTextBox style="display: block" Name="title" Class="w-100" />
+                    </div>
+                </div>
+                <!--Description-->
+                <div class="row mb-5">
+                    <div class="col-md-4" style="align-self: center;">
+                        <RadzenLabel Text="Description" />
+                    </div>
+                    <div class="col">
+                        <RadzenTextArea Style="min-height:10rem" Change=@(args => OnChange(args, "TextArea")) Class="w-100" />
+                    </div>
+                </div>
+                <!--Button-->
+                <div class="center">
+                    <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
+                </div>
+            </RadzenTemplateForm>
+        </div>
+    </div>
+</div>
+<h1 style="opacity:0;">:)</h1>
+<h1 style="opacity:0;">:)</h1>
+<h1 style="opacity:0;">:)</h1>
+
+@code {
+    UserViewmodel CUser;
+    TeamViewmodel Cteam;
+    SuggViewmodel suggDto = new SuggViewmodel();
+    List<SuggViewmodel> team = new List<SuggViewmodel>();
+    List<TeamViewmodel> teams = new List<TeamViewmodel>();
+
+    bool checkBox1Value;
+    public string teamU { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var CurrentUser = _userManager.getCurrentUser();
+
+        teams = await _teamManager.updateTeamsList();
+        if (CurrentUser != null)
+        {
+            CUser = CurrentUser;
+            Cteam = await _teamManager.getTeam(CUser.teamId);
+            teamU = Cteam.name;
+        }
+        else
+        {
+            _navigationManager.NavigateTo("/");
+        }
+
+    }
+
+    public async Task<ActionResult<string>> submit(SuggViewmodel request)
+    {
+        return null;
+    }
+
+    void OnChange(object value, string name)
+    {
+        var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
+    }
+}
