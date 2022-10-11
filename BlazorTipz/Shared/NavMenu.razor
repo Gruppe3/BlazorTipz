@@ -19,8 +19,8 @@
 <div class="nav" >
     <nav class="nav__content2">
         <div class="nav__sugg" style="display: @ShowSug">
-            <p class="d-flex justify-content-center">Enter a suggestion</p>
-            <div class="justify-content-center">
+            <h3 class="d-flex justify-content-center">Enter a suggestion</h3>
+            <div class="justify-content-center" style="padding-top: 1rem;">
                 <div class="row">
                     <div class="col-lg-6 offset-lg-3">
                         <!--Wants type SuggViewmodel, field object is suggDto-->
@@ -32,7 +32,7 @@
                                 </div>
                                 <div class="col">
                                     <!--Binder til userDto.emplymentId-->
-                                    <RadzenTextBox style="display: block" @bind-Value=@suggDto.Title Name="title" Class="w-100" />
+                                    <RadzenTextBox  @bind-Value=@suggDto.Title Name="title" Class="w-100" />
                                 </div>
                             </div>
                             <!--Just do it checkbox-->
@@ -101,7 +101,7 @@
 
 <AuthorizeView Roles="User">
     <Authorized>
-        <h1 style="opacity:0;">:)</h1>
+        <h1 style="opacity:0; text-decoration: none;">:)</h1>
         <!--=============== NAV ===============-->
         <div class="nav">
             <nav class="nav__content">
@@ -123,7 +123,7 @@
             </nav>
         </div>
 
-        <div class="nav">
+        <div class="nav" id="nav">
             <nav class="nav__content">
                 <div class="nav__umenu">
                     <a href="javascript:void(0);" class="nav__link" @onclick="@ShowUserP">
@@ -142,6 +142,20 @@
                         <span class="nav__name">Logout</span>
                     </a>
                 </div>
+
+                <div class="nav__tmenu">
+                    <a href="javascript:void(0);" class="nav__link" @onclick="@ShowTeamP">
+                        <i class='bx bx-dock-top'></i>
+                    </a>
+                </div>
+                <div class="nav__panel" style="display: @ShowTeam">
+
+                    <a>View Team</a>
+                    <a href="/teamView" class="nav__link">
+                        <i class='bx bx-food-menu'></i>
+                        <span class="nav__name">View Team</span>
+                    </a>
+                </div>
             </nav>
         </div>
 
@@ -150,7 +164,7 @@
 </AuthorizeView>
 <AuthorizeView Roles="Admin">
     <Authorized>
-        <h1 style="opacity:0;">:)</h1>
+        <h1 style="opacity:0; text-decoration: none;">:)</h1>
         <!--=============== NAV ===============-->
         <div class="nav">
             <nav class="nav__content">
@@ -206,6 +220,11 @@
                     <a href="/manageTeam" class="nav__link">
                         <i class='bx bx-group'></i>
                         <span class="nav__name">Register Team</span>
+                    </a>
+
+                    <a href="/teamView" class="nav__link">
+                        <i class='bx bx-food-menu'></i>
+                        <span class="nav__name">View Team</span>
                     </a>
                 </div>
             </nav>
@@ -267,6 +286,11 @@
                     <a href="/manageTeam" class="nav__link">
                         <i class='bx bx-group'></i>
                         <span class="nav__name">Register Team</span>
+                    </a>
+
+                    <a href="/teamView" class="nav__link">
+                        <i class='bx bx-food-menu'></i>
+                        <span class="nav__name">View Team</span>
                     </a>
                 </div>
             </nav>

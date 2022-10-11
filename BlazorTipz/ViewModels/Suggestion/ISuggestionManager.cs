@@ -6,5 +6,9 @@
         Task<string?> saveSuggestion(SuggViewmodel sugg);
         //get list of available categories
         List<Category> GetCategories();
+        //Get list of suggestions
+        Task<List<SuggViewmodel>> getAllSuggestions();
+        //Get list of suggestions for a specific team
+        Task<List<SuggViewmodel>> getAllSuggestionsForTeam(string teamId);
     }
 }
