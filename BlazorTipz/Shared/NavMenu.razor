@@ -253,7 +253,6 @@
                                     <div class="col-md-4" style="align-self: center;">
                                         <RadzenLabel Text="Team Name" />
                                     </div>
-                                    <AuthorizeView Roles="Admin" Context="Somecas">
                                     <div class="col">
                                         <RadzenDropDownDataGrid @bind-Value=@suggDto.OwnerTeam FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
                                                             AllowFiltering="true" AllowClear="true" Data=@teams TextProperty="name" Placeholder="Team" ValueProperty="id" Class="w-100">
@@ -264,12 +263,7 @@
 
                                         </RadzenDropDownDataGrid>
                                     </div>
-                                    </AuthorizeView>
-                                        <AuthorizeView Roles="TeamLeader, User" Context="Somecas">
-                                            <div class="col">
-                                                 <RadzenLabel @bind-Value=@suggDto.OwnerTeam Text=@suggDto.OwnerTeam/>
-                                            </div>
-                                        </AuthorizeView>
+
                                 </div>
                                 <!--Category-->
                                 <div class="row mb-5">
