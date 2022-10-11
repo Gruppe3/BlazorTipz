@@ -31,7 +31,8 @@
                 <RadzenDataGridColumn TItem="SuggViewmodel" Property="Title" Filterable="false" Title="Tittel" Width="70px" TextAlign="TextAlign.Center" />
                 <RadzenDataGridColumn Width="160px" TItem="SuggViewmodel" Property="Description" Title="Description">
                     <Template Context="data">
-                        <RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" Class="m-1" Text="Show description" Click=@ShowCloseableFromOverlayDialog/>
+                        <RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" Class="m-1"
+                                      Text="Show description" Click=@(() => ShowCloseableFromOverlayDialog(data.Title, data.Description)) />
                     </Template>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="SuggViewmodel" Property="Creator" Title="Creator" Width="140px" TextAlign="TextAlign.Center"/>
@@ -96,11 +97,11 @@
         NavigationManager.NavigateTo("/teamView", true);
     }
 
-    async Task ShowCloseableFromOverlayDialog()
+    async Task ShowCloseableFromOverlayDialog(string creator, string description)
     {
-        await DialogService.OpenAsync("Closeable from overlay Dialog", ds =>
+        await DialogService.OpenAsync($"{creator}", ds =>
     @<div>
-        
+            <p>@description</p>
     </div>, new DialogOptions() { CloseDialogOnOverlayClick = true });
     }
 }
