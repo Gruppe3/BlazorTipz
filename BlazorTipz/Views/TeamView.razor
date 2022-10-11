@@ -17,16 +17,24 @@
 @inject IUserManager _userManager
 @inject ITeamManager _teamManager
 @inject ISuggestionManager _suggestionManager
+@inject DialogService DialogService
 
 <AuthorizeView>
     <Authorized>
         <h1 class="center">Team @currentTeam.name</h1>
-        <h1 class="center">Suggestion List <RadzenButton Click="UpdateDB" Icon="refresh" ButtonStyle="ButtonStyle.Secondary" Style="margin-left: 1rem;"/></h1>
-<RadzenDataGrid Data="@teamSug" TItem="SuggViewmodel" AllowPaging="true" PageSize="10">
-            <RadzenDataGridColumn TItem="SuggViewmodel" Title="Title" Property="Title" Filterable="false" Frozen="true" Width="70px" TextAlign="TextAlign.Center"/>
-            <RadzenDataGridColumn TItem="SuggViewmodel" Title="Owner" Property="OwnerTeam" Frozen="true" Width="140px" />
-            <RadzenDataGridColumn TItem="SuggViewmodel" Title="Creator" Property="Creator" Width="140px" />
-        </RadzenDataGrid>
+        <!--Team Suggestions-->
+        <RadzenDataGrid AllowFiltering="true" AllowColumnResize="false" 
+        FilterMode="FilterMode.Simple" PageSize="5" AllowPaging="true" AllowSorting="true" Data="@teamSug" TItem="SuggViewmodel" ColumnWidth="300px" 
+        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+        LogicalFilterOperator="LogicalFilterOperator.Or">
+        <Columns>
+                <RadzenDataGridColumn TItem="SuggViewmodel" Property="Title" Filterable="false" Title="Tittel" Width="70px" TextAlign="TextAlign.Center" />
+                <RadzenDataGridColumn TItem="SuggViewmodel" Property="Description" Title="Description" Width="140px" TextAlign="TextAlign.Center"/>
+                <RadzenDataGridColumn TItem="SuggViewmodel" Property="Creator" Title="Creator" Width="140px" TextAlign="TextAlign.Center" />
+                <RadzenDataGridColumn TItem="SuggViewmodel" Property="StartDate" Title="Start Date" Width="140px" TextAlign="TextAlign.Center"/>
+                <RadzenDataGridColumn TItem="SuggViewmodel" Property="Status" Title="Status" Width="140px" TextAlign="TextAlign.Center" />
+        </Columns>
+    </RadzenDataGrid>
      </Authorized>
 </AuthorizeView>
 
@@ -42,6 +50,7 @@
 
     public string TeamCheck { get; set; }
     public string teamU { get; set; }
+    RadzenDataGrid<SuggViewmodel> ordersGrid;
 
 
     //Get team from user
@@ -82,5 +91,12 @@
     public void UpdateDB()
     {
         NavigationManager.NavigateTo("/teamView", true);
+    }
+
+    async Task OpenOrder(int id)
+    {
+        await DialogService.OpenAsync<DialogCardPage>($"Order {id}",
+              new Dictionary<string, object>() { { "OrderID", id } },
+              new DialogOptions() { Width = "700px", Height = "520px" });
     }
 }
