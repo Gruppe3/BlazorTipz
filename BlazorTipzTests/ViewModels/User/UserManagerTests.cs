@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BlazorTipzTests.ViewModels.DummyClass;
+using BlazorTipz.Data;
 
 namespace BlazorTipz.ViewModels.User.Tests
 {
@@ -252,39 +253,135 @@ namespace BlazorTipz.ViewModels.User.Tests
         }
 
         [TestMethod()]
-        public void GetUsersTest()
+        public async Task GetUsersTest()
         {
-            Assert.Fail();
+            //arrange
+            //act
+            List<UserViewmodel> testlist = await _userManager.GetUsers();
+            int count = testlist.Count;
+            if (count <= 0)
+            {
+                //assert
+                Assert.Fail();
+            }
         }
 
         [TestMethod()]
-        public void updateUsersListTest()
+        public async Task updateUsersListTest()
         {
-            Assert.Fail();
+            //arrange/act
+            List<UserViewmodel> users = await _userManager.updateUsersList();
+            int count = users.Count;
+            if (count <= 0)
+            {
+                //assert
+                Assert.Fail();
+            }
+        }
+        
+        [TestMethod()]
+        [DataRow("4", 1, true, true)]
+        [DataRow("4", 3, true, false)]
+        [DataRow("32", 2, false, true)]
+        public async Task updateRoleTest(string userId, int roleid, bool upgradeRole, bool goodcase)
+        {
+            //arrange
+            RoleE role = RoleE.User;
+            RoleE role2 = RoleE.User;
+            RoleE role3 = RoleE.TeamLeader;
+            if (roleid ==  3){
+                role = RoleE.Admin;
+            } else if (roleid == 2){
+                role = RoleE.TeamLeader;
+            }
+            UserViewmodel user = new UserViewmodel();
+            user.employmentId = userId;
+            user.role = role;
+            user.name = "hans";
+            string? err; 
+            //act
+            if(roleid == 2){
+                err = await _userManager.updateRole(user, role2, upgradeRole);
+            }
+            else
+            {
+                err = await _userManager.updateRole(user, role3, upgradeRole);
+            }
+            //assert
+            if (goodcase && upgradeRole)
+            {
+                Assert.IsNull(err);
+            }
+            else if (goodcase && !upgradeRole)
+            {
+                Assert.IsNull(err);
+            }
+            else if (!goodcase && upgradeRole)
+            {
+                Assert.IsNotNull(err);
+            }
+            else if (!goodcase && !upgradeRole)
+            {
+                Assert.IsNotNull(err);
+            }
+            
+            
+        }
+        
+
+        [TestMethod()]
+        [DataRow("3",true)]
+        [DataRow("47",false)]
+        public async Task getUserTest(string testID,bool good)
+        {
+            //arrange
+            UserViewmodel? result;
+
+            //act
+            result = await _userManager.getUser(testID);
+
+            //assert
+            if (good)
+            {
+                Assert.IsNotNull(result);
+            }
+            else
+            {
+                Assert.IsNull(result);
+            }
         }
 
         [TestMethod()]
-        public void updateRoleTest()
+        [DataRow("3","2", true)]
+        [DataRow("47", "2", false)]
+        public async Task updateUserTeamTest(string? id, string? team, bool good)
         {
-            Assert.Fail();
+            //arrrenge
+            string? err;
+            //act
+            err = await _userManager.updateUserTeam(id, team);
+            //assert
+            if (good)
+            {
+                Assert.IsNull(err);
+            }
+            else
+            {
+                Assert.IsNotNull(err);
+            }
         }
-
-        [TestMethod()]
-        public void getUserTest()
-        {
-            Assert.Fail();
-        }
-
-        [TestMethod()]
-        public void updateUserTeamTest()
-        {
-            Assert.Fail();
-        }
-
+        
+        //could be more complex ;)
         [TestMethod()]
         public void generatePasswordTest()
         {
-            Assert.Fail();
+            //test if random
+            string pass1 = _userManager.generatePassword();
+            string pass2 = _userManager.generatePassword();
+            if (pass1 == pass2)
+            {
+                Assert.Fail();
+            }
         }
     }
 }

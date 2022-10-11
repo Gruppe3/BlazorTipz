@@ -2,7 +2,7 @@
 using BlazorTipz.Data;
 using BlazorTipz.Models;
 using BlazorTipz.Models.DbRelay;
-
+using System.Runtime.Serialization;
 
 namespace BlazorTipz.ViewModels.User
 {
@@ -270,12 +270,12 @@ namespace BlazorTipz.ViewModels.User
         }
 
         // Updates a users roles
-        public async Task updateRole(UserViewmodel user, RoleE role, bool upgradeRole)
+        public async Task<string?> updateRole(UserViewmodel user, RoleE role, bool upgradeRole)
         {
-            if(user.employmentId == string.Empty) { return; }
+            if(user.employmentId == string.Empty) { return "No id on user"; }
             if(upgradeRole) 
             {
-                if (role <= user.role) { return; }
+                if (role < user.role|| role==user.role) { return "Alrady at needed role or higher"; }
                 user.role = role;
                 await _DBR.updateUserEntry(new UserDb(user));
                 updateUsersList();
@@ -286,7 +286,7 @@ namespace BlazorTipz.ViewModels.User
                 await _DBR.updateUserEntry(new UserDb(user));
                 updateUsersList();
             }
-            
+            return null;
         }
         // Returns the user with the given empid.
         public async Task<UserViewmodel?> getUser(string empid)
@@ -316,7 +316,7 @@ namespace BlazorTipz.ViewModels.User
             }
         }
         // Updates a users team.
-        public async Task updateUserTeam(string empid, string teamId)
+        public async Task<string?> updateUserTeam(string empid, string teamId)
         {
             if (ActiveUsers != null)
             {
@@ -326,10 +326,11 @@ namespace BlazorTipz.ViewModels.User
                     {
                         u.teamId = teamId;
                         await _DBR.updateUserEntry(new UserDb(u));
+                        return null;
                         break;
                     }
                 }
-                
+                return "User not found";
             }
             else
             {
@@ -340,10 +341,11 @@ namespace BlazorTipz.ViewModels.User
                     {
                         u.teamId = teamId;
                         await _DBR.updateUserEntry(new UserDb(u));
+                        return null;
                         break;
                     }
                 }
-                
+                return "User not found";
             }
 
         }
@@ -373,4 +375,5 @@ namespace BlazorTipz.ViewModels.User
         }
 
     }
+
 }
