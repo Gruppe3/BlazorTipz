@@ -26,7 +26,7 @@ namespace BlazorTipz.ViewModels.Team.Tests
         public async void getTeamsTest()
         {
             //arrange
-            TeamManager UnitUnderTest = new TeamManager(new DummyDBR(), new DummyUserManager());
+            TeamManager UnitUnderTest = new TeamManager(new DummyDBR(), new UserManager(new DummyDBR(), new Components.AuthenticationComponent()));
 
 
             //act

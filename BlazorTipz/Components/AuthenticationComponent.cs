@@ -18,6 +18,14 @@ namespace BlazorTipz.Components
         {
             _configuration = configuration;
         }
+        //for testting
+        public AuthenticationComponent()
+        {
+            
+            _configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .Build();
+        }
 
 
         public void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
