@@ -141,6 +141,7 @@ namespace BlazorTipz.ViewModels.User
             if (user == null) { return "no user to stage"; }
             if (user.employmentId==null) { return "Not supplied EmploymentID"; }
             if (user.name == string.Empty) { return "Not supplied a name"; }
+            if (user.password == string.Empty || user.password == "" ) { return "Not supplied a password"; }
             //check if user is in list, update instead of add
             bool hit = false;
             foreach(UserViewmodel u in UsersToRegister)

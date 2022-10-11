@@ -66,13 +66,59 @@ namespace BlazorTipz.ViewModels.User.Tests
         [TestMethod()]
         public void getRegisterUserListTest()
         {
-
+            //act
+            List<UserViewmodel> list = _userManager.getRegisterUserList();
+            //assert
+            Assert.IsNotNull(list);
         }
 
         [TestMethod()]
-        public void stageToRegisterListTest()
+        [DataRow("212212", "tesss","tehjfa", 1)] 
+        [DataRow("212212", "tesss", "tehjfa", 2)] //should update dummy
+        [DataRow(null, "tesss", "tehjfa", 3)]
+        [DataRow("212212", "", "tehjfa", 4)]
+        [DataRow("212212", "tesss", "", 5)]
+        [DataRow( "","","", 6)]
+        public void stageToRegisterListTest(string? id, string? pass,string? name,int testCase)
         {
+            
+            //arrange
+            string expected1 = "User succsessfully added to list of pepole to register";
+            string expected2 = "User in list updated";
+            string result = "";
+            if (testCase == 6)
+            {
+                //act
+                _userManager.stageToRegisterList(null);
+                //assert
+                Assert.AreNotEqual(expected1, result);
+                Assert.AreNotEqual(expected2, result);
+            }
+            _userManager.getRegisterUserList().Clear();
+            _userManager.getRegisterUserList();
+            if (testCase == 1) {} 
+            else if(testCase == 2) {
+                UserViewmodel test = new UserViewmodel(); // dummy user
+                test.employmentId = "212212";
+                test.password = "test1234";
+                test.name = "test";
+                _userManager.stageToRegisterList(test);
+            }
+            UserViewmodel user = new UserViewmodel();
+            user.employmentId = id;
+            user.password = pass;
+            user.name = name;
 
+            //act
+            result = _userManager.stageToRegisterList(user);
+            
+            //Assert
+            if (testCase == 1) { Assert.AreEqual(expected1, result); } 
+            else if (testCase == 2) { Assert.AreEqual(expected2, result); }
+            else{
+                Assert.AreNotEqual(expected1, result);
+                Assert.AreNotEqual(expected2, result);
+            }
         }
 
         [TestMethod()]
