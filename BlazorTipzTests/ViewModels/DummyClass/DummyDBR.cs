@@ -1,98 +1,215 @@
 ﻿using BlazorTipz.Models;
 using BlazorTipz.Models.DbRelay;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace BlazorTipzTests.ViewModels.DummyClass
 {
     public class DummyDBR : IDbRelay
     {
-        public Task addTeamEntry(TeamDb team)
+        //DummyDatabaseTables
+        private List<UserDb> _Users = new List<UserDb>();
+        private List<TeamDb> _Teams = new List<TeamDb>();
+        private List<SuggestionEntity> _Suggestions = new List<SuggestionEntity>();
+        
+
+    public DummyDBR()
         {
-            throw new NotImplementedException();
+            fillDummyDB();
         }
 
-        public Task addUserEntries(List<UserDb> toSaveUsers)
+        private void fillDummyDB()
         {
-            throw new NotImplementedException();
+            //Fill up the dummy database with some dummy data.
+
+            for (int i = 0; i < 10; i++)
+            {
+                UserDb user = new UserDb();
+                user.employmentId = i.ToString();
+                user.name = "User" + i.ToString();
+                user.password = "password" + i.ToString();
+                user.passwordHashing(user.password);
+                user.teamId = "1";
+                user.active = true;
+                user.firstTimeLogin = true;
+                _Users.Add(user);
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                TeamDb team = new TeamDb();
+                team.teamId = i.ToString();
+                team.teamName = "Team" + i.ToString();
+                team.teamLeader = "User" + i.ToString();
+                _Teams.Add(team);
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                SuggestionEntity sugg = new SuggestionEntity();
+                sugg.sugId = i.ToString();
+                sugg.owner = "Team2";
+                sugg.sugTitle = "TestTitle" + i.ToString();
+                sugg.sugDesc = "DescribingTest" + i.ToString();
+                sugg.createdAt = DateTime.Now.ToString();
+                sugg.JustDoIt = false;
+                _Suggestions.Add(sugg);
+            }
         }
 
-        public Task changeTeamsStateTo(List<TeamDb> users, bool state)
+
+
+        public async Task<UserDb> getLoginUser(string empId)
         {
-            throw new NotImplementedException();
+            return _Users.Where(x => x.employmentId == empId).FirstOrDefault();
+        }
+        public async Task<UserDb> lookUpUser(string empId)
+        {
+            return _Users.Where(x => x.employmentId == empId).FirstOrDefault();
+        }
+        public async Task addUserEntries(List<UserDb> toSaveUsers)
+        {
+            foreach (UserDb user in toSaveUsers)
+            {
+                _Users.Add(user);
+            }
+            //return "Successfully added " + x.ToString() + " users.";
+            
+        }
+        public async Task updateUserEntry(UserDb toSaveUser)
+        {
+            UserDb user = _Users.Where(x => x.employmentId == toSaveUser.employmentId).FirstOrDefault();
+            if (user != null)
+            {
+                if (toSaveUser.passwordHash != null && toSaveUser.passwordSalt != null)
+                {
+                    user.name = toSaveUser.name;
+                    user.passwordSalt = toSaveUser.passwordSalt;
+                    user.passwordHash = toSaveUser.passwordHash;
+                    user.role = toSaveUser.role;
+                    user.firstTimeLogin = toSaveUser.firstTimeLogin;
+                }
+                else if (toSaveUser.teamId != null)
+                {
+                    user.name = toSaveUser.name;
+                    user.role = toSaveUser.role;
+                    user.teamId = toSaveUser.teamId;
+                }
+                else
+                {
+                    user.name = toSaveUser.name;
+                    user.role = toSaveUser.role;
+                }
+            }
+        }
+        public async Task<List<UserDb>> getActiveUsers()
+        {
+            return await getUsersByActiveStatus(true);
+        }
+        public async Task<List<UserDb>> getInactiveUsers()
+        {
+            return await getUsersByActiveStatus(false);
+        }
+        private async Task<List<UserDb>> getUsersByActiveStatus(bool var)
+        {
+            List<UserDb> activeUsers = new List<UserDb>();
+
+            foreach (UserDb user in _Users)
+            {
+                if (user.active == var)
+                {
+                    activeUsers.Add(user);
+                }
+            }
+            return activeUsers;
+        }
+        public async Task changeUserStateTo(string empid, bool state)
+        {
+            UserDb user = _Users.Where(x => x.employmentId == empid).FirstOrDefault();
+            if (user != null)
+            { 
+                user.active = state; 
+            }
+        }
+        public async Task changeUsersStateTo(List<UserDb> users, bool state)
+        {
+            foreach (UserDb user in users)
+            {
+                user.active = state;
+            }
         }
 
-        public Task changeTeamStateTo(string teamid, bool state)
+        //team/teams
+        public async Task<TeamDb> getSingleTeamDbFromDb(string teamId)
         {
-            throw new NotImplementedException();
+            return _Teams.Where(x => x.teamId == teamId).FirstOrDefault();
+        }
+        public async Task addTeamEntry(TeamDb team)
+        {
+            _Teams.Add(team);
+        }
+        public async Task updateTeamEntry(TeamDb team)
+        {
+            TeamDb teamEdit = _Teams.Where(x => x.teamId == team.teamId).FirstOrDefault();
+            if (teamEdit != null)
+            {
+                teamEdit.teamName = team.teamName;
+                teamEdit.teamLeader = team.teamLeader;
+            }
+            
+        }
+        public async Task<List<TeamDb>> getActiveTeams()
+        {
+            return await getTeamsByActiveStatus(true);
+        }
+        public async Task<List<TeamDb>> getInactiveTeams()
+        {
+            return await getTeamsByActiveStatus(false);
+        }
+        private async Task<List<TeamDb>> getTeamsByActiveStatus(bool var)
+        {
+            List<TeamDb> activeTeams = new List<TeamDb>();
+
+            foreach (TeamDb team in _Teams)
+            {
+                if (team.active == var)
+                {
+                    activeTeams.Add(team);
+                }
+            }
+            return activeTeams;
+        }
+        public async Task changeTeamStateTo(string teamid, bool state)
+        {
+            TeamDb team = _Teams.Where(x => x.teamId == teamid).FirstOrDefault();
+            if (team != null)
+            {
+                team.active = state;
+            }
+        }
+        public async Task changeTeamsStateTo(List<TeamDb> teams, bool state)
+        {
+            foreach (TeamDb team in teams)
+            {
+                team.active = state;
+            }
         }
 
-        public Task changeUsersStateTo(List<UserDb> users, bool state)
+        // Suggestions
+        public async Task saveSuggestion(SuggestionEntity suggestion)
         {
-            throw new NotImplementedException();
+            _Suggestions.Add(suggestion);
         }
-
-        public Task changeUserStateTo(string empid, bool state)
+        public async Task saveSuggestionList(List<SuggestionEntity> suggestions)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<TeamDb>> getActiveTeams()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<UserDb>> getActiveUsers()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<TeamDb>> getInactiveTeams()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<UserDb>> getInactiveUsers()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<UserDb> getLoginUser(string empId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<TeamDb> getSingleTeamDbFromDb(string teamId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<UserDb> lookUpUser(string empId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task saveSuggestion(SuggestionEntity suggestion)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task saveSuggestionList(List<SuggestionEntity> suggestions)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task updateTeamEntry(TeamDb team)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task updateUserEntry(UserDb toSaveUser)
-        {
-            throw new NotImplementedException();
+            foreach (SuggestionEntity sugg in suggestions)
+            {
+                _Suggestions.Add(sugg);
+            }
         }
     }
 }
