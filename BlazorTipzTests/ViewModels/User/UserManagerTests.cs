@@ -52,15 +52,101 @@ namespace BlazorTipz.ViewModels.User.Tests
         }
 
         [TestMethod()]
-        public void registerUserSingelTest()
+        public async Task registerUserSingelTest()
         {
-            //begin
+            //arrange
+            string? err;
+            string? succ;
+            string expected = "succsess";
+            UserViewmodel user = new UserViewmodel();
+            user.employmentId = "123456";
+            user.name = "TestUser";
+            user.password = "test1234";
+
+            //act
+            (err, succ) = await _userManager.registerUserSingel(user);
+            //assert
+            Assert.AreEqual(expected, succ);
         }
 
         [TestMethod()]
-        public void registerMultipleTest()
+        [DataRow("", "","" ,1)]
+        [DataRow("123456", "TestUser", "test1234", 2)]
+        [DataRow("15","","",3)]
+        [DataRow("123556", "TestUser", "test1234", 4)]
+        [DataRow("1", "TestUser", "test1234", 5)]
+        [DataRow("123557", "", "test1234", 5)]
+        [DataRow("123558", "TestUser", "", 5)]
+        [DataRow("", "TestUser", "test1234", 5)]
+        [DataRow(null, "TestUser", "test1234", 5)]
+        [DataRow("123561", null, "test1234", 5)]
+        [DataRow("123561", "heyo", null, 5)]
+        public async Task registerMultipleTest(string? id,string? pass, string? name, int testcase)
         {
+            //arrange
+            string? err;
+            string? succ;
+            string expected = "Succsess";
+            List<UserViewmodel> users = prefillGoodUsers();
+            UserViewmodel user = new UserViewmodel();
+            user.employmentId = id;
+            user.name = name;
+            user.password = pass;
+            users.Add(user);
+            if (testcase == 1)
+            {
+                expected = "No one to register";
+                List<UserViewmodel>? userst = null;
+                _userManager.getRegisterUserList().Clear();
+                //act
+                (err, succ) = await _userManager.registerMultiple(userst);
+                //assert
+                Assert.AreEqual(expected, err);
+            }else if(testcase == 2 || testcase == 3)
+            {
+                foreach (UserViewmodel us in users)
+                {
+                    _userManager.stageToRegisterList(us);
+                    
+                }
+                if (testcase == 2) {
+                    (err, succ) = await _userManager.registerMultiple(null);
+                    Assert.AreEqual(expected, succ); }
+                if (testcase == 3) {
+                    _userManager.getRegisterUserList().Clear();
+                    (err, succ) = await _userManager.registerMultiple(null);
+                    Assert.AreNotEqual(expected, succ); }
+            }
+            //act
+            
+            (err, succ) = await _userManager.registerMultiple(users);
 
+            //assert
+            if (testcase == 2) {  }
+            else if (testcase == 3) {  }
+            else if (testcase == 4) { Assert.AreEqual(expected, succ); }
+            else if (testcase == 1) { }
+            else
+            {
+                Assert.IsNotNull(err);
+            }
+           
+
+        }
+        private List<UserViewmodel> prefillGoodUsers()
+        {
+            {
+                List<UserViewmodel> users = new List<UserViewmodel>();
+                for (int i = 0; i < 10; i++)
+                {
+                    UserViewmodel user = new UserViewmodel();
+                    user.employmentId ="3"+ i.ToString();
+                    user.name = "User3" + i.ToString();
+                    user.password = "password3" + i.ToString();
+                    users.Add(user);
+                }
+                return users;
+            }
         }
 
         [TestMethod()]
@@ -122,69 +208,83 @@ namespace BlazorTipz.ViewModels.User.Tests
         }
 
         [TestMethod()]
-        public void deleteFromRegisterListTest()
-        {
-
-        }
-
-        [TestMethod()]
         public void getCurrentUserTest()
         {
-
+            //arrenge
+            UserViewmodel dummy = new UserViewmodel();
+            _userManager.CurrentUser = dummy;
+            //act
+            UserViewmodel res = _userManager.getCurrentUser();
+            //assert
+            Assert.IsNotNull(res);
         }
 
         [TestMethod()]
         public void logoutTest()
         {
-
+            //arrange
+            UserViewmodel dummy = new UserViewmodel();
+            _userManager.CurrentUser = dummy;
+            //act
+            _userManager.logout();
+            var res = _userManager.CurrentUser;
+            Assert.IsNull(res);
         }
 
+        //can be improved
         [TestMethod()]
-        public void getCurrentUserTest1()
+        public async Task updateCurrentUserTest()
         {
-
-        }
-
-        [TestMethod()]
-        public void updateCurrentUserTest()
-        {
-
+            //arranged
+            UserViewmodel user = new UserViewmodel();
+            _userManager.CurrentUser = user;
+            user.employmentId = "32";
+            user.name = "hans";
+            user.password = "45";
+            user.RepeatPassword = "45";
+            //act
+            string err = await _userManager.updateCurrentUser(user);
+            if(err != null)
+            {
+                Assert.Fail();
+            } 
+            
         }
 
         [TestMethod()]
         public void GetUsersTest()
         {
-
+            Assert.Fail();
         }
 
         [TestMethod()]
         public void updateUsersListTest()
         {
-
+            Assert.Fail();
         }
 
         [TestMethod()]
         public void updateRoleTest()
         {
-
+            Assert.Fail();
         }
 
         [TestMethod()]
         public void getUserTest()
         {
-
+            Assert.Fail();
         }
 
         [TestMethod()]
         public void updateUserTeamTest()
         {
-
+            Assert.Fail();
         }
 
         [TestMethod()]
         public void generatePasswordTest()
         {
-
+            Assert.Fail();
         }
     }
 }

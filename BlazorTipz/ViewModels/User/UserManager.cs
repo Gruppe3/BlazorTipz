@@ -76,9 +76,9 @@ namespace BlazorTipz.ViewModels.User
         {
             string err = null;
             if (toRegisterUser == null) { err = "No user to register"; return (err, null); };
-            if (toRegisterUser.employmentId == null) { err = "no emplayment Id"; return (err, null); };
-            if (toRegisterUser.name == null) { err = "no name"; return (err, null); };
-            if (toRegisterUser.password == null) { err = "no password given"; return (err, null); };
+            if (toRegisterUser.employmentId == null|| toRegisterUser.employmentId == "") { err = "no emplayment Id"; return (err, null); };
+            if (toRegisterUser.name == null|| toRegisterUser.name =="") { err = "no name"; return (err, null); };
+            if (toRegisterUser.password == null|| toRegisterUser.password == "") { err = "no password given"; return (err, null); };
 
             UserDb userDb = await _DBR.lookUpUser(toRegisterUser.employmentId);
             if (userDb != null) { err = "User alrady exists"; return (err, null); }
@@ -112,7 +112,7 @@ namespace BlazorTipz.ViewModels.User
                 }
                 return (err, "Succsess");
             } 
-            else if (UsersToRegister != null)
+            else if (UsersToRegister != null && UsersToRegister.Count() >0)
             {
                 foreach (UserViewmodel user in UsersToRegister)
                 {
