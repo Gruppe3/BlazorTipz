@@ -18,7 +18,7 @@
 @inject ITeamManager _teamManager
 @inject ISuggestionManager _suggestionManager
 
-@*<AuthorizeView>
+<AuthorizeView>
     <Authorized>
         <h1 class="center">Team @currentTeam.name</h1>
         <h1 class="center">Suggestion List <RadzenButton Click="UpdateDB" Icon="refresh" ButtonStyle="ButtonStyle.Secondary" Style="margin-left: 1rem;"/></h1>
@@ -28,7 +28,7 @@
             <RadzenDataGridColumn TItem="SuggViewmodel" Title="Creator" Property="Creator" Width="140px" />
         </RadzenDataGrid>
      </Authorized>
-</AuthorizeView>*@
+</AuthorizeView>
 
 @code {
     public UserViewmodel currentUser = new UserViewmodel();
@@ -75,7 +75,7 @@
             NavigationManager.NavigateTo("/");
         }
         //Get team suggestions
-        teamSug = await _suggestionManager.getAllSuggestions();
+        teamSug = await _suggestionManager.GetSuggestionsOfTeam(currentTeam.id);
     }
 
     //Update DB

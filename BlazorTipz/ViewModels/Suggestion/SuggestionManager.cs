@@ -62,31 +62,17 @@ namespace BlazorTipz.ViewModels.Suggestion
             }
         }
 
-        //Get suggestions from database
-        public async Task<List<SuggViewmodel>> getAllSuggestions()
-        {
-            List<SuggViewmodel> suggs = new List<SuggViewmodel>();
-            List<SuggestionEntity> suggEntities = await _DBR.getAllSuggestions();
-            foreach (SuggestionEntity sugg in suggEntities)
-            {
-                suggs.Add(new SuggViewmodel(sugg));
-            }
-            return suggs;
-        }
-
         //Get suggestions from database for a specific team
-        public async Task<List<SuggViewmodel>> getAllSuggestionsForTeam(string teamId)
+        public async Task<List<SuggViewmodel>> GetSuggestionsOfTeam(string teamId)
         {
-            List<SuggViewmodel> suggs = new List<SuggViewmodel>();
-            List<SuggestionEntity> suggEntities = await _DBR.getAllSuggestions();
-            foreach (SuggestionEntity sugg in suggEntities)
+            List<SuggestionEntity> suggs = await _DBR.GetSuggestionOfTeam(teamId);
+            List<SuggViewmodel> suggsViewmodel = new List<SuggViewmodel>();
+            foreach (SuggestionEntity s in suggs)
             {
-                if (sugg.creator == teamId)
-                {
-                    suggs.Add(new SuggViewmodel(sugg));
-                }
+                SuggViewmodel sugg = new SuggViewmodel(s);
+                suggsViewmodel.Add(sugg);
             }
-            return suggs;
+            return suggsViewmodel;
         }
 
 
