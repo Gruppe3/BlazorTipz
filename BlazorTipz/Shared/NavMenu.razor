@@ -29,7 +29,7 @@
                         <i class='bx bx-grid-alt'></i>
                     </a>
                     <div>
-                        <a href="javascript:void(0);" class="nav__add active-link" @onclick="@(() => ShowCloseableFromOverlayDialog())">
+                        <a href="javascript:void(0);" class="nav__add active-link" @onclick="@(() => ShowSuggestion())">
                             <i class='bx bx-plus-circle'></i>
                         </a>
                     </div>
@@ -92,7 +92,7 @@
                         <i class='bx bx-grid-alt'></i>
                     </a>
                     <div>
-                        <a href="javascript:void(0);" class="nav__add active-link" @onclick="@(() => ShowCloseableFromOverlayDialog())">
+                        <a href="javascript:void(0);" class="nav__add active-link" @onclick="@(() => ShowSuggestion())">
                             <i class='bx bx-plus-circle'></i>
                         </a>
                     </div>
@@ -162,7 +162,7 @@
                         <i class='bx bx-grid-alt'></i>
                     </a>
                     <div>
-                        <a href="javascript:void(0);" class="nav__add active-link" @onclick="@(() => ShowCloseableFromOverlayDialog())">
+                        <a href="javascript:void(0);" class="nav__add active-link" @onclick="@(() => ShowSuggestion())">
                             <i class='bx bx-plus-circle'></i>
                         </a>
                     </div>
@@ -219,7 +219,7 @@
 </AuthorizeView>
 
 @code{
-    async Task ShowCloseableFromOverlayDialog()
+    async Task ShowSuggestion()
     {
         await DialogService.OpenAsync($"Enter a suggestion", ds =>
     @<div>
@@ -253,6 +253,7 @@
                                     <div class="col-md-4" style="align-self: center;">
                                         <RadzenLabel Text="Team Name" />
                                     </div>
+                                    <AuthorizeView Roles="Admin" Context="Somecas">
                                     <div class="col">
                                         <RadzenDropDownDataGrid @bind-Value=@suggDto.OwnerTeam FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
                                                             AllowFiltering="true" AllowClear="true" Data=@teams TextProperty="name" Placeholder="Team" ValueProperty="id" Class="w-100">
@@ -263,6 +264,12 @@
 
                                         </RadzenDropDownDataGrid>
                                     </div>
+                                    </AuthorizeView>
+                                        <AuthorizeView Roles="TeamLeader, User" Context="Somecas">
+                                            <div class="col">
+                                                 <RadzenLabel @bind-Value=@suggDto.OwnerTeam Text=@suggDto.OwnerTeam/>
+                                            </div>
+                                        </AuthorizeView>
                                 </div>
                                 <!--Category-->
                                 <div class="row mb-5">
