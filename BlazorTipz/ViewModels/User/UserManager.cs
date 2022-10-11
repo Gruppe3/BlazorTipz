@@ -25,6 +25,10 @@ namespace BlazorTipz.ViewModels.User
             _DBR = DBR;
             _Auth = auth;
         }
+        public UserManager()
+        {
+            //for testing
+        }
 
         //Login function
         public async Task<(string, string)> Login(UserViewmodel user)
