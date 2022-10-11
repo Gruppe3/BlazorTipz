@@ -12,6 +12,9 @@ namespace BlazorTipz.Models
             Id = id;
             Name = name;
         }
+        public CategoriEntity()
+        {
+        }
         public CategoriEntity(Category cat)
         {
             this.Name = cat.Name;  
