@@ -5,6 +5,10 @@ using BlazorTipz.ViewModels.User;
 using BlazorTipz.ViewModels.Suggestion;
 using BlazorTipz.ViewModels.Team;
 using Microsoft.AspNetCore.Mvc;
+using Radzen;
+using System;
+
+
 
 namespace BlazorTipz.Shared
 {
@@ -19,7 +23,6 @@ namespace BlazorTipz.Shared
         List<TeamViewmodel> teams = new List<TeamViewmodel>();
         List<Category> Categories;
         public string TeamCheck { get; set; }
-
         public string teamU { get; set; }
 
         private string ShowSug { get; set; } = "none";
@@ -153,7 +156,7 @@ namespace BlazorTipz.Shared
             else
             {
                 Feedback = "Forslag lagret";
-                return "Sucsess";
+                return "Success";
             }
         }
     }

@@ -61,7 +61,23 @@ namespace BlazorTipz.ViewModels.Suggestion
                 return id;
             }
         }
-        
+
+        //Put suggestions in a list where the team is the owner
+        public List<SuggViewmodel> GetSuggestionsWhereTeamIsOwner(string team)
+        {
+            List<SuggViewmodel> suggs = new List<SuggViewmodel>();
+            foreach (SuggestionEntity s in _AS.GetSuggestions())
+            {
+                if (s.owner == team)
+                {
+                    suggs.Add(new SuggViewmodel(s));
+                }
+            }
+            return suggs;   
+        }
+
+
+
         private string? validateSuggestion(SuggViewmodel sugg)
         {
             string err = null;

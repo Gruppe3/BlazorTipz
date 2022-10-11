@@ -143,5 +143,7 @@ namespace BlazorTipz.ViewModels.Team
             return (rTeam, null);
         }
 
+        
+
     }
 }
