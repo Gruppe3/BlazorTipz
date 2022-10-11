@@ -29,15 +29,16 @@
         LogicalFilterOperator="LogicalFilterOperator.Or">
         <Columns>
                 <RadzenDataGridColumn TItem="SuggViewmodel" Property="Title" Filterable="false" Title="Tittel" Width="70px" TextAlign="TextAlign.Center" />
-                <RadzenDataGridColumn Width="160px" TItem="SuggViewmodel" Property="Description" Title="Description">
-                    <Template Context="data">
-                        <RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" Class="m-1"
-                                      Text="Show description" Click=@(() => ShowCloseableFromOverlayDialog(data.Title, data.Description)) />
-                    </Template>
-                </RadzenDataGridColumn>
+                
                 <RadzenDataGridColumn TItem="SuggViewmodel" Property="Creator" Title="Creator" Width="140px" TextAlign="TextAlign.Center"/>
                 <RadzenDataGridColumn TItem="SuggViewmodel" Property="StartDate" Title="Start Date" Width="140px" TextAlign="TextAlign.Center"/>
                 <RadzenDataGridColumn TItem="SuggViewmodel" Property="Status" Title="Status" Width="140px" TextAlign="TextAlign.Center" />
+                <RadzenDataGridColumn Width="160px" TItem="SuggViewmodel" TextAlign="TextAlign.Center" Title="More">
+                    <Template Context="data">
+                        <RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" Class="m-1"
+                                      Text="Show more" Click=@(() => ShowCloseableFromOverlayDialog(data.Title, data.Creator, data.Description)) />
+                    </Template>
+                </RadzenDataGridColumn>
         </Columns>
     </RadzenDataGrid>
      </Authorized>
@@ -97,10 +98,11 @@
         NavigationManager.NavigateTo("/teamView", true);
     }
 
-    async Task ShowCloseableFromOverlayDialog(string creator, string description)
+    async Task ShowCloseableFromOverlayDialog(string title, string creator, string description)
     {
-        await DialogService.OpenAsync($"{creator}", ds =>
+        await DialogService.OpenAsync($"{title} by {creator}", ds =>
     @<div>
+            
             <p>@description</p>
     </div>, new DialogOptions() { CloseDialogOnOverlayClick = true });
     }
