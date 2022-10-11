@@ -62,18 +62,31 @@ namespace BlazorTipz.ViewModels.Suggestion
             }
         }
 
-        //Put suggestions in a list where the team is the owner
-        public List<SuggViewmodel> GetSuggestionsWhereTeamIsOwner(string team)
+        //Get suggestions from database
+        public async Task<List<SuggViewmodel>> getAllSuggestions()
         {
             List<SuggViewmodel> suggs = new List<SuggViewmodel>();
-            foreach (SuggestionEntity s in _AS.GetSuggestions())
+            List<SuggestionEntity> suggEntities = await _DBR.getAllSuggestions();
+            foreach (SuggestionEntity sugg in suggEntities)
             {
-                if (s.owner == team)
+                suggs.Add(new SuggViewmodel(sugg));
+            }
+            return suggs;
+        }
+
+        //Get suggestions from database for a specific team
+        public async Task<List<SuggViewmodel>> getAllSuggestionsForTeam(string teamId)
+        {
+            List<SuggViewmodel> suggs = new List<SuggViewmodel>();
+            List<SuggestionEntity> suggEntities = await _DBR.getAllSuggestions();
+            foreach (SuggestionEntity sugg in suggEntities)
+            {
+                if (sugg.creator == teamId)
                 {
-                    suggs.Add(new SuggViewmodel(s));
+                    suggs.Add(new SuggViewmodel(sugg));
                 }
             }
-            return suggs;   
+            return suggs;
         }
 
 

@@ -45,6 +45,7 @@
     //Get team from user
     protected override async Task OnInitializedAsync()                   
     {
+        
         var token = await _localStorage.GetItemAsync<string>("token");
         if (token != null)
         {
