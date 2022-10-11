@@ -28,7 +28,6 @@ namespace BlazorTipz.Models.DbRelay
         // Suggestions
         Task saveSuggestion(SuggestionEntity suggestion);
         Task saveSuggestionList(List<SuggestionEntity> suggestions);
-        Task<List<SuggestionEntity>> getAllSuggestions();
 
     }
 }

@@ -317,19 +317,6 @@ namespace BlazorTipz.Models.DbRelay
                 await saveSuggestion(sug);
             }
         }
-
-        //Get a list of suggestions from database
-        public async Task<List<SuggestionEntity>> getAllSuggestions()
-        {
-            try
-            {
-                var sql = "SELECT * FROM Suggestions;";
-
-                var dbinfo = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { }, _config.GetConnectionString("default"));
-
-                return dbinfo;
-            }
-            catch (Exception ex) { return null; }
-        }
+        
     }
 }
