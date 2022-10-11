@@ -17,18 +17,23 @@
 @inject IUserManager _userManager
 @inject ITeamManager _teamManager
 @inject ISuggestionManager _suggestionManager
+@inject DialogService DialogService
 
 <AuthorizeView>
     <Authorized>
         <h1 class="center">Team @currentTeam.name</h1>
         <!--Team Suggestions-->
         <RadzenDataGrid AllowFiltering="true" AllowColumnResize="false" 
-        FilterMode="FilterMode.Simple" PageSize="5" AllowPaging="true" AllowSorting="true" Data="@teamSug" TItem="SuggViewmodel" ColumnWidth="300px" 
+        FilterMode="FilterMode.Simple" PageSize="5" AllowPaging="true" AllowSorting="true" Data="@teamSug" TItem="SuggViewmodel" ColumnWidth="300px"
         FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
         LogicalFilterOperator="LogicalFilterOperator.Or">
         <Columns>
                 <RadzenDataGridColumn TItem="SuggViewmodel" Property="Title" Filterable="false" Title="Tittel" Width="70px" TextAlign="TextAlign.Center" />
-                <RadzenDataGridColumn TItem="SuggViewmodel" Property="Description" Title="Description" Width="140px" TextAlign="TextAlign.Center"/>
+                <RadzenDataGridColumn Width="160px" TItem="SuggViewmodel" Property="Description" Title="Description">
+                    <Template Context="data">
+                        <RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" Class="m-1" Text="Show description" Click=@ShowCloseableFromOverlayDialog/>
+                    </Template>
+                </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="SuggViewmodel" Property="Creator" Title="Creator" Width="140px" TextAlign="TextAlign.Center"/>
                 <RadzenDataGridColumn TItem="SuggViewmodel" Property="StartDate" Title="Start Date" Width="140px" TextAlign="TextAlign.Center"/>
                 <RadzenDataGridColumn TItem="SuggViewmodel" Property="Status" Title="Status" Width="140px" TextAlign="TextAlign.Center" />
@@ -89,5 +94,13 @@
     public void UpdateDB()
     {
         NavigationManager.NavigateTo("/teamView", true);
+    }
+
+    async Task ShowCloseableFromOverlayDialog()
+    {
+        await DialogService.OpenAsync("Closeable from overlay Dialog", ds =>
+    @<div>
+        
+    </div>, new DialogOptions() { CloseDialogOnOverlayClick = true });
     }
 }
