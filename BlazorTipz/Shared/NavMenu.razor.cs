@@ -24,8 +24,6 @@ namespace BlazorTipz.Shared
         List<Category> Categories;
         public string TeamCheck { get; set; }
         public string teamU { get; set; }
-
-        private string ShowSug { get; set; } = "none";
         private string ShowUser { get; set; } = "none";
         private string ShowTeam { get; set; } = "none";
         private string Feedback { get; set; }
@@ -79,20 +77,6 @@ namespace BlazorTipz.Shared
 
             Categories = _suggestionManager.GetCategories();
             suggDto.OwnerTeam = Cteam.id;
-        }
-
-        private void ShowSugg()
-        {
-            if (ShowSug != "none")
-            {
-                ShowSug = "none";
-            }
-            else
-            {
-                ShowSug = "block";
-            }
-
-            StateHasChanged();
         }
 
         private void ShowTeamP()
