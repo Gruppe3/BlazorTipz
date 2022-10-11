@@ -9,5 +9,7 @@
 
         //Get list of suggestions for a specific team
         Task<List<SuggViewmodel>> GetSuggestionsOfTeam(string teamId);
+        //Get list of suggestions for a specific user
+        Task<List<SuggViewmodel>> GetSuggestionsOfUser(string userId);
     }
 }

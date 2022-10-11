@@ -97,6 +97,20 @@ namespace BlazorTipz.ViewModels.Suggestion
             return suggsViewmodel;
         }
 
+        //Get suggestions from database for a specific user
+        public async Task<List<SuggViewmodel>> GetSuggestionsOfUser(string userId)
+        {
+            List<SuggestionEntity> suggs = await _DBR.GetSuggestionsOfCreator(userId);
+            List<SuggViewmodel> suggsViewmodel = new List<SuggViewmodel>();
+            foreach (SuggestionEntity s in suggs)
+            {
+                s.CategoryEntity = searchForCategory(s.Category);
+                SuggViewmodel sugg = new SuggViewmodel(s);
+                suggsViewmodel.Add(sugg);
+            }
+            return suggsViewmodel;
+        }
+
 
 
         private string? validateSuggestion(SuggViewmodel sugg)

@@ -3,12 +3,15 @@
 
 <!--Accesses classes defined here-->
 @using BlazorTipz.ViewModels.User
+@using BlazorTipz.ViewModels.Suggestion
+@using Radzen
 
 <!--Injects from program-->
 @inject ILocalStorageService _localStorage
 @inject NavigationManager NavigationManager
 @inject IUserManager _userManager
-
+@inject ISuggestionManager _suggestionManager
+@inject DialogService DialogService
 
 
 <PageTitle>Home</PageTitle>
@@ -18,10 +21,40 @@
         <h1 style="opacity:0;">:)</h1>
         <h1 class="center">Dashboard</h1>
         <p class="d-flex justify-content-center">Welcome to Tipz!</p>
+        <h1 class="center">Team @currentTeam.name</h1>
+        <!--Team Suggestions-->
+        <RadzenDataGrid AllowFiltering="true" AllowColumnResize="false"
+                        FilterMode="FilterMode.Simple" PageSize="5" AllowPaging="true" AllowSorting="true" Data="@UserSug" TItem="SuggViewmodel" ColumnWidth="300px"
+                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                        LogicalFilterOperator="LogicalFilterOperator.Or">
+            <Columns>
+                <RadzenDataGridColumn TItem="SuggViewmodel" Property="Title" Filterable="false" Title="Tittel" Width="70px" TextAlign="TextAlign.Center" />
 
+                <RadzenDataGridColumn TItem="SuggViewmodel" Property="Creator" Title="Creator" Width="140px" TextAlign="TextAlign.Center" />
+                <RadzenDataGridColumn TItem="SuggViewmodel" Property="StartDate" Title="Start Date" Width="140px" TextAlign="TextAlign.Center" />
+                <RadzenDataGridColumn TItem="SuggViewmodel" Property="Status" Title="Status" Width="140px" TextAlign="TextAlign.Center" />
+                <RadzenDataGridColumn Width="160px" TItem="SuggViewmodel" TextAlign="TextAlign.Center" Title="More">
+                    <Template Context="data">
+                        <RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" Class="m-1"
+                                      Text="Show more" Click=@(() => ShowCloseableFromOverlayDialog(data.Title, data.Creator, data.Description)) />
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
 
     </Authorized>
     <NotAuthorized>
         <h1 class="center">Redirecting..</h1>
     </NotAuthorized>
 </AuthorizeView>
+
+@code{
+    async Task ShowCloseableFromOverlayDialog(string title, string creator, string description)
+    {
+        await DialogService.OpenAsync($"{title} by {creator}", ds =>
+    @<div>
+
+        <p>@description</p>
+    </div>, new DialogOptions() { CloseDialogOnOverlayClick = true });
+    }
+}

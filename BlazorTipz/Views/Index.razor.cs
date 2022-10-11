@@ -1,11 +1,15 @@
 using Microsoft.AspNetCore.Components;
 using BlazorTipz.ViewModels.User;
+using BlazorTipz.ViewModels.Suggestion;
+using BlazorTipz.ViewModels.Team;
 
 namespace BlazorTipz.Views
 {
     public partial class Index
     {
+        List<SuggViewmodel> UserSug = new List<SuggViewmodel>();
         UserViewmodel currentUser = new UserViewmodel();
+        TeamViewmodel currentTeam = new TeamViewmodel();
         //Everytime page loads this runs
         protected override async Task OnInitializedAsync()
         {
@@ -33,6 +37,8 @@ namespace BlazorTipz.Views
                 //Sets currentUser to user
                 currentUser = user;
             }
+            //Get team suggestions
+            UserSug = await _suggestionManager.GetSuggestionsOfUser(currentUser.employmentId);
         }
 
         private void NavigateToLogin()
