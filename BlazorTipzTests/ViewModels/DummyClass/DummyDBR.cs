@@ -59,10 +59,20 @@ namespace BlazorTipzTests.ViewModels.DummyClass
         {
             throw new NotImplementedException();
         }
-
-        public Task<UserDb> getLoginUser(string empId)
+        
+        public async Task<UserDb> getLoginUser(string empId)
         {
-            throw new NotImplementedException();
+            if (empId == "212212")
+            {
+                UserDb user = new UserDb();
+                user.employmentId = "212212";
+                user.passwordHashing("test1234");
+                return user;
+            }
+            else
+            {
+                return null;
+            } 
         }
 
         public Task<TeamDb> getSingleTeamDbFromDb(string teamId)

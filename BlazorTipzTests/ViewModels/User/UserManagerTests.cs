@@ -5,35 +5,50 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BlazorTipzTests.ViewModels.DummyClass;
 
 namespace BlazorTipz.ViewModels.User.Tests
 {
     [TestClass()]
     public class UserManagerTests
     {
-        private UserManager _userManager { get; set; } = new UserManager();
+        private UserManager _userManager { get; set; } = new UserManager( new DummyDBR(), new Components.AuthenticationComponent());
 
         [TestMethod()]
         public void UserManagerTest()
         {
-           
+            _userManager = new UserManager(new DummyDBR(), new Components.AuthenticationComponent());
+            Assert.IsNotNull(_userManager);
         }
 
         [TestMethod()]
-        public async Task LoginTest()
+        [DataRow("212212", "test1234",true)] // dummy eksisting user
+        [DataRow("212212", "test", false)]
+        [DataRow("212212", "" , false)]
+        [DataRow("710847", "test1234", false)]
+        [DataRow("", "test", false)]
+        [DataRow("", "", false)]
+        public async Task LoginTest(string? id, string? pass, bool good)
         {
             //arrange
-            string err;
-            string token;
-            string expected;
+            string? err = null;
+            string? token = null;
             UserViewmodel user = new UserViewmodel();
-            user.employmentId = "";
-            user.password = "";
+            user.employmentId = id;
+            user.password = pass;
             //act
-            (err, token) = await _userManager.Login(user);
+            (token, err) = await _userManager.Login(user);
             //assert
-
-
+            if (good)
+            {
+                Assert.IsNotNull(token);
+                Assert.IsNull(err);
+            }
+            else
+            {
+                Assert.IsNull(token);
+                Assert.IsNotNull(err);
+            }
         }
 
         [TestMethod()]
