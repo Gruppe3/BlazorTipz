@@ -22,7 +22,7 @@ namespace BlazorTipz.ViewModels.User.Tests
         }
 
         [TestMethod()]
-        [DataRow("212212", "test1234",true)] // dummy eksisting user
+        [DataRow("1", "password1",true)] // dummy eksisting user
         [DataRow("212212", "test", false)]
         [DataRow("212212", "" , false)]
         [DataRow("710847", "test1234", false)]
