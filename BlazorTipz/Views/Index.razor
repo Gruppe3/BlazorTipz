@@ -21,32 +21,53 @@
         <h1 style="opacity:0;">:)</h1>
         <h1 class="center">Dashboard</h1>
         <p class="d-flex justify-content-center">Welcome to Tipz!</p>
-        <h1 class="center">Team @currentTeam.name</h1>
-        <!--Team Suggestions-->
-        <RadzenDataGrid AllowFiltering="true" AllowColumnResize="false"
-                        FilterMode="FilterMode.Simple" PageSize="5" AllowPaging="true" AllowSorting="true" Data="@UserSug" TItem="SuggViewmodel" ColumnWidth="300px"
-                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                        LogicalFilterOperator="LogicalFilterOperator.Or">
-            <Columns>
-                <RadzenDataGridColumn TItem="SuggViewmodel" Property="Title" Filterable="false" Title="Tittel" Width="70px" TextAlign="TextAlign.Center" />
-
-                <RadzenDataGridColumn TItem="SuggViewmodel" Property="Creator" Title="Creator" Width="140px" TextAlign="TextAlign.Center" />
-                <RadzenDataGridColumn TItem="SuggViewmodel" Property="StartDate" Title="Start Date" Width="140px" TextAlign="TextAlign.Center" />
-                <RadzenDataGridColumn TItem="SuggViewmodel" Property="Status" Title="Status" Width="140px" TextAlign="TextAlign.Center" />
-                <RadzenDataGridColumn Width="160px" TItem="SuggViewmodel" TextAlign="TextAlign.Center" Title="More">
-                    <Template Context="data">
-                        <RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" Class="m-1"
-                                      Text="Show more" Click=@(() => ShowCloseableFromOverlayDialog(data.Title, data.Creator, data.Description)) />
+        
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    <RadzenCard Class="suggColor">
+                        <RadzenDataList WrapItems="true" AllowPaging="true" Data="@UserSug" TItem="SuggViewmodel" PageSize="4"
+                                        PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true">
+                    <Template Context="suggestions">
+                                <RadzenCard  Style="width: 100%; padding: 0; overflow: hidden;">
+                                    <div class="container">
+                                        <div class="row" style="margin-left: calc(var(--bs-gutter-x) * -1); margin-right: calc(var(--bs-gutter-x) * -1)">
+                                            <div class="col-lg-3 p-3 product-title">
+                                                <h3>@(suggestions.Title)</h3>
+                                    </div>
+                                            <div class="col-lg-7 p-3">
+                                        <div class="row d-flex">
+                                                    <div class="col-md-6 col-lg-2">
+                                                <p>@(suggestions.OwnerTeam)</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                            <div class="col-lg-2 p-3">
+                                                <button  @onclick="@(() => ShowCloseableFromOverlayDialog(suggestions.Title, suggestions.Creator, suggestions.Description))">
+                                                    Show more
+                                                </button>
+                                            </div>
+                                </div>
+                            </div>
+                        </RadzenCard>
                     </Template>
-                </RadzenDataGridColumn>
-            </Columns>
-        </RadzenDataGrid>
-
+                </RadzenDataList>
+                    </RadzenCard>
+        </div>
+    </div>
+</div>
+        <h1 style="opacity:0;">:)</h1>
+        <h1 style="opacity:0;">:)</h1>
+        <h1 style="opacity:0;">:)</h1>
     </Authorized>
     <NotAuthorized>
         <h1 class="center">Redirecting..</h1>
     </NotAuthorized>
 </AuthorizeView>
+
+<style>
+   
+</style>
 
 @code{
     async Task ShowCloseableFromOverlayDialog(string title, string creator, string description)
