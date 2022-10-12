@@ -1,4 +1,5 @@
-﻿using BlazorTipz.Models;
+﻿using BlazorTipz.Data;
+using BlazorTipz.Models;
 using BlazorTipz.Models.DbRelay;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -210,6 +211,28 @@ namespace BlazorTipzTests.ViewModels.DummyClass
             {
                 _Suggestions.Add(sugg);
             }
+        }
+
+        //må pusses litt på
+        
+        public Task<SuggestionEntity?> GetSuggestion(string sugId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<SuggestionEntity>?> GetSuggestionsOfCreator(string empId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<SuggestionEntity>?> GetSuggestionOfTeam(string teamId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<SuggestionEntity>?> GetSuggestionsByStatus(SuggStatus status)
+        {
+            throw new NotImplementedException();
         }
     }
 }
