@@ -8,11 +8,14 @@ namespace BlazorTipz.ViewModels.Suggestion
     {
         private readonly IDbRelay _DBR;
         private readonly IAppStorage _AS;
+
+        private List<CategoriEntity> categories; 
         // Constructor
         public SuggestionManager(IDbRelay DBR, IAppStorage AS)
         {
             _DBR = DBR;
             _AS = AS;
+            categories = _AS.GetCategories();
         }
 
         public async Task<string?> saveSuggestion(SuggViewmodel sugg)
@@ -61,7 +64,55 @@ namespace BlazorTipz.ViewModels.Suggestion
                 return id;
             }
         }
-        
+        private CategoriEntity searchForCategory(string catid)
+        {
+            {
+                CategoriEntity cat = null;
+                foreach (CategoriEntity c in _AS.GetCategories())
+                {
+                    if (c.Id == catid)
+                    {
+                        cat = new CategoriEntity();
+                        cat.Name = c.Name;
+                        cat.Id = c.Id;
+                        break;
+                    }
+                }
+                if (cat == null) { return null; }
+                return cat;
+            }
+        }
+
+        //Get suggestions from database for a specific team
+        public async Task<List<SuggViewmodel>> GetSuggestionsOfTeam(string teamId)
+        {
+            List<SuggestionEntity> suggs = await _DBR.GetSuggestionOfTeam(teamId);
+            List<SuggViewmodel> suggsViewmodel = new List<SuggViewmodel>();
+            foreach (SuggestionEntity s in suggs)
+            {
+                s.CategoryEntity = searchForCategory(s.Category);
+                SuggViewmodel sugg = new SuggViewmodel(s);
+                suggsViewmodel.Add(sugg);
+            }
+            return suggsViewmodel;
+        }
+
+        //Get suggestions from database for a specific user
+        public async Task<List<SuggViewmodel>> GetSuggestionsOfUser(string userId)
+        {
+            List<SuggestionEntity> suggs = await _DBR.GetSuggestionsOfCreator(userId);
+            List<SuggViewmodel> suggsViewmodel = new List<SuggViewmodel>();
+            foreach (SuggestionEntity s in suggs)
+            {
+                s.CategoryEntity = searchForCategory(s.Category);
+                SuggViewmodel sugg = new SuggViewmodel(s);
+                suggsViewmodel.Add(sugg);
+            }
+            return suggsViewmodel;
+        }
+
+
+
         private string? validateSuggestion(SuggViewmodel sugg)
         {
             string err = null;

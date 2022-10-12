@@ -5,6 +5,10 @@ using BlazorTipz.ViewModels.User;
 using BlazorTipz.ViewModels.Suggestion;
 using BlazorTipz.ViewModels.Team;
 using Microsoft.AspNetCore.Mvc;
+using Radzen;
+using System;
+
+
 
 namespace BlazorTipz.Shared
 {
@@ -19,10 +23,7 @@ namespace BlazorTipz.Shared
         List<TeamViewmodel> teams = new List<TeamViewmodel>();
         List<Category> Categories;
         public string TeamCheck { get; set; }
-
         public string teamU { get; set; }
-
-        private string ShowSug { get; set; } = "none";
         private string ShowUser { get; set; } = "none";
         private string ShowTeam { get; set; } = "none";
         private string Feedback { get; set; }
@@ -76,20 +77,6 @@ namespace BlazorTipz.Shared
 
             Categories = _suggestionManager.GetCategories();
             suggDto.OwnerTeam = Cteam.id;
-        }
-
-        private void ShowSugg()
-        {
-            if (ShowSug != "none")
-            {
-                ShowSug = "none";
-            }
-            else
-            {
-                ShowSug = "block";
-            }
-
-            StateHasChanged();
         }
 
         private void ShowTeamP()
@@ -153,7 +140,7 @@ namespace BlazorTipz.Shared
             else
             {
                 Feedback = "Forslag lagret";
-                return "Sucsess";
+                return "Success";
             }
         }
     }
