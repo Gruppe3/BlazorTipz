@@ -35,7 +35,7 @@
                                 <Template Context="suggestions">
                                     <RadzenCard Style="width: 100%; padding: 0; overflow: hidden;">
                                         <a href="javascript:void(0);" class="nav__add" style="text-decoration-line: none;" @onclick="@(() =>
-                                            ShowCloseableFromOverlayDialog(suggestions.Title, suggestions.OwnerTeam, suggestions.Description, suggestions.Status.ToString()))">
+                                            ShowCloseableFromOverlayDialog(suggestions.Title, suggestions.OwnerTeam, suggestions.Description, suggestions.Status.ToString(), suggestions.category.ToString()))">
                                             <div class="container">
                                                 <div class="row">
                                                     <div class="col-lg p-3 product-title">
@@ -74,9 +74,9 @@
 
 @code {
 
-    async Task ShowCloseableFromOverlayDialog(string title, string ownerTeam, string description, string status)
+    async Task ShowCloseableFromOverlayDialog(string title, string ownerTeam, string description, string status, string category)
     {
-        await DialogService.OpenAsync($"Suggestion", ds =>
+        await DialogService.OpenAsync($"Suggestion in {category}", ds =>
     @<div>
         <h3>
             @title
