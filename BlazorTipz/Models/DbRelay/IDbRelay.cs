@@ -23,7 +23,7 @@ namespace BlazorTipz.Models.DbRelay
         Task<List<TeamDb>> getActiveTeams();
         Task<List<TeamDb>> getInactiveTeams();
         Task changeTeamStateTo(string teamid, bool state);
-        Task changeTeamsStateTo(List<TeamDb> users, bool state);
+        Task changeTeamsStateTo(List<TeamDb> teams, bool state);
 
         // Suggestions
         Task saveSuggestion(SuggestionEntity suggestion);

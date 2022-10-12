@@ -2,7 +2,7 @@
 using BlazorTipz.Data;
 using BlazorTipz.Models;
 using BlazorTipz.Models.DbRelay;
-
+using System.Runtime.Serialization;
 
 namespace BlazorTipz.ViewModels.User
 {
@@ -24,6 +24,10 @@ namespace BlazorTipz.ViewModels.User
         {
             _DBR = DBR;
             _Auth = auth;
+        }
+        public UserManager()
+        {
+            //for testing
         }
 
         //Login function
@@ -72,9 +76,9 @@ namespace BlazorTipz.ViewModels.User
         {
             string err = null;
             if (toRegisterUser == null) { err = "No user to register"; return (err, null); };
-            if (toRegisterUser.employmentId == null) { err = "no emplayment Id"; return (err, null); };
-            if (toRegisterUser.name == null) { err = "no name"; return (err, null); };
-            if (toRegisterUser.password == null) { err = "no password given"; return (err, null); };
+            if (toRegisterUser.employmentId == null|| toRegisterUser.employmentId == "") { err = "no emplayment Id"; return (err, null); };
+            if (toRegisterUser.name == null|| toRegisterUser.name =="") { err = "no name"; return (err, null); };
+            if (toRegisterUser.password == null|| toRegisterUser.password == "") { err = "no password given"; return (err, null); };
 
             UserDb userDb = await _DBR.lookUpUser(toRegisterUser.employmentId);
             if (userDb != null) { err = "User alrady exists"; return (err, null); }
@@ -108,7 +112,7 @@ namespace BlazorTipz.ViewModels.User
                 }
                 return (err, "Succsess");
             } 
-            else if (UsersToRegister != null)
+            else if (UsersToRegister != null && UsersToRegister.Count() >0)
             {
                 foreach (UserViewmodel user in UsersToRegister)
                 {
@@ -137,6 +141,7 @@ namespace BlazorTipz.ViewModels.User
             if (user == null) { return "no user to stage"; }
             if (user.employmentId==null) { return "Not supplied EmploymentID"; }
             if (user.name == string.Empty) { return "Not supplied a name"; }
+            if (user.password == string.Empty || user.password == "" ) { return "Not supplied a password"; }
             //check if user is in list, update instead of add
             bool hit = false;
             foreach(UserViewmodel u in UsersToRegister)
@@ -265,12 +270,12 @@ namespace BlazorTipz.ViewModels.User
         }
 
         // Updates a users roles
-        public async Task updateRole(UserViewmodel user, RoleE role, bool upgradeRole)
+        public async Task<string?> updateRole(UserViewmodel user, RoleE role, bool upgradeRole)
         {
-            if(user.employmentId == string.Empty) { return; }
+            if(user.employmentId == string.Empty) { return "No id on user"; }
             if(upgradeRole) 
             {
-                if (role <= user.role) { return; }
+                if (role < user.role|| role==user.role) { return "Alrady at needed role or higher"; }
                 user.role = role;
                 await _DBR.updateUserEntry(new UserDb(user));
                 updateUsersList();
@@ -281,7 +286,7 @@ namespace BlazorTipz.ViewModels.User
                 await _DBR.updateUserEntry(new UserDb(user));
                 updateUsersList();
             }
-            
+            return null;
         }
         // Returns the user with the given empid.
         public async Task<UserViewmodel?> getUser(string empid)
@@ -311,7 +316,7 @@ namespace BlazorTipz.ViewModels.User
             }
         }
         // Updates a users team.
-        public async Task updateUserTeam(string empid, string teamId)
+        public async Task<string?> updateUserTeam(string empid, string teamId)
         {
             if (ActiveUsers != null)
             {
@@ -321,10 +326,11 @@ namespace BlazorTipz.ViewModels.User
                     {
                         u.teamId = teamId;
                         await _DBR.updateUserEntry(new UserDb(u));
+                        return null;
                         break;
                     }
                 }
-                
+                return "User not found";
             }
             else
             {
@@ -335,10 +341,11 @@ namespace BlazorTipz.ViewModels.User
                     {
                         u.teamId = teamId;
                         await _DBR.updateUserEntry(new UserDb(u));
+                        return null;
                         break;
                     }
                 }
-                
+                return "User not found";
             }
 
         }
@@ -368,4 +375,5 @@ namespace BlazorTipz.ViewModels.User
         }
 
     }
+
 }
