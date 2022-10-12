@@ -1,5 +1,5 @@
 ﻿using BlazorTipz.Data;
-using DataLibrary;
+using BlazorTipz.Components.DataAccess;
 using System.Linq.Expressions;
 
 namespace BlazorTipz.Models.DbRelay

@@ -1,6 +1,6 @@
 ﻿using BlazorTipz.Components;
 using BlazorTipz.Data;
-using DataLibrary;
+using BlazorTipz.Components.DataAccess;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
