@@ -29,7 +29,7 @@ namespace BlazorTipzTests.ViewModels.DummyClass
         {
             //Fill up the dummy database with some dummy data.
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 13; i++)
             {
                 UserDb user = new UserDb();
                 user.employmentId = i.ToString();
@@ -37,16 +37,23 @@ namespace BlazorTipzTests.ViewModels.DummyClass
                 user.password = "password" + i.ToString();
                 user.passwordHashing(user.password);
                 user.teamId = "1";
-                user.active = true;
                 user.firstTimeLogin = true;
+                
+                if (i < 10) { user.active = true; }
+                else user.active = false;
+
                 _Users.Add(user);
             }
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 5; i++)
             {
                 TeamDb team = new TeamDb();
                 team.teamId = i.ToString();
                 team.teamName = "Team" + i.ToString();
-                team.teamLeader = "User" + i.ToString();
+                team.teamLeader = i.ToString();
+
+                if (i < 4) { team.active = true; }
+                else team.active = false;
+
                 _Teams.Add(team);
             }
             for (int i = 0; i < 3; i++)
