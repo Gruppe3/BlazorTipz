@@ -20,6 +20,7 @@
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    overflow-y: auto;
 }
 
 
@@ -41,26 +42,40 @@ h1:focus {
 }
 
 h1 {
-    padding-top: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
+
+.rz-paginator {
+    background-color: transparent;
+}
+
+.rz-paginator-element{
+    height: 2rem;
+    width: 2rem;
+    font-size: 1rem;
+}
+
 
 a, .btn-link {
     color: #0071c1;
 }
 
-.product-title {
-    min-height: 72px;
-}
-
-.price-badge {
-    font-size: 16px;
-    font-weight: bold;
-    line-height: 20px;
-    padding: 8px;
-}
-
 .suggColor {
-    background-color: var(--primary-color);
+    background-color: var(--third-color);
+    padding: 20px;
+}
+
+.suggBox {
+    max-width: 50%;
+}
+
+.suggShowBox {
+    display: flex;
+    color: var(--text-color);
+    font-weight: 500;
+    transition: .3s;
+    
 }
 
 .spinner {

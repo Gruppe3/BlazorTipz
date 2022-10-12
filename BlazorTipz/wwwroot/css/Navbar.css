@@ -100,29 +100,6 @@ a {
             color: var(--first-color);
         }
 
-.nav__sugg {
-    position: fixed;
-    background-color: var(--third-color);
-    box-shadow: 0 8px 24px hsla(228, 81%, 24%, .15);
-    padding: 30px 40px;
-    border-radius: 1rem;
-    padding-top: 3rem;
-    padding-bottom: 6rem;
-    width: 90%;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    column-gap: 36px;
-    transition: .4s;
-    z-index: 4;
-    overflow-y: scroll;
-    scrollbar-color: red;
-    scrollbar-width: auto;
-    overflow: hidden;
-}
 
 .nav__user {
     float: right;
@@ -365,5 +342,18 @@ a {
     /* Active link */
     .active-link {
         color: var(--first-color);
+    }
+}
+
+@media screen and (max-width: 768px){
+    h2{
+        font-size: 30px;
+    }
+    .bigboi{
+        height:150px;
+    }
+    
+    p{
+        font-size: 10px;
     }
 }

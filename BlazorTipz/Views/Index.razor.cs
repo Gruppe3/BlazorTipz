@@ -7,6 +7,8 @@ namespace BlazorTipz.Views
 {
     public partial class Index
     {
+        bool isLoaded;
+        
         List<SuggViewmodel> UserSug = new List<SuggViewmodel>();
         UserViewmodel currentUser = new UserViewmodel();
         TeamViewmodel currentTeam = new TeamViewmodel();
@@ -39,6 +41,7 @@ namespace BlazorTipz.Views
             }
             //Get team suggestions
             UserSug = await _suggestionManager.GetSuggestionsOfUser(currentUser.employmentId);
+            isLoaded = true;
         }
 
         private void NavigateToLogin()
