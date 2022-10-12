@@ -317,5 +317,59 @@ namespace BlazorTipz.Models.DbRelay
                 await saveSuggestion(sug);
             }
         }
+
+        //get all coulums of a suggestion from database with suggestion id
+        //if return = null error
+        public async Task<SuggestionEntity?> GetSuggestion(string sugId)
+        {
+            try
+            {
+                var sql = "SELECT * FROM Suggestions WHERE sugId = @sugId;";
+                SuggestionEntity sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { sugId = sugId }, _config.GetConnectionString("default"), true);
+                return sug;
+            }
+            catch (Exception ex) { return null; }
+        }
+
+        //get a list suggestion from database bound to creator id
+        //if return = null error
+        public async Task<List<SuggestionEntity>?> GetSuggestionsOfCreator(string empId)
+        {
+            try
+            {
+                var sql = "SELECT * FROM Suggestions WHERE creator = @creator;";
+                List<SuggestionEntity> sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { creator = empId }, _config.GetConnectionString("default"));
+                return sug;
+            }
+            catch (Exception ex) { return null; }   
+        }
+
+        //get a list suggestion from database bound to owner id
+        //if return = null error
+        public async Task<List<SuggestionEntity>?> GetSuggestionOfTeam(string teamId)
+        {
+            try
+            {
+                var sql = "SELECT * FROM Suggestions WHERE owner = @owner;";
+                List<SuggestionEntity> sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { owner = teamId }, _config.GetConnectionString("default"));
+                return sug;
+            }
+            catch (Exception ex) { return null; }
+        }
+
+        //get a list suggestion from database bound to status
+        //@param status = a type of SuggStatus (enum class)
+        //if return null = error
+        public async Task<List<SuggestionEntity>?> GetSuggestionsByStatus(SuggStatus status)
+        {
+            try
+            {
+                var sql = "SELECT * FROM Suggestions WHERE status = @status;";
+                List<SuggestionEntity> sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { status = status.ToString() }, _config.GetConnectionString("default"));
+                return sug;
+            }
+            catch (Exception ex) { return null; }
+        }
+
     }
 }

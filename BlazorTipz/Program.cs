@@ -11,7 +11,7 @@ using BlazorTipz.ViewModels.User;
 using DataLibrary;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-
+using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +28,7 @@ builder.Services.AddScoped<ITeamManager, TeamManager>();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<TokenServerAuthenticationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(provider => provider.GetRequiredService<TokenServerAuthenticationStateProvider>());
+builder.Services.AddScoped<DialogService>();
 
 
 var app = builder.Build();
