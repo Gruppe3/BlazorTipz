@@ -11,5 +11,10 @@ namespace BlazorTipz.ViewModels
         {
             this.Name = cat.Name;
         }
+        //Override ToString
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }
