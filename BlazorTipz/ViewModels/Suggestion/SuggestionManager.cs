@@ -113,15 +113,15 @@ namespace BlazorTipz.ViewModels.Suggestion
 
 
 
-        private string? validateSuggestion(SuggViewmodel sugg)
+        public string? validateSuggestion(SuggViewmodel sugg)
         {
             string err = null;
             if (sugg == null) { err = "No supplied suggestion"; return err; }
-            if (sugg.Title == null) { err = "No supplied title"; return err; }
-            if (sugg.Description == null) { err = "No supplied description"; return err; }
-            if (sugg.OwnerTeam == null) { err = "No supplied owner"; return err; }
-            if (sugg.Creator == null) { err = "No supplied creator"; return err; }
-            if (sugg.StartDate == null) { err = "No supplied start date"; return err; }
+            if (sugg.Title == null || sugg.Title == "") { err = "No supplied title"; return err; }
+            if (sugg.Description == null || sugg.Description == "") { err = "No supplied description"; return err; }
+            if (sugg.OwnerTeam == null || sugg.OwnerTeam == "") { err = "No supplied owner"; return err; }
+            if (sugg.Creator == null || sugg.Creator == "") { err = "No supplied creator"; return err; }
+            if (sugg.StartDate == null || sugg.StartDate == "") { err = "No supplied start date"; return err; }
 
             return err;
         }
