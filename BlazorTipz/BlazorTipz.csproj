@@ -13,6 +13,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.10" />
     <PackageReference Include="MySql.Data" Version="8.0.31" />
     <PackageReference Include="Radzen.Blazor" Version="4.1.7" />
+    <PackageReference Include="Radzen.Blazor.GridExportOptions" Version="3.3.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.23.1" />
   </ItemGroup>
 

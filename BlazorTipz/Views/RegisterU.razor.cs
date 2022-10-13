@@ -1,6 +1,9 @@
 using BlazorTipz.Data;
 using Microsoft.AspNetCore.Mvc;
 using BlazorTipz.ViewModels.User;
+using Radzen.Blazor;
+using System;
+using Radzen;
 
 namespace BlazorTipz.Views
 {
@@ -16,6 +19,9 @@ namespace BlazorTipz.Views
         //Lager en liste
         List<RoleE> roles = new List<RoleE>{RoleE.User, RoleE.Admin};
         List<UserViewmodel> UsersList;
+
+        RadzenDataGrid<UserViewmodel> grid;
+
         //checks if there is a current user
         protected override async Task OnInitializedAsync()
         {
@@ -39,6 +45,7 @@ namespace BlazorTipz.Views
             string ret = _userM.stageToRegisterList(usToList);
             Checker = ret;
             userDto = new UserViewmodel();
+            await grid.Reload();
             return ret;
         }
 
@@ -63,6 +70,7 @@ namespace BlazorTipz.Views
             userTemp = request;
             _userM.deleteFromRegisterList(userTemp.employmentId);
             UsersList = _userM.getRegisterUserList();
+            await grid.Reload();
             //Break foreach loop
             return "User deleted";
         }

@@ -6,6 +6,7 @@
 @using Microsoft.AspNetCore.Mvc
 @using Radzen
 @using BlazorTipz.ViewModels.User
+@using Radzen.Blazor.GridExportOptions;
 
 <!--Injects from program-->
 @inject NavigationManager _navigationManager
@@ -88,6 +89,19 @@
                             }
                         </table>
                     </div>
+                    <div class="center">
+                    <RadzenGridExportOptions Grid="@grid" ExcelTitle="Exprot UserList" ExcelButtonStyle="ButtonStyle.Primary" CsvExport="false" ExcelButtonCssStyle="center"/>
+                    </div>
+                    <RadzenDataGrid @ref="@grid" Style="display:none;" Data="@UsersList" TItem="UserViewmodel">
+                        <Columns>
+                            <RadzenDataGridColumn TItem="UserViewmodel" Property="listnum" Filterable="false" Title="List nr" Width="70px" TextAlign="TextAlign.Center" />
+
+                            <RadzenDataGridColumn TItem="UserViewmodel" Property="name" Title="Name" Width="140px" TextAlign="TextAlign.Center" />
+                            <RadzenDataGridColumn TItem="UserViewmodel" Property="employmentId" Title="ID" Width="140px" TextAlign="TextAlign.Center" />
+                            <RadzenDataGridColumn TItem="UserViewmodel" Property="password" Title="Password" Width="140px" TextAlign="TextAlign.Center" />
+                            <RadzenDataGridColumn TItem="UserViewmodel" Property="role" Title="Role" />
+                        </Columns>
+                    </RadzenDataGrid>
                     <div>
                         <div class="center">
                             <p>@Checker</p>
@@ -107,4 +121,3 @@
         <h1 class="center">You are not Authorized for this page</h1>
     </NotAuthorized>
 </AuthorizeView>
-
