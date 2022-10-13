@@ -158,6 +158,8 @@ namespace BlazorTipzTests.ViewModels.DummyClass
         }
         public async Task addTeamEntry(TeamDb team)
         {
+            string numb = _Teams.Count().ToString();
+            team.teamId = numb;
             _Teams.Add(team);
         }
         public async Task updateTeamEntry(TeamDb team)
