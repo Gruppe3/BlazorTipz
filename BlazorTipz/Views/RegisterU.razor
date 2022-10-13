@@ -17,8 +17,8 @@
 <!--Kun Admin rollen kan se-->
 <AuthorizeView Roles="Admin" Context="someContext">
     <Authorized>
-        <h1 class="center">Fill in the form</h1>
-        <p class="d-flex justify-content-center">to register a user</p>
+        <h1 class="center">Fyll inn skjema</h1>
+        <p class="d-flex justify-content-center">for å registrere en bruker</p>
         <div class="justify-content-center">
             <div class="row">
                 <div class="col-lg-6 offset-lg-3">
@@ -35,16 +35,16 @@
                         </div>
                         <div class="row mb-5">
                             <div class="col-md-4" style="align-self: center;">
-                                <RadzenLabel Text="Name" />
+                                <RadzenLabel Text="Navn" />
                             </div>
                             <div class="col">
-                                <RadzenTextBox style="display: block" Name="name" @bind-Value=@userDto.name Class="w-100" />
+                                <RadzenTextBox style="display: block" Name="name" @bind-Value=@userDto.name Class="w-100" Placeholder="Navn"/>
                                 <RadzenRequiredValidator Component="name" Text="Name is required" Popup=@popup Style="position: absolute" />
                             </div>
                         </div>
                         <div class="row mb-5">
                             <div class="col-md-4" style="align-self: center;">
-                                <RadzenLabel Text="Set role" />
+                                <RadzenLabel Text="Velg rolle" />
                             </div>
                             <div class="col">
                                 <!--Tar inn en liste roles-->
@@ -52,7 +52,7 @@
                             </div>
                         </div>
                         <div class="center">
-                            <RadzenButton ButtonType="ButtonType.Submit" Text="Add to list"></RadzenButton>
+                            <RadzenButton ButtonType="ButtonType.Submit" Text="Legg til i liste"></RadzenButton>
                         </div>
                     </RadzenTemplateForm>
                     <div class="center">
@@ -93,7 +93,7 @@
                             <p>@Checker</p>
                         </div>
                         <div class="center">
-                            <RadzenButton Click="RegisterUsers" Text="Register" ButtonStyle="ButtonStyle.Primary" />
+                            <RadzenButton Click="RegisterUsers" Text="Registrer" ButtonStyle="ButtonStyle.Primary" />
                         </div>
                     </div>
                 </div>
