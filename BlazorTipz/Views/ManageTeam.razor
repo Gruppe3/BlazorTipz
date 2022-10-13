@@ -19,15 +19,15 @@
 
 <AuthorizeView Roles="Admin" Context="someContext">
     <Authorized>
-        <h1 class="center">Fill in the form</h1>
-        <p class="d-flex justify-content-center">to create a new team!</p>
+        <h1 class="center">Fyll inn skjema</h1>
+        <p class="d-flex justify-content-center">for å lage et nytt team!</p>
         <div class="justify-content-center">
             <div class="row">
                 <div class="col-lg-6 offset-lg-3">
                     <RadzenTemplateForm TItem="TeamViewmodel" Data=@teamDto Submit=RegisterTeam>
                         <div class="row mb-5">
                             <div class="col-md-4" style="align-self: center;">
-                                <RadzenLabel Text="Team Name" />
+                                <RadzenLabel Text="Team Navn" />
                             </div>
                             <div class="col">
                                 <RadzenTextBox style="display: block" Name="team" @bind-Value=@teamDto.name Class="w-100" />
