@@ -1,6 +1,5 @@
 ﻿<!--Namespace-->
 @page "/register"
-
 <!--Accesses classes defined here-->
 @using BlazorTipz.Data
 @using Microsoft.AspNetCore.Mvc
@@ -11,6 +10,8 @@
 <!--Injects from program-->
 @inject NavigationManager _navigationManager
 @inject IUserManager _userM
+@inject IJSRuntime JsRuntime
+@inject DialogService DialogService
 
 
 <PageTitle>Register</PageTitle>
@@ -77,9 +78,9 @@
                                     <td>@us.employmentId</td>
                                     <td>@us.role.ToString()</td>
                                     <td>@us.password</td>
-                                    <td >
+                                    <td>
                                         <RadzenTemplateForm TItem="UserViewmodel" Data=@us Submit=DeleteUser>
-                                                    <RadzenNumeric style="display: none" Name="id" @bind-Value=@us.employmentId Class="w-100" />
+                                            <RadzenNumeric style="display: none" Name="id" @bind-Value=@us.employmentId Class="w-100" />
                                             <div class="center">
                                                 <RadzenButton ButtonType="ButtonType.Submit" style="background-color: transparent"><i class='bx bx-trash pointer'></i></RadzenButton>
                                             </div>
@@ -89,9 +90,9 @@
                             }
                         </table>
                     </div>
-                    <div class="center">
-                    <RadzenGridExportOptions Grid="@grid" ExcelTitle="Exprot UserList" ExcelButtonStyle="ButtonStyle.Primary" CsvExport="false" ExcelButtonCssStyle="center"/>
-                    </div>
+                    @*<div class="center">
+                            <RadzenGridExportOptions Grid="@grid" ExcelTitle="Exprot UserList" ExcelButtonStyle="ButtonStyle.Primary" CsvExport="false" ExcelButtonCssStyle="center" />
+                        </div>*@
                     <RadzenDataGrid @ref="@grid" Style="display:none;" Data="@UsersList" TItem="UserViewmodel">
                         <Columns>
                             <RadzenDataGridColumn TItem="UserViewmodel" Property="listnum" Filterable="false" Title="List nr" Width="70px" TextAlign="TextAlign.Center" />
@@ -107,7 +108,8 @@
                             <p>@Checker</p>
                         </div>
                         <div class="center">
-                            <RadzenButton Click="RegisterUsers" Text="Register" ButtonStyle="ButtonStyle.Primary" />
+                            <RadzenButton Click=@(() => ShowMenu())
+                                          Text="Register" ButtonStyle="ButtonStyle.Primary" />
                         </div>
                     </div>
                 </div>
@@ -121,3 +123,19 @@
         <h1 class="center">You are not Authorized for this page</h1>
     </NotAuthorized>
 </AuthorizeView>
+
+
+@code{
+
+    async Task ShowMenu()
+    {
+        await DialogService.OpenAsync($"Enter a suggestion", ds =>
+        @<div>
+    <RadzenButton Click="RegisterUsersWExport" Text="Ja" ButtonStyle="ButtonStyle.Primary" />
+    <RadzenButton Click="RegisterUsers" Text="Nei" ButtonStyle="ButtonStyle.Primary" />
+</div>, new DialogOptions() { CloseDialogOnOverlayClick = true });
+}
+
+
+
+}

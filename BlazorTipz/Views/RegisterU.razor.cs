@@ -4,6 +4,7 @@ using BlazorTipz.ViewModels.User;
 using Radzen.Blazor;
 using System;
 using Radzen;
+using Radzen.Blazor.GridExportOptions;
 
 namespace BlazorTipz.Views
 {
@@ -47,6 +48,22 @@ namespace BlazorTipz.Views
             userDto = new UserViewmodel();
             await grid.Reload();
             return ret;
+        }
+
+        //Sender resuest til registerUserSingel
+        public async Task<ActionResult<string>> RegisterUsersWExport()
+        {
+            RadzenGridExportOptions<UserViewmodel> grid;
+            (string err, string suc) = await _userM.registerMultiple(null);
+            Checker = err;
+            UsersList = _userM.getRegisterUserList();
+            if (suc != null)
+            {
+                Checker = suc;
+                return suc;
+            }
+
+            return err;
         }
 
         //Sender resuest til registerUserSingel
