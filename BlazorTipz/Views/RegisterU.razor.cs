@@ -54,6 +54,7 @@ namespace BlazorTipz.Views
             if (suc != null)
             {
                 Checker = suc;
+                DialogService.Close();
                 return suc;
             }
 
