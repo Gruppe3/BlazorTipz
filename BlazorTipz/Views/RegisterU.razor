@@ -10,6 +10,8 @@
 <!--Injects from program-->
 @inject NavigationManager _navigationManager
 @inject IUserManager _userM
+@inject IJSRuntime JSRuntime
+@inject DialogService DialogService
 
 
 <PageTitle>Register</PageTitle>
@@ -89,11 +91,12 @@
                         </table>
                     </div>
                     <div>
+
                         <div class="center">
-                            <p>@Checker</p>
+                            <RadzenButton Click="ExcelAsk" Text="Register" ButtonStyle="ButtonStyle.Primary" />
                         </div>
                         <div class="center">
-                            <RadzenButton Click="RegisterUsers" Text="Register" ButtonStyle="ButtonStyle.Primary" />
+                            <p>@Checker</p>
                         </div>
                     </div>
                 </div>
@@ -108,3 +111,17 @@
     </NotAuthorized>
 </AuthorizeView>
 
+@code{
+    async Task ExcelAsk()
+    {
+        await DialogService.OpenAsync($"Øsnker du å laste ned brukerne?", ds =>
+    @<div>
+            <div class="center">
+            <RadzenButton Click="RegisterUsersWExcel" Text="Ja" ButtonStyle="ButtonStyle.Primary" Style="width:4rem;" />
+            </div>
+            <div class="center">
+                <RadzenButton Click="RegisterUsers" Text="Nei" ButtonStyle="ButtonStyle.Primary" Style="width:4rem;"/>
+            </div>
+    </div>, new DialogOptions() { CloseDialogOnOverlayClick = true });
+    }
+}
