@@ -90,9 +90,9 @@
                             }
                         </table>
                     </div>
-                    @*<div class="center">
-                            <RadzenGridExportOptions Grid="@grid" ExcelTitle="Exprot UserList" ExcelButtonStyle="ButtonStyle.Primary" CsvExport="false" ExcelButtonCssStyle="center" />
-                        </div>*@
+                    <!--<div class="center">
+            <RadzenGridExportOptions Grid="@grid" ExcelTitle="Exprot UserList" ExcelButtonStyle="ButtonStyle.Primary" CsvExport="false" ExcelButtonCssStyle="center" />
+        </div>-->
                     <RadzenDataGrid @ref="@grid" Style="display:none;" Data="@UsersList" TItem="UserViewmodel">
                         <Columns>
                             <RadzenDataGridColumn TItem="UserViewmodel" Property="listnum" Filterable="false" Title="List nr" Width="70px" TextAlign="TextAlign.Center" />
@@ -131,8 +131,8 @@
     {
         await DialogService.OpenAsync($"Enter a suggestion", ds =>
         @<div>
-    <RadzenButton Click="RegisterUsersWExport" Text="Ja" ButtonStyle="ButtonStyle.Primary" />
-    <RadzenButton Click="RegisterUsers" Text="Nei" ButtonStyle="ButtonStyle.Primary" />
+    <RadzenGridExportOptions Grid="@grid" ExcelTitle="Eksporter liste" ExcelButtonStyle="ButtonStyle.Primary" CsvExport="false" ExcelButtonCssStyle="center" />
+    <RadzenButton Click="RegisterUsers" Text="Fortsett" ButtonStyle="ButtonStyle.Primary" />
 </div>, new DialogOptions() { CloseDialogOnOverlayClick = true });
 }
 

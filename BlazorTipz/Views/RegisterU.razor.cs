@@ -51,22 +51,6 @@ namespace BlazorTipz.Views
         }
 
         //Sender resuest til registerUserSingel
-        public async Task<ActionResult<string>> RegisterUsersWExport()
-        {
-            RadzenGridExportOptions<UserViewmodel> grid;
-            (string err, string suc) = await _userM.registerMultiple(null);
-            Checker = err;
-            UsersList = _userM.getRegisterUserList();
-            if (suc != null)
-            {
-                Checker = suc;
-                return suc;
-            }
-
-            return err;
-        }
-
-        //Sender resuest til registerUserSingel
         public async Task<ActionResult<string>> RegisterUsers()
         {
             (string err, string suc) = await _userM.registerMultiple(null);
