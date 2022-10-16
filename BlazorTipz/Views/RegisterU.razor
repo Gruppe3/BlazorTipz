@@ -95,6 +95,13 @@
                         <div class="center">
                             <RadzenButton Click="ExcelAsk" Text="Register" ButtonStyle="ButtonStyle.Primary" />
                         </div>
+                        @if (HasBeenRegisterd)
+                        {
+                            <div class="center">
+                                <RadzenButton Click="DownloadExcelDocument" Icon="get_app" Text="Last ned liste" ButtonStyle="ButtonStyle.Primary" Style="width:4rem;" />
+                            </div>
+
+                        }
                         <div class="center">
                             <p>@Checker</p>
                         </div>

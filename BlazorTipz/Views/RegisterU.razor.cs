@@ -12,6 +12,7 @@ namespace BlazorTipz.Views
         bool popup;
         bool isLoading = false;
         public string Checker { get; set; }
+        bool HasBeenRegisterd { get; set; }
 
         bool passwordVisible = true;
         UserViewmodel userDto = new UserViewmodel();
@@ -39,6 +40,10 @@ namespace BlazorTipz.Views
             string genPass = _userM.generatePassword();
             userDto.password = genPass;
             UserViewmodel usToList = userDto;
+            if (HasBeenRegisterd) {
+                _userM.getRegisterUserList().Clear();
+                HasBeenRegisterd = false;
+            }
             string ret = _userM.stageToRegisterList(usToList);
             Checker = ret;
             userDto = new UserViewmodel();
@@ -55,6 +60,7 @@ namespace BlazorTipz.Views
             {
                 Checker = suc;
                 DialogService.Close();
+                HasBeenRegisterd = true;
                 return suc;
             }
 
@@ -72,6 +78,7 @@ namespace BlazorTipz.Views
                 await DownloadExcelDocument();
                 Checker = suc;
                 DialogService.Close();
+                HasBeenRegisterd = true;
                 return suc;
             }
             return err;
