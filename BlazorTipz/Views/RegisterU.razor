@@ -91,17 +91,19 @@
                         </table>
                     </div>
                     <div>
+                        <div class="center" style="width:10rem;">
+                            @if (true)
+                            {
+                                <div>
+                                    <RadzenButton Click="DownloadExcelDocument" Icon="get_app" Text="Last ned liste" ButtonStyle="ButtonStyle.Primary" Style="width:auto;"/>
+                                </div>
 
-                        <div class="center">
+                            }
+                        <div>
                             <RadzenButton Click="ExcelAsk" Text="Register" ButtonStyle="ButtonStyle.Primary" />
                         </div>
-                        @if (HasBeenRegisterd)
-                        {
-                            <div class="center">
-                                <RadzenButton Click="DownloadExcelDocument" Icon="get_app" Text="Last ned liste" ButtonStyle="ButtonStyle.Primary" Style="width:4rem;" />
-                            </div>
-
-                        }
+                        
+                        </div>
                         <div class="center">
                             <p>@Checker</p>
                         </div>
@@ -123,12 +125,12 @@
     {
         await DialogService.OpenAsync($"Øsnker du å laste ned brukerne?", ds =>
     @<div>
-            <div class="center">
-            <RadzenButton Click="RegisterUsersWExcel" Text="Ja" ButtonStyle="ButtonStyle.Primary" Style="width:4rem;" />
-            </div>
-            <div class="center">
-                <RadzenButton Click="RegisterUsers" Text="Nei" ButtonStyle="ButtonStyle.Primary" Style="width:4rem;"/>
-            </div>
+                    <div class="center">
+                    <RadzenButton Click="RegisterUsersWExcel" Text="Ja" ButtonStyle="ButtonStyle.Primary" Style="width:4rem;" />
+                    </div>
+                    <div class="center">
+                        <RadzenButton Click="RegisterUsers" Text="Nei" ButtonStyle="ButtonStyle.Primary" Style="width:4rem;"/>
+                    </div>
     </div>, new DialogOptions() { CloseDialogOnOverlayClick = true });
     }
 }
