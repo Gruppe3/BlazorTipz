@@ -70,23 +70,25 @@
                                 <th>Password</th>
                                 <th>Delete</th>
                             </tr>
-                            @foreach (UserViewmodel us in UsersList)
-                            {
-                                <tr>
-                                    <td>@us.listnum</td>
-                                    <td>@us.name</td>
-                                    <td>@us.employmentId</td>
-                                    <td>@us.role.ToString()</td>
-                                    <td>@us.password</td>
-                                    <td >
-                                        <RadzenTemplateForm TItem="UserViewmodel" Data=@us Submit=DeleteUser>
-                                                    <RadzenNumeric style="display: none" Name="id" @bind-Value=@us.employmentId Class="w-100" />
-                                            <div class="center">
-                                                <RadzenButton ButtonType="ButtonType.Submit" style="background-color: transparent"><i class='bx bx-trash pointer'></i></RadzenButton>
-                                            </div>
-                                        </RadzenTemplateForm>
-                                    </td>
-                                </tr>
+                            @if(UsersList != null){
+                                @foreach (UserViewmodel us in UsersList)
+                                {
+                                    <tr>
+                                        <td>@us.listnum</td>
+                                        <td>@us.name</td>
+                                        <td>@us.employmentId</td>
+                                        <td>@us.role.ToString()</td>
+                                        <td>@us.password</td>
+                                        <td>
+                                            <RadzenTemplateForm TItem="UserViewmodel" Data=@us Submit=DeleteUser>
+                                                <RadzenNumeric style="display: none" Name="id" @bind-Value=@us.employmentId Class="w-100" />
+                                                <div class="center">
+                                                    <RadzenButton ButtonType="ButtonType.Submit" style="background-color: transparent"><i class='bx bx-trash pointer'></i></RadzenButton>
+                                                </div>
+                                            </RadzenTemplateForm>
+                                        </td>
+                                    </tr>
+                                }
                             }
                         </table>
                     </div>

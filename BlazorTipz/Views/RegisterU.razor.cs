@@ -35,6 +35,11 @@ namespace BlazorTipz.Views
             }
         }
 
+        public void getUsersList()
+        {
+            UsersList = _userM.getRegisterUserList();
+        }
+
         public async Task<ActionResult<string?>> registerUser()
         {
             string genPass = _userM.generatePassword();
