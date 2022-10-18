@@ -226,22 +226,22 @@ namespace BlazorTipzTests.ViewModels.DummyClass
 
         public Task<SuggestionEntity?> GetSuggestion(string sugId)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(_Suggestions.Where(x => x.sugId == sugId).FirstOrDefault());
         }
 
         public Task<List<SuggestionEntity>?> GetSuggestionsOfCreator(string empId)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(_Suggestions.Where(x => x.creator == empId).ToList());
         }
 
         public Task<List<SuggestionEntity>?> GetSuggestionOfTeam(string teamId)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(_Suggestions.Where(x => x.owner == teamId).ToList());
         }
 
         public Task<List<SuggestionEntity>?> GetSuggestionsByStatus(SuggStatus status)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(_Suggestions.Where(x => x.status == status).ToList());
         }
     }
 }
