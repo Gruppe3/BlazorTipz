@@ -29,7 +29,7 @@ namespace BlazorTipzTests.ViewModels.DummyClass
         {
             //Fill up the dummy database with some dummy data.
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 13; i++)
             {
                 UserDb user = new UserDb();
                 user.employmentId = i.ToString();
@@ -37,23 +37,30 @@ namespace BlazorTipzTests.ViewModels.DummyClass
                 user.password = "password" + i.ToString();
                 user.passwordHashing(user.password);
                 user.teamId = "1";
-                user.active = true;
                 user.firstTimeLogin = true;
+                
+                if (i < 10) { user.active = true; }
+                else user.active = false;
+
                 _Users.Add(user);
             }
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 5; i++)
             {
                 TeamDb team = new TeamDb();
                 team.teamId = i.ToString();
                 team.teamName = "Team" + i.ToString();
-                team.teamLeader = "User" + i.ToString();
+                team.teamLeader = i.ToString();
+
+                if (i < 4) { team.active = true; }
+                else team.active = false;
+
                 _Teams.Add(team);
             }
             for (int i = 0; i < 3; i++)
             {
                 SuggestionEntity sugg = new SuggestionEntity();
                 sugg.sugId = i.ToString();
-                sugg.owner = "Team2";
+                sugg.owner = i.ToString();
                 sugg.sugTitle = "TestTitle" + i.ToString();
                 sugg.sugDesc = "DescribingTest" + i.ToString();
                 sugg.createdAt = DateTime.Now.ToString();
@@ -151,6 +158,8 @@ namespace BlazorTipzTests.ViewModels.DummyClass
         }
         public async Task addTeamEntry(TeamDb team)
         {
+            string numb = _Teams.Count().ToString();
+            team.teamId = numb;
             _Teams.Add(team);
         }
         public async Task updateTeamEntry(TeamDb team)
@@ -213,26 +222,24 @@ namespace BlazorTipzTests.ViewModels.DummyClass
             }
         }
 
-        //må pusses litt på
-        
         public Task<SuggestionEntity?> GetSuggestion(string sugId)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(_Suggestions.Where(x => x.sugId == sugId).FirstOrDefault());
         }
 
         public Task<List<SuggestionEntity>?> GetSuggestionsOfCreator(string empId)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(_Suggestions.Where(x => x.creator == empId).ToList());
         }
 
         public Task<List<SuggestionEntity>?> GetSuggestionOfTeam(string teamId)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(_Suggestions.Where(x => x.owner == teamId).ToList());
         }
 
         public Task<List<SuggestionEntity>?> GetSuggestionsByStatus(SuggStatus status)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(_Suggestions.Where(x => x.status == status).ToList());
         }
     }
 }
