@@ -2,6 +2,8 @@
 
 @if (isLoaded)
 {
+    <RadzenDialog/>
+    
     <PageTitle>BlazorTipz</PageTitle>
 
 
@@ -29,6 +31,7 @@
     </AuthorizeView>
     <AuthorizeView>
         <NotAuthorized>
+            <link rel="stylesheet" href="css/Navbar.css" />
             <div class="page">
                 <main>
                     <article class="content px-4">
@@ -39,6 +42,7 @@
         </NotAuthorized>
     </AuthorizeView>
 } else {
+    <link rel="stylesheet" href="css/Navbar.css" />
    <div class="center">
        <div class="spinner"></div>
    </div>

@@ -1,23 +1,28 @@
 ﻿using BlazorTipz.Components;
 using BlazorTipz.Data;
-using DataLibrary;
+using BlazorTipz.Components.DataAccess;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using static Org.BouncyCastle.Math.EC.ECCurve;
 using Microsoft.Extensions.Configuration;
 using System.Security.Cryptography;
+using BlazorTipz.ViewModels.User;
 
 namespace BlazorTipz.Models
 {
-    public class UserDb : UserA
+    public class UserDb 
     {
         private readonly IConfiguration _config;
-
+        public string name { get; set; } = string.Empty;
+        public string employmentId { get; set; }
+        public RoleE role { get; set; } = RoleE.User;
+        public string teamId { get; set; }
+        public string password { get; set; }
         public byte[] passwordHash { get; set; }
         public byte[] passwordSalt { get; set; }
         public bool active { get; set; } = true;
-
+        public bool firstTimeLogin { get; set; }
         public string AuthToken { get; private set; }
 
         //inject _data
@@ -31,7 +36,7 @@ namespace BlazorTipz.Models
                 .AddJsonFile("appsettings.json", true, true)
                 .Build();
         }
-        public UserDb(UserA user)
+        public UserDb(UserViewmodel user)
         {
             _config = new ConfigurationBuilder()
                  .AddJsonFile("appsettings.json", true, true)
@@ -41,6 +46,7 @@ namespace BlazorTipz.Models
             this.teamId = user.teamId;
             this.name = user.name;
             this.role = user.role;
+            this.firstTimeLogin = user.firstTimeLogin;
             if (user.password != null)
             {
                 passwordHashing(user.password);

@@ -1,7 +1,26 @@
-@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+/*=============== GOOGLE FONTS ===============*/
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
+
+:root {
+    /*========== Colors ==========*/
+    /*Color mode HSL(hue, saturation, lightness)*/
+    --first-color: hsl(228, 81%, 49%);
+    --title-color: hsl(228, 12%, 15%);
+    --text-color: hsl(0, 0%, 100%);
+    --body-color: hsl(236, 28%, 19%);
+    --container-color: #fff;
+    --primary-color: hsl(264, 0%, 17%);
+    --secondary-color: hsl(264, 0%, 17%);
+    --third-color: hsl(228, 12%, 15%);
+    /*========== Font and typography ==========*/
+    /*.5rem = 8px | 1rem = 16px ...*/
+    --body-font: 'Poppins', sans-serif;
+    --normal-font-size: .938rem;
+}
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    overflow-y: auto;
 }
 
 
@@ -23,11 +42,52 @@ h1:focus {
 }
 
 h1 {
-    padding-top: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
+
+.rz-paginator {
+    background-color: transparent;
+}
+
+.rz-paginator-element{
+    height: 2rem;
+    width: 2rem;
+    font-size: 1rem;
+}
+
 
 a, .btn-link {
     color: #0071c1;
+}
+
+.suggColor {
+    background-color: var(--third-color);
+    padding: 20px;
+}
+
+.suggBox {
+    max-width: 50%;
+}
+
+.suggShowBox {
+    display: flex;
+    color: var(--text-color);
+    font-weight: 500;
+    transition: .3s;
+    
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    padding: 10px;
+}
+
+.grid-item {
+    padding: 20px;
+    font-size: 30px;
+    text-align: center;
 }
 
 .spinner {
@@ -114,4 +174,32 @@ a, .btn-link {
 
     .blazor-error-boundary::after {
         content: "An error has occurred."
+    }
+
+.regT {
+    text-align: center;
+    border-collapse: collapse;
+    background: var(--primary-color);
+    box-shadow: 0 8px 24px hsla(228, 81%, 24%, .15);
+    padding: 30px 40px;
+    border-radius: 1rem;
+    width: 100%;
+    margin: 0 auto;
+    column-gap: 36px;
+    transition: .4s;
+    /* add this */
+    overflow: hidden
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+    table td, table th {
+        padding: 8px;
+    }
+
+    table th {
+        padding-top: 12px;
+        padding-bottom: 12px;
     }

@@ -1,24 +1,27 @@
-﻿@page "/userSettings"
+﻿<!--Namespace-->
+@page "/userSettings"
 
+<!--Accesses classes defined here-->
 @using BlazorTipz.Data
 @using Microsoft.AspNetCore.Mvc
 @using BlazorTipz.ViewModels.User
 
+<!--Injects from program-->
 @inject ILocalStorageService _localStorage
 @inject NavigationManager NavigationManager
 @inject IUserManager _userManager
 
 <PageTitle>User Settings</PageTitle>
 
-<h1 class="center">Change User Settings</h1>
-<p class="d-flex justify-content-center">Change Firstname and Lastname</p>
-<div class="container my-4">
+<h1 class="center">Endre innstillinger til bruker</h1>
+<p class="d-flex justify-content-center">Endre fornavn og etternavn</p>
+<div class="justify-content-center">
     <div class="row">
         <div class="col-lg-6 offset-lg-3">
             <RadzenTemplateForm TItem="UserViewmodel" Data=userDto Submit=ChangeSettings>
                 <div class="row mb-5">
                     <div class="col-md-4" style="align-self: center;">
-                        <RadzenLabel Text="Full name" />
+                        <RadzenLabel Text="Fullt navn" />
                     </div>
                     <div class="col">
                         <RadzenTextBox style="display: block" Name="name" @bind-Value=@userDto.name Class="w-100" />
@@ -27,7 +30,7 @@
                 </div>
                 <div class="row mb-5">
                     <div class="col-md-4" style="align-self: center;">
-                        <RadzenLabel Text="Password" />
+                        <RadzenLabel Text="Passord" />
                     </div>
                     <div class="col">
                         <RadzenTextBox style="display: block" Name="password" @bind-Value=@userDto.password Class="w-100" type="password" />
@@ -36,7 +39,7 @@
                 </div>
                 <div class="row mb-5">
                     <div class="col-md-4" style="align-self: center;">
-                        <RadzenLabel Text="Repeat password" />
+                        <RadzenLabel Text="Gjenta passord" />
                     </div>
                     <div class="col">
                         <RadzenTextBox style="display: block" Name="RepeatPassword" @bind-Value=@userDto.RepeatPassword Class="w-100" type="password" />
@@ -48,7 +51,7 @@
                     <h1>@Checker</h1>
                 </div>
                 <div class="center">
-                    <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
+                    <RadzenButton ButtonType="ButtonType.Submit" Text="Send inn"></RadzenButton>
                 </div>
                 <div class="center">
                     <RadzenButton Click="back" Text="Go back"></RadzenButton>
@@ -57,39 +60,7 @@
         </div>
     </div>
 </div>
-@code {
-    bool popup;
-    
-    public string Checker { get; set; }
-    UserViewmodel userDto = new UserViewmodel();
-    UserViewmodel? CUser;
+<h1 style="opacity:0;">:)</h1>
+<h1 style="opacity:0;">:)</h1>
+<h1 style="opacity:0;">:)</h1>
 
-    //checks if there is a current user
-    protected override async Task OnInitializedAsync() {
-        var CurrentUser = _userManager.getCurrentUser();
-        if (CurrentUser == null)
-        {
-            NavigationManager.NavigateTo("/");
-        }
-        else{
-            CUser = CurrentUser;
-        }
-    }
-
-    //changes the current user details
-    public async Task<ActionResult<UserA>> ChangeSettings(UserViewmodel request){
-        string err =  await _userManager.updateCurrentUser(request);
-        if (err != null)
-        {
-            Checker = err;
-            return new BadRequestObjectResult(Checker);
-        }
-        CUser = _userManager.getCurrentUser();
-        if (CUser.password != request.RepeatPassword) { Checker = "not changed correctly, try again"; return new BadRequestObjectResult(Checker); }
-        return CUser;
-    }
-    
-    // navigate back to home, when used
-    private void back() { NavigationManager.NavigateTo("/", true); }
-    
-}

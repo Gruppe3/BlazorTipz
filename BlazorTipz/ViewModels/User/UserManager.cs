@@ -2,37 +2,57 @@
 using BlazorTipz.Data;
 using BlazorTipz.Models;
 using BlazorTipz.Models.DbRelay;
-
+using System.Runtime.Serialization;
 
 namespace BlazorTipz.ViewModels.User
 {
     public class UserManager : IUserManager
     {
+        //
         private readonly IDbRelay _DBR;
         private readonly AuthenticationComponent _Auth;
 
+        //Current user logged in
         public UserViewmodel? CurrentUser { get; set; }
+
+        //A list of all active users
         public List<UserViewmodel>? ActiveUsers { get; set; }
+
+        private List<UserViewmodel>? UsersToRegister {  get; set; } = new List<UserViewmodel>();
+        //constructor
         public UserManager(IDbRelay DBR, AuthenticationComponent auth)
         {
             _DBR = DBR;
             _Auth = auth;
         }
+        public UserManager()
+        {
+            //for testing
+        }
+
+        //Login function
         public async Task<(string, string)> Login(UserViewmodel user)
         {
+            //User entity
             UserDb tryUser = new UserDb(user);
-            UserDb dbUser = await _DBR.getUser(tryUser.employmentId);
+            //Sends emplyment id to userdb through interface relay
+            UserDb dbUser = await _DBR.getLoginUser(tryUser.employmentId);
             string token;
             string err;
+
+            //If doesn´t exist
             if (dbUser == null)
             {
                 token = null;
                 err = "User not found";
                 return (token, err);
             }
+            //Verifies password typed in
             if (_Auth.VerifyPasswordHash(user.password, dbUser.passwordHash, dbUser.passwordSalt))
             {
                 dbUser.CreateToken();
+
+                //setter token
                 token = dbUser.AuthToken;
                 UserViewmodel userView = new UserViewmodel(dbUser);
                 CurrentUser = userView;
@@ -40,6 +60,8 @@ namespace BlazorTipz.ViewModels.User
                 err = null;
                 return (token, err);
             }
+
+            //If it does not match it´s wrong
             else
             {
                 token = null;
@@ -47,32 +69,130 @@ namespace BlazorTipz.ViewModels.User
                 return (token, err);
             }
         }
-        public async Task<string> registerUserSingel(UserViewmodel toRegisterUser)
+
+        //register singel user function
+        //first return "string?" = errmsg, second return "string?" = sucsessMsg
+        public async Task<(string?,string?)> registerUserSingel(UserViewmodel toRegisterUser)
         {
             string err = null;
-            if (toRegisterUser == null) { err = "No user to register"; return err; };
-            if (toRegisterUser.employmentId == null) { err = "no emplayment Id"; return err; };
-            if (toRegisterUser.password == null) { err = "no password given"; return err; };
+            if (toRegisterUser == null) { err = "No user to register"; return (err, null); };
+            if (toRegisterUser.employmentId == null|| toRegisterUser.employmentId == "") { err = "no emplayment Id"; return (err, null); };
+            if (toRegisterUser.name == null|| toRegisterUser.name =="") { err = "no name"; return (err, null); };
+            if (toRegisterUser.password == null|| toRegisterUser.password == "") { err = "no password given"; return (err, null); };
 
-            UserDb userDb = await _DBR.getUser(toRegisterUser.employmentId);
-            if (userDb != null) { err = "User alrady exists"; return err; }
+            UserDb userDb = await _DBR.lookUpUser(toRegisterUser.employmentId);
+            if (userDb != null) { err = "User alrady exists"; return (err, null); }
 
             UserDb toSaveUser = new UserDb(toRegisterUser);
             List<UserDb> toSave = new List<UserDb>();
             toSave.Add(toSaveUser);
-            if (toSave.Count == 0) { err = "somthing went wrong"; return err; };
+            if (toSave.Count == 0) { err = "somthing went wrong"; return (err, null); };
 
             await _DBR.addUserEntries(toSave);
             await getUsers();
-            err = "succsess";
-            return err;
+            string suc = "succsess";
+            return (err, suc);
         }
 
+        //take in a list of users, and registers them
+        //first return "string?" = errmsg, second return "string?" = sucsessMsg
+        public async Task<(string?,string?)> registerMultiple(List<UserViewmodel>? usersToReg)
+        {
+            string err = null;
+            string retErr= null;
+            string filler;
+            int itNum = 1;
+            if(usersToReg != null) 
+            {
+                foreach(UserViewmodel user in usersToReg)
+                {
+                    (retErr, filler) = await registerUserSingel(user);
+                    if(retErr != null) { return ("Nr: " + itNum +", Failed with: " + retErr,null); }
+                    itNum++;
+                }
+                return (err, "Succsess");
+            } 
+            else if (UsersToRegister != null && UsersToRegister.Count() >0)
+            {
+                foreach (UserViewmodel user in UsersToRegister)
+                {
+                    (retErr, filler) = await registerUserSingel(user);
+                    if (retErr != null) { return ("Nr: " + itNum + ", Failed with: " + retErr, null); }
+                    itNum++;
+                }
+                return (err, "Succsess");
+            }
+            else
+            {
+                return ("No one to register",null);
+            }
+        }
+        public List<UserViewmodel> getRegisterUserList()
+        {
+            if (UsersToRegister == null)
+            {
+                List<UserViewmodel> list = new List<UserViewmodel>();
+                UsersToRegister = list;
+            }
+            return UsersToRegister;
+        }
+        public string stageToRegisterList(UserViewmodel user)
+        {
+            if (user == null) { return "no user to stage"; }
+            if (user.employmentId==null) { return "Not supplied EmploymentID"; }
+            if (user.name == string.Empty) { return "Not supplied a name"; }
+            if (user.password == string.Empty || user.password == "" ) { return "Not supplied a password"; }
+            //check if user is in list, update instead of add
+            bool hit = false;
+            foreach(UserViewmodel u in UsersToRegister)
+            {
+                if (u.employmentId == user.employmentId)
+                {
+                    u.name = user.name;
+                    u.password = user.password;
+                    u.role = user.role;
+                    hit = true; break;
+                }
+            }
+            if (!hit)
+            {
+                //adds new user to list
+                user.listnum = UsersToRegister.Count + 1;
+                UsersToRegister.Add(user);
+                return "User succsessfully added to list of pepole to register";
+            } else { return "User in list updated"; }
+        }
+        private void updateListnum()
+        {
+            foreach (UserViewmodel u in UsersToRegister)
+            {
+                u.listnum = UsersToRegister.IndexOf(u) + 1;
+            }
+        }
+        //deletes a specified element form usersToRegister list.
+        public void deleteFromRegisterList(string emipd)
+        {
+            int i = 0;
+            //search for user to delete
+            foreach(UserViewmodel user in UsersToRegister)
+            {
+                if(user.employmentId == emipd)
+                {
+                    UsersToRegister.RemoveAt(i);
+                    updateListnum();
+                    break;
+                }
+                i++;
+            }
+            
+        }
+
+        //Get the current user with the given token.
         public async Task<(UserViewmodel, string)> getCurrentUser(string token)
         {
             string err = null;
             string empId = _Auth.GetClaimValue(token);
-            UserDb user = await _DBR.getUser(empId);
+            UserDb user = await _DBR.getLoginUser(empId);
             if (user == null) { err = "User not found"; return (null, err); };
             CurrentUser = new UserViewmodel(user);
             await getUsers();
@@ -88,6 +208,7 @@ namespace BlazorTipz.ViewModels.User
             return CurrentUser;
         }
 
+        //Updates current user
         public async Task<string> updateCurrentUser(UserViewmodel user)
         {
             string err = null;
@@ -98,6 +219,7 @@ namespace BlazorTipz.ViewModels.User
 
             CurrentUser.password = user.password;
             CurrentUser.name = user.name;
+            CurrentUser.firstTimeLogin = user.firstTimeLogin;
             if (CurrentUser.employmentId == null) { err = "no emplayment Id"; return err; };
 
             UserDb toSave = new UserDb(CurrentUser);
@@ -107,8 +229,8 @@ namespace BlazorTipz.ViewModels.User
             return err;
         }
         
-        //get all active users
-        public async Task<List<UserViewmodel>> getUsers()
+        //Get all active users
+        private async Task<List<UserViewmodel>> getUsers()
         {
             if (ActiveUsers == null)
             {
@@ -124,8 +246,7 @@ namespace BlazorTipz.ViewModels.User
             }
             return ActiveUsers;
         }
-        
-        
+        // Returns a list of all active users.
         public async Task<List<UserViewmodel>> GetUsers()
         {
             if (ActiveUsers == null)
@@ -140,6 +261,23 @@ namespace BlazorTipz.ViewModels.User
                 return ActiveUsers;
             }
         }
+        //Search by empId in ActiveUsers
+        public UserViewmodel? SearchActiveUsers(string empId)
+        {
+            if(ActiveUsers == null) { return null; }
+            UserViewmodel? retUser = null;
+            foreach(UserViewmodel user in ActiveUsers)
+            {
+                if(user.employmentId == empId)
+                {
+                    retUser = user;
+                    break;
+                }
+            }
+            return retUser;
+        }
+
+        // Updates the list of users.
         public async Task<List<UserViewmodel>> updateUsersList()
         {
             ActiveUsers = null;
@@ -147,24 +285,40 @@ namespace BlazorTipz.ViewModels.User
             return Users;
         }
 
-        public async Task updateRole(UserViewmodel user, RoleE role, bool upgradeRole)
+        // Updates a users roles
+        public async Task<string?> updateRole(UserViewmodel user, RoleE role, bool upgradeRole)
         {
-            if(user.employmentId == string.Empty) { return; }
+            if(user.employmentId == string.Empty) { return "No id on user"; }
             if(upgradeRole) 
             {
-                if (role <= user.role) { return; }
+                if (role < user.role|| role==user.role) { return "Alrady at needed role or higher"; }
                 user.role = role;
                 await _DBR.updateUserEntry(new UserDb(user));
-                updateUsersList();
+                await updateUsersList();
             }
             else
             {
                 user.role = role;
                 await _DBR.updateUserEntry(new UserDb(user));
-                updateUsersList();
+                await updateUsersList();
             }
-            
+            //check if Active list updated correctly
+            UserViewmodel? checkUser;
+            checkUser = SearchActiveUsers(user.employmentId);
+            if(checkUser != null)
+            {
+                if(checkUser.role != role)
+                {
+                    checkUser.role = role;
+                }
+            }
+            else
+            {
+                return "Noe gikk galt";
+            }
+            return null;
         }
+        // Returns the user with the given empid.
         public async Task<UserViewmodel?> getUser(string empid)
         {
             if(ActiveUsers != null)
@@ -191,7 +345,8 @@ namespace BlazorTipz.ViewModels.User
                 return null;
             }
         }
-        public async Task updateUserTeam(string empid, string teamId)
+        // Updates a users team.
+        public async Task<string?> updateUserTeam(string empid, string teamId)
         {
             if (ActiveUsers != null)
             {
@@ -201,10 +356,11 @@ namespace BlazorTipz.ViewModels.User
                     {
                         u.teamId = teamId;
                         await _DBR.updateUserEntry(new UserDb(u));
+                        return null;
                         break;
                     }
                 }
-                
+                return "User not found";
             }
             else
             {
@@ -215,13 +371,39 @@ namespace BlazorTipz.ViewModels.User
                     {
                         u.teamId = teamId;
                         await _DBR.updateUserEntry(new UserDb(u));
+                        return null;
                         break;
                     }
                 }
-                
+                return "User not found";
             }
 
         }
 
+        // Generate password for user
+        public string generatePassword()
+        {
+            string password = "";
+            Random rnd = new Random();
+            for (int i = 0; i < 8; i++)
+            {
+                int num = rnd.Next(0, 3);
+                switch (num)
+                {
+                    case 0:
+                        password += rnd.Next(0, 10);
+                        break;
+                    case 1:
+                        password += (char)rnd.Next(65, 91);
+                        break;
+                    case 2:
+                        password += (char)rnd.Next(97, 123);
+                        break;
+                }
+            }
+            return password;
+        }
+
     }
+
 }

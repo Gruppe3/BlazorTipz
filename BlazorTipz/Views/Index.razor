@@ -1,58 +1,88 @@
-﻿@page "/"
+﻿<!--Namespace-->
+@page "/"
 
+<!--Accesses classes defined here-->
 @using BlazorTipz.ViewModels.User
+@using BlazorTipz.ViewModels.Suggestion
+@using Radzen
 
-
+<!--Injects from program-->
 @inject ILocalStorageService _localStorage
 @inject NavigationManager NavigationManager
 @inject IUserManager _userManager
-@inject ILocalStorageService _localStorage
+@inject ISuggestionManager _suggestionManager
+@inject DialogService DialogService
 
+<link rel="stylesheet" href="css/Navbar.css" />
 
-
-    <PageTitle>Home</PageTitle>
+<PageTitle>Home</PageTitle>
+<!--Authorized view, not visable for someone not logged in-->
 <AuthorizeView>
     <Authorized>
-        <h1 class="center">Hello!</h1>
-    <p class="d-flex justify-content-center">Welcome to Tipz!.</p>
+        <h1 class="center">Dashboard</h1>
+        <p class="d-flex justify-content-center">Velkommen til Tipz!</p>
         
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    <RadzenCard Class="suggColor">
+                        @if (isLoaded == true)
+                        {
+                            <h1 class="d-flex justify-content-center">Dine forslag</h1>
+                            <p class="d-flex justify-content-center">Sortert fra gammel til ny</p>
+                            <RadzenDataList WrapItems="true" AllowPaging="true" Data="@UserSug" TItem="SuggViewmodel" PageSize="3"
+                                        PagerHorizontalAlign="HorizontalAlign.Center" PagerPosition="PagerPosition.Top">
+                                <Template Context="suggestions">
+                                    <RadzenCard Style="width: 100%; padding: 0; overflow: hidden;">
+                                        <a href="javascript:void(0);" class="nav__add" style="text-decoration-line: none;" @onclick="@(() =>
+                                            ShowCloseableFromOverlayDialog(suggestions.Title, suggestions.OwnerTeam, suggestions.Description, suggestions.Status.ToString(), suggestions.category.ToString()))">
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-lg p-3 product-title">
+                                                        <h2>@(suggestions.Title)</h2>
+                                                        <p>Added: @(suggestions.StartDate)</p>
+                                                        <p>Last Edited; @(suggestions.UpdatedDate)</p>
 
-        </Authorized>
-        <NotAuthorized>
-            <h1 class="center">Please login</h1>
-            <div class="center">
-                <button class="btn btn-primary" @onclick="NavigateToLogin"> Login </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </RadzenCard>
+                                </Template>
+                            </RadzenDataList>
+                        }
+                        else
+                        {
+                            <div class="center">
+                                <div class="spinner"></div>
+                            </div>
+                        }
+                    </RadzenCard>
+                </div>
             </div>
-        </NotAuthorized>
-    </AuthorizeView>
+        </div>
+        <div class="bigboi"></div>
+    </Authorized>
+    <NotAuthorized>
+        <h1 class="center">Redirecting..</h1>
+    </NotAuthorized>
+</AuthorizeView>
 
+<style>
 
+</style>
 
 @code {
-    UserViewmodel currentUser = new UserViewmodel();
 
-    protected override async Task OnInitializedAsync()
+    async Task ShowCloseableFromOverlayDialog(string title, string ownerTeam, string description, string status, string category)
     {
-        string token = await _localStorage.GetItemAsync<string>("token");
-        if (token == null || token == "")
-        {
-            NavigationManager.NavigateTo("/login", true);
-        }
-        else
-        {
-            (UserViewmodel user, string err) = await _userManager.getCurrentUser(token);
-
-            if (err != null)
-            {
-                NavigationManager.NavigateTo("/login", true);
-            }
-            else if(user == null)
-            {
-                NavigationManager.NavigateTo("/login", true);
-            }                        
-            currentUser = user;
-        }
+        await DialogService.OpenAsync($"Suggestion in {category}", ds =>
+    @<div>
+        <h3>
+            @title
+            <RadzenBadge BadgeStyle="BadgeStyle.Warning" Shade="Shade.Lighter" IsPill="@true" Text="@status" Class="ml-2" />
+        </h3>
+        <p>@description</p>
+    </div>, new DialogOptions() { CloseDialogOnOverlayClick = true });
     }
-    private void NavigateToLogin() { NavigationManager.NavigateTo("login"); }
-    
 }

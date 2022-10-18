@@ -1,0 +1,109 @@
+﻿<!--Namespace-->
+@page "/teamView"
+
+<!--Accesses classes defined here-->
+@using Microsoft.AspNetCore.Components;
+@using BlazorTipz.Data;
+@using BlazorTipz.ViewModels
+@using BlazorTipz.ViewModels.Team
+@using BlazorTipz.ViewModels.User
+@using BlazorTipz.ViewModels.Suggestion
+@using Microsoft.AspNetCore.Mvc
+@using Radzen
+
+<!--Injects from program-->
+@inject ILocalStorageService _localStorage
+@inject NavigationManager NavigationManager
+@inject IUserManager _userManager
+@inject ITeamManager _teamManager
+@inject ISuggestionManager _suggestionManager
+@inject DialogService DialogService
+
+<AuthorizeView>
+    <Authorized>
+        <h1 class="center">Team @currentTeam.name</h1>
+        <!--Team Suggestions-->
+        <RadzenDataGrid AllowFiltering="true" AllowColumnResize="false" 
+        FilterMode="FilterMode.Simple" PageSize="5" AllowPaging="true" AllowSorting="true" Data="@teamSug" TItem="SuggViewmodel" ColumnWidth="300px"
+        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+        LogicalFilterOperator="LogicalFilterOperator.Or">
+        <Columns>
+                <RadzenDataGridColumn TItem="SuggViewmodel" Property="Title" Filterable="false" Title="Tittel" Width="70px" TextAlign="TextAlign.Center" />
+                
+                <RadzenDataGridColumn TItem="SuggViewmodel" Property="Creator" Title="Eier" Width="140px" TextAlign="TextAlign.Center"/>
+                <RadzenDataGridColumn TItem="SuggViewmodel" Property="StartDate" Title="Start Dato" Width="140px" TextAlign="TextAlign.Center"/>
+                <RadzenDataGridColumn TItem="SuggViewmodel" Property="Status" Title="Status" Width="140px" TextAlign="TextAlign.Center" />
+                <RadzenDataGridColumn Width="160px" TItem="SuggViewmodel" TextAlign="TextAlign.Center" Title="Mer">
+                    <Template Context="data">
+                        <RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" Class="m-1"
+                                      Text="Vis mer" Click=@(() => ShowCloseableFromOverlayDialog(data.Title, data.Creator, data.Description)) />
+                    </Template>
+                </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+     </Authorized>
+</AuthorizeView>
+
+@code {
+    public UserViewmodel currentUser = new UserViewmodel();
+    public TeamViewmodel currentTeam = new TeamViewmodel();
+    UserViewmodel CUser;
+    TeamViewmodel Cteam;
+
+
+    List<TeamViewmodel> teams = new List<TeamViewmodel>();
+    List<SuggViewmodel> teamSug = new List<SuggViewmodel>();
+
+    public string TeamCheck { get; set; }
+    public string teamU { get; set; }
+
+
+    //Get team from user
+    protected override async Task OnInitializedAsync()                   
+    {
+        
+        var token = await _localStorage.GetItemAsync<string>("token");
+        if (token != null)
+        {
+            (UserViewmodel user, string err) = await _userManager.getCurrentUser(token);
+            TeamViewmodel team = await _teamManager.getTeam(user.teamId);
+            if (err != null)
+            {
+                return;
+            }
+
+            currentUser = user;
+            currentTeam = team;
+        }
+
+        var CurrentUser = _userManager.getCurrentUser();
+        teams = await _teamManager.updateTeamsList();
+        if (CurrentUser != null)
+        {
+            CUser = CurrentUser;
+            Cteam = await _teamManager.getTeam(CUser.teamId);
+            teamU = Cteam.name;
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/");
+        }
+        //Get team suggestions
+        teamSug = await _suggestionManager.GetSuggestionsOfTeam(currentTeam.id);
+    }
+
+    //Update DB
+    public void UpdateDB()
+    {
+        NavigationManager.NavigateTo("/teamView", true);
+    }
+
+    async Task ShowCloseableFromOverlayDialog(string title, string creator, string description)
+    {
+        await DialogService.OpenAsync($"{title} by {creator}", ds =>
+    @<div>
+            
+            <p>@description</p>
+    </div>, new DialogOptions() { CloseDialogOnOverlayClick = true });
+    }
+}
