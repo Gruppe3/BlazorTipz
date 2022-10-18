@@ -1,12 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using BlazorTipz.ViewModels.Suggestion;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BlazorTipz.ViewModels.Suggestion;
 using BlazorTipzTests.ViewModels.DummyClass;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BlazorTipz.ViewModels.Suggestion.Tests
 {
@@ -57,7 +51,7 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
             testSugg.OwnerTeam = OwnerTeam;
             testSugg.Creator = Creator;
             testSugg.category = cat;
-           
+
             if (testCase == 6) { } else { testSugg.StartDate = DateTime.Now.ToLocalTime().ToString("yyyyMMddHHmmss"); }
 
             string? testResult;
@@ -101,25 +95,97 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
         [TestMethod()]
         public void GetCategoriesTest()
         {
+            // arrange
+            DummyDBR dDBR = new DummyDBR();
+            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage());
 
+            // act
+            List<Category> testResult = _UnitUnderTest.GetCategories();
+
+            // assert
+            Assert.IsNotNull(testResult);
+            if (testResult.Count <= 0)
+            {
+                Assert.Fail("No categories found");
+            }
         }
 
         [TestMethod()]
-        public void GetSuggestionsOfTeamTest()
+        [DataRow("1", 1)]
+        [DataRow("2", 2)]
+        public async Task GetSuggestionsOfTeamTest(string teamId, int testCase)
         {
+            // arrange
+            DummyDBR dDBR = new DummyDBR();
+            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage());
 
+            // act
+            List<SuggViewmodel> testResult = await _UnitUnderTest.GetSuggestionsOfTeam(teamId);
+
+            // assert
+            Assert.IsNotNull(testResult);
+            if (testResult.Count <= 0)
+            {
+                Assert.Fail("No suggestions found");
+            }
+            else if (testCase == 1)
+            {
+                foreach (SuggViewmodel sugg in testResult)
+                {
+                    Assert.AreEqual(teamId, sugg.OwnerTeam);
+                }
+            }
+            else if (testCase == 2)
+            {
+                Assert.AreEqual(2, testResult.Count);
+                foreach (SuggViewmodel sugg in testResult)
+                {
+                    Assert.AreEqual(teamId, sugg.OwnerTeam);
+                }
+            }
+            if (testCase == null)
+            {
+                Assert.Fail();
+            }
         }
 
         [TestMethod()]
-        public void GetSuggestionsOfUserTest()
+        [DataRow("1", 1)]
+        [DataRow("2", 2)]
+        public async Task GetSuggestionsOfUserTest(string userId, int testCase)
         {
+            // arrange
+            DummyDBR dDBR = new DummyDBR();
+            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage());
 
-        }
+            // act
+            List<SuggViewmodel> testResult = await _UnitUnderTest.GetSuggestionsOfUser(userId);
 
-        [TestMethod()]
-        public void ValidateSuggestionTest()
-        {
-            
+            // assert
+            Assert.IsNotNull(testResult);
+            if (testResult.Count <= 0)
+            {
+                Assert.Fail("No suggestions found");
+            }
+            else if (testCase == 1)
+            {
+                foreach (SuggViewmodel sugg in testResult)
+                {
+                    Assert.AreEqual(userId, sugg.Creator);
+                }
+            }
+            else if (testCase == 2)
+            {
+                Assert.AreEqual(2, testResult.Count);
+                foreach (SuggViewmodel sugg in testResult)
+                {
+                    Assert.AreEqual(userId, sugg.Creator);
+                }
+            }
+            if (testCase == null)
+            {
+                Assert.Fail();
+            }
         }
     }
 }
