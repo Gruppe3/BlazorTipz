@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using BlazorTipz.ViewModels.User;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace BlazorTipz.Views
 {
@@ -60,6 +62,34 @@ namespace BlazorTipz.Views
         private void back()
         {
             NavigationManager.NavigateTo("/", true);
+        }
+
+        //Check password
+        public async Task<ActionResult<string>> CheckPassword(UserViewmodel request)
+        {
+            string token;
+            string err;
+            //returns token or err
+            (token, err) = await _userManager.Login(request);
+            //If error is null
+            if (err == null)
+            {
+                await _localStorage.SetItemAsync("token", token);
+                await ChangeSettings(request);
+                return token;
+            }
+            //If token is null
+            else if (token == null)
+            {
+                Checker = err;
+                return err;
+            }
+            //If something else happens
+            else
+            {
+                Checker = "something went horribly wrong";
+                return "Fatal";
+            }
         }
     }
 }
