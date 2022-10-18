@@ -261,6 +261,22 @@ namespace BlazorTipz.ViewModels.User
                 return ActiveUsers;
             }
         }
+        //Search by empId in ActiveUsers
+        public UserViewmodel? SearchActiveUsers(string empId)
+        {
+            if(ActiveUsers == null) { return null; }
+            UserViewmodel? retUser = null;
+            foreach(UserViewmodel user in ActiveUsers)
+            {
+                if(user.employmentId == empId)
+                {
+                    retUser = user;
+                    break;
+                }
+            }
+            return retUser;
+        }
+
         // Updates the list of users.
         public async Task<List<UserViewmodel>> updateUsersList()
         {
@@ -278,13 +294,27 @@ namespace BlazorTipz.ViewModels.User
                 if (role < user.role|| role==user.role) { return "Alrady at needed role or higher"; }
                 user.role = role;
                 await _DBR.updateUserEntry(new UserDb(user));
-                updateUsersList();
+                await updateUsersList();
             }
             else
             {
                 user.role = role;
                 await _DBR.updateUserEntry(new UserDb(user));
-                updateUsersList();
+                await updateUsersList();
+            }
+            //check if Active list updated correctly
+            UserViewmodel? checkUser;
+            checkUser = SearchActiveUsers(user.employmentId);
+            if(checkUser != null)
+            {
+                if(checkUser.role != role)
+                {
+                    checkUser.role = role;
+                }
+            }
+            else
+            {
+                return "Noe gikk galt";
             }
             return null;
         }

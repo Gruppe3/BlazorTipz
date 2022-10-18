@@ -64,6 +64,7 @@ namespace BlazorTipz.Models.DbRelay
         //update user
         public async Task updateUserEntry(UserDb toSaveUser)
         {
+            string Role = toSaveUser.role.ToString();
             try
             {
                 if (toSaveUser.passwordHash != null)
@@ -78,7 +79,7 @@ namespace BlazorTipz.Models.DbRelay
                             name = toSaveUser.name,
                             passwordSalt = toSaveUser.passwordSalt,
                             passwordHash = toSaveUser.passwordHash,
-                            role = toSaveUser.role.ToString(),
+                            role = Role,
                             firstTimeLogin = toSaveUser.firstTimeLogin
                         },
                             _config.GetConnectionString("default"));
@@ -92,7 +93,7 @@ namespace BlazorTipz.Models.DbRelay
                     {
                         employmentId = toSaveUser.employmentId,
                         name = toSaveUser.name,
-                        role = toSaveUser.role.ToString(),
+                        role = Role,
                         teamId = toSaveUser.teamId
                     },
                         _config.GetConnectionString("default"));
@@ -106,7 +107,7 @@ namespace BlazorTipz.Models.DbRelay
                     {
                         employmentId = toSaveUser.employmentId,
                         name = toSaveUser.name,
-                        role = toSaveUser.role.ToString()
+                        role = Role
                     },
                         _config.GetConnectionString("default"));
                 }
