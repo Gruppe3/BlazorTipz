@@ -78,6 +78,18 @@ a, .btn-link {
     
 }
 
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    padding: 10px;
+}
+
+.grid-item {
+    padding: 20px;
+    font-size: 30px;
+    text-align: center;
+}
+
 .spinner {
     border: 16px solid silver;
     border-top: 16px solid #337AB7;

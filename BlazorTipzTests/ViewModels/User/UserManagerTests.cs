@@ -265,7 +265,31 @@ namespace BlazorTipz.ViewModels.User.Tests
                 Assert.Fail();
             }
         }
+        
+        [TestMethod()]
+        [DataRow("2", true)]
+        [DataRow("7", true)]
+        [DataRow("", false)]
+        [DataRow("11", false)]
+        [DataRow("Steve", false)]
+        public async Task SearchActiveUsersTest(string empId, bool goodCase)
+        {
+            //arrange
+            UserViewmodel? user;
 
+            //act
+            await _userManager.GetUsers();
+            user = _userManager.SearchActiveUsers(empId);
+
+            //assert
+            if (goodCase) 
+            {
+                Assert.IsNotNull(user);
+                Assert.AreEqual(empId, user.employmentId); 
+            }
+            else if (!goodCase) { Assert.IsNull(user); }
+        }
+    
         [TestMethod()]
         public async Task updateUsersListTest()
         {
@@ -282,7 +306,8 @@ namespace BlazorTipz.ViewModels.User.Tests
         [TestMethod()]
         [DataRow("4", 1, true, true)]
         [DataRow("4", 3, true, false)]
-        [DataRow("32", 2, false, true)]
+        [DataRow("6", 2, false, true)]
+        [DataRow("32", 2, false, false)]
         public async Task updateRoleTest(string userId, int roleid, bool upgradeRole, bool goodcase)
         {
             //arrange

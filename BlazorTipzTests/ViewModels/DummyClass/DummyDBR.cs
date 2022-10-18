@@ -222,8 +222,6 @@ namespace BlazorTipzTests.ViewModels.DummyClass
             }
         }
 
-        //må pusses litt på
-
         public Task<SuggestionEntity?> GetSuggestion(string sugId)
         {
             return Task.FromResult(_Suggestions.Where(x => x.sugId == sugId).FirstOrDefault());
