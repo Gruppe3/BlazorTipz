@@ -20,7 +20,7 @@
 <AuthorizeView>
     <Authorized>
         <h1 class="center">Dashboard</h1>
-        <p class="d-flex justify-content-center">Welcome to Tipz!</p>
+        <p class="d-flex justify-content-center">Velkommen til Tipz!</p>
         
         <div class="container-fluid">
             <div class="row">
@@ -28,8 +28,8 @@
                     <RadzenCard Class="suggColor">
                         @if (isLoaded == true)
                         {
-                            <h1 class="d-flex justify-content-center">Your suggestions</h1>
-                            <p class="d-flex justify-content-center">Listeted from old to new</p>
+                            <h1 class="d-flex justify-content-center">Dine forslag</h1>
+                            <p class="d-flex justify-content-center">Sortert fra gammel til ny</p>
                             <RadzenDataList WrapItems="true" AllowPaging="true" Data="@UserSug" TItem="SuggViewmodel" PageSize="3"
                                         PagerHorizontalAlign="HorizontalAlign.Center" PagerPosition="PagerPosition.Top">
                                 <Template Context="suggestions">

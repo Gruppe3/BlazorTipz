@@ -13,8 +13,8 @@
 
 <PageTitle>Login</PageTitle>
 
-<h1 class="center">Login</h1>
-<p class="d-flex justify-content-center">Fill your email and password</p>
+<h1 class="center">Logg på</h1>
+<p class="d-flex justify-content-center">Fyll inn AnsattNr og passord</p>
 <div class="justify-content-center">
     <div class="row">
         <div class="col-lg-6 offset-lg-3">
@@ -22,7 +22,7 @@
             <RadzenTemplateForm TItem="UserViewmodel" Data=@userDto Submit=LoginUs>
                 <div class="row mb-5">
                     <div class="col-md-4" style="align-self: center;">
-                        <RadzenLabel Text="ID" />
+                        <RadzenLabel Text="Bruker ID" />
                     </div>
                     <div class="col">
                         <!--Binder til userDto.emplymentId-->
@@ -32,7 +32,7 @@
                 </div>
                 <div class="row mb-5">
                     <div class="col-md-4" style="align-self: center;">
-                        <RadzenLabel Text="Password" />
+                        <RadzenLabel Text="Passord" />
                     </div>
                     <div class="col">
                         <!--Binder til userDto.password-->
@@ -41,7 +41,7 @@
                     </div>
                 </div>
                 <div class="center">
-                    <RadzenButton ButtonType="ButtonType.Submit" Text="Login"></RadzenButton>
+                    <RadzenButton ButtonType="ButtonType.Submit" Text="Logg på"></RadzenButton>
                 </div>
                 <div class="center">
                     <a>@Checker</a>

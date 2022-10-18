@@ -30,13 +30,13 @@
         <Columns>
                 <RadzenDataGridColumn TItem="SuggViewmodel" Property="Title" Filterable="false" Title="Tittel" Width="70px" TextAlign="TextAlign.Center" />
                 
-                <RadzenDataGridColumn TItem="SuggViewmodel" Property="Creator" Title="Creator" Width="140px" TextAlign="TextAlign.Center"/>
-                <RadzenDataGridColumn TItem="SuggViewmodel" Property="StartDate" Title="Start Date" Width="140px" TextAlign="TextAlign.Center"/>
+                <RadzenDataGridColumn TItem="SuggViewmodel" Property="Creator" Title="Eier" Width="140px" TextAlign="TextAlign.Center"/>
+                <RadzenDataGridColumn TItem="SuggViewmodel" Property="StartDate" Title="Start Dato" Width="140px" TextAlign="TextAlign.Center"/>
                 <RadzenDataGridColumn TItem="SuggViewmodel" Property="Status" Title="Status" Width="140px" TextAlign="TextAlign.Center" />
-                <RadzenDataGridColumn Width="160px" TItem="SuggViewmodel" TextAlign="TextAlign.Center" Title="More">
+                <RadzenDataGridColumn Width="160px" TItem="SuggViewmodel" TextAlign="TextAlign.Center" Title="Mer">
                     <Template Context="data">
                         <RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" Class="m-1"
-                                      Text="Show more" Click=@(() => ShowCloseableFromOverlayDialog(data.Title, data.Creator, data.Description)) />
+                                      Text="Vis mer" Click=@(() => ShowCloseableFromOverlayDialog(data.Title, data.Creator, data.Description)) />
                     </Template>
                 </RadzenDataGridColumn>
         </Columns>

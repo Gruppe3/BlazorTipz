@@ -19,23 +19,23 @@
 
 <AuthorizeView Roles="Admin" Context="someContext">
     <Authorized>
-        <h1 class="center">Fill in the form</h1>
-        <p class="d-flex justify-content-center">to create a new team!</p>
+        <h1 class="center">Fyll inn skjema</h1>
+        <p class="d-flex justify-content-center">for å lage et nytt team!</p>
         <div class="justify-content-center">
             <div class="row">
                 <div class="col-lg-6 offset-lg-3">
                     <RadzenTemplateForm TItem="TeamViewmodel" Data=@teamDto Submit=RegisterTeam>
                         <div class="row mb-5">
                             <div class="col-md-4" style="align-self: center;">
-                                <RadzenLabel Text="Team Name" />
+                                <RadzenLabel Text="Team Navn" />
                             </div>
                             <div class="col">
-                                <RadzenTextBox style="display: block" Name="team" @bind-Value=@teamDto.name Class="w-100" />
-                                <RadzenLengthValidator Component="team" Min="3" Text="Team name should be alteast 3 characters long" Popup=@popup Style="position: absolute" />                            </div>
+                                <RadzenTextBox style="display: block" Name="team" @bind-Value=@teamDto.name Class="w-100" Placeholder="Navn"/>
+                                <RadzenLengthValidator Component="team" Min="3" Text="Team name should be alteast 3 characters long" Popup=@popup Style="position: absolute"/>                            </div>
                         </div>
                         <div class="row mb-5">
                             <div class="col-md-4" style="align-self: center;">
-                                <RadzenLabel Text="Set Team Leader" />
+                                <RadzenLabel Text="Velg Team Leder" />
                             </div>
                             <div class="col">
                                 <RadzenDropDownDataGrid @bind-Value=@teamDto.leader FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
@@ -49,21 +49,21 @@
                             </div>
                         </div>
                         <div class="center">
-                            <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
+                            <RadzenButton ButtonType="ButtonType.Submit" Text="Send inn"></RadzenButton>
                         </div>
                     </RadzenTemplateForm>
                 </div>
             </div>
         </div>
-        <h1 class="center">Fill in the form</h1>
-        <p class="d-flex justify-content-center">to add a new team member! ps: to be optimized</p>
+        <h1 class="center">Fyll inn skjema</h1>
+        <p class="d-flex justify-content-center">for å legge til nytt team medlem! ps: to be optimized</p>
         <div class="justify-content-center">
             <div class="row">
                 <div class="col-lg-6 offset-lg-3">
                     <RadzenTemplateForm TItem="UserViewmodel" Data=@userDto Submit=AddTeamMember>
                         <div class="row mb-5">
                             <div class="col-md-4" style="align-self: center;">
-                                <RadzenLabel Text="Team Name" />
+                                <RadzenLabel Text="Team Navn" />
                             </div>
                             <div class="col">
                                 <RadzenDropDownDataGrid @bind-Value=@userDto.teamId FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
@@ -79,7 +79,7 @@
 
                         <div class="row mb-5">
                             <div class="col-md-4" style="align-self: center;">
-                                <RadzenLabel Text="Set member employee ID" />
+                                <RadzenLabel Text="Sett bruker ID" />
                             </div>
                             <div class="col">
                                 <RadzenDropDownDataGrid @bind-Value=@userDto.employmentId FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
@@ -93,7 +93,7 @@
                             </div>
                         </div>
                         <div class="center">
-                            <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
+                            <RadzenButton ButtonType="ButtonType.Submit" Text="Send inn"></RadzenButton>
                         </div>
                         <div class="center">
                             <h1>@Checker</h1>
@@ -108,8 +108,8 @@
 </AuthorizeView>
 <AuthorizeView Roles="TeamLeader" Context="someContext">
     <Authorized>
-        <h1 class="center">Fill in the form</h1>
-        <p class="d-flex justify-content-center">to add a new team member to @team!</p>
+        <h1 class="center">Fyll inn skjema</h1>
+        <p class="d-flex justify-content-center">for å legge til nytt medlem i @team!</p>
         <div class="container my-4">
             <div class="row">
                 <div class="col-lg-6 offset-lg-3">
@@ -117,7 +117,7 @@
 
                         <div class="row mb-5">
                             <div class="col-md-4" style="align-self: center;">
-                                <RadzenLabel Text="Set member employee ID" />
+                                <RadzenLabel Text="Sett bruker ID" />
                             </div>
                             <div class="col">
                                 <RadzenDropDownDataGrid @bind-Value=@userDto.employmentId FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"

@@ -13,15 +13,15 @@
 
 <PageTitle>User Settings</PageTitle>
 
-<h1 class="center">Change User Settings</h1>
-<p class="d-flex justify-content-center">Change Firstname and Lastname</p>
+<h1 class="center">Endre innstillinger til bruker</h1>
+<p class="d-flex justify-content-center">Endre fornavn og etternavn</p>
 <div class="justify-content-center">
     <div class="row">
         <div class="col-lg-6 offset-lg-3">
             <RadzenTemplateForm TItem="UserViewmodel" Data=userDto Submit=ChangeSettings>
                 <div class="row mb-5">
                     <div class="col-md-4" style="align-self: center;">
-                        <RadzenLabel Text="Full name" />
+                        <RadzenLabel Text="Fullt navn" />
                     </div>
                     <div class="col">
                         <RadzenTextBox style="display: block" Name="name" @bind-Value=@userDto.name Class="w-100" />
@@ -30,7 +30,7 @@
                 </div>
                 <div class="row mb-5">
                     <div class="col-md-4" style="align-self: center;">
-                        <RadzenLabel Text="Password" />
+                        <RadzenLabel Text="Passord" />
                     </div>
                     <div class="col">
                         <RadzenTextBox style="display: block" Name="password" @bind-Value=@userDto.password Class="w-100" type="password" />
@@ -39,7 +39,7 @@
                 </div>
                 <div class="row mb-5">
                     <div class="col-md-4" style="align-self: center;">
-                        <RadzenLabel Text="Repeat password" />
+                        <RadzenLabel Text="Gjenta passord" />
                     </div>
                     <div class="col">
                         <RadzenTextBox style="display: block" Name="RepeatPassword" @bind-Value=@userDto.RepeatPassword Class="w-100" type="password" />
@@ -51,7 +51,7 @@
                     <h1>@Checker</h1>
                 </div>
                 <div class="center">
-                    <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
+                    <RadzenButton ButtonType="ButtonType.Submit" Text="Send inn"></RadzenButton>
                 </div>
                 <div class="center">
                     <RadzenButton Click="back" Text="Go back"></RadzenButton>
