@@ -56,11 +56,21 @@ namespace BlazorTipzTests.ViewModels.DummyClass
 
                 _Teams.Add(team);
             }
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 6; i++)
             {
                 SuggestionEntity sugg = new SuggestionEntity();
                 sugg.sugId = i.ToString();
-                sugg.owner = i.ToString();
+                if (i < 3) 
+                { 
+                    sugg.owner = "1";
+                    sugg.creator = "1";
+                    sugg.Category = "HMS";    // HMS
+                }
+                else { 
+                    sugg.owner = "2";
+                    sugg.creator = "2";
+                    sugg.Category = "2";    // Kvalitet
+                }
                 sugg.sugTitle = "TestTitle" + i.ToString();
                 sugg.sugDesc = "DescribingTest" + i.ToString();
                 sugg.createdAt = DateTime.Now.ToString();
@@ -222,24 +232,24 @@ namespace BlazorTipzTests.ViewModels.DummyClass
             }
         }
 
-        public Task<SuggestionEntity?> GetSuggestion(string sugId)
+        public async Task<SuggestionEntity?> GetSuggestion(string sugId)
         {
-            return Task.FromResult(_Suggestions.Where(x => x.sugId == sugId).FirstOrDefault());
+            return _Suggestions.Where(x => x.sugId == sugId).FirstOrDefault();
         }
 
-        public Task<List<SuggestionEntity>?> GetSuggestionsOfCreator(string empId)
+        public async Task<List<SuggestionEntity>?> GetSuggestionsOfCreator(string empId)
         {
-            return Task.FromResult(_Suggestions.Where(x => x.creator == empId).ToList());
+            return _Suggestions.Where(x => x.creator == empId).ToList();
         }
 
-        public Task<List<SuggestionEntity>?> GetSuggestionOfTeam(string teamId)
+        public async Task<List<SuggestionEntity>?> GetSuggestionOfTeam(string teamId)
         {
-            return Task.FromResult(_Suggestions.Where(x => x.owner == teamId).ToList());
+            return _Suggestions.Where(x => x.owner == teamId).ToList();
         }
 
-        public Task<List<SuggestionEntity>?> GetSuggestionsByStatus(SuggStatus status)
+        public async Task<List<SuggestionEntity>?> GetSuggestionsByStatus(SuggStatus status)
         {
-            return Task.FromResult(_Suggestions.Where(x => x.status == status).ToList());
+            return _Suggestions.Where(x => x.status == status).ToList();
         }
     }
 }
