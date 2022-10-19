@@ -64,33 +64,43 @@ namespace BlazorTipz.ViewModels.Suggestion
                 return id;
             }
         }
-        private CategoriEntity searchForCategory(string catid)
+        private CategoriEntity SearchForCategoryEntity(string catInn)
         {
             {
-                CategoriEntity cat = null;
+                CategoriEntity catOut = new();
+                if (catInn == null || catInn == "")
+                {
+                    catOut.Name = "No category";
+                    catOut.Id = "0";
+                    return catOut;
+                }
                 foreach (CategoriEntity c in _AS.GetCategories())
                 {
-                    if (c.Id == catid)
+                    if (c.Id == catInn || c.Name == catInn)
                     {
-                        cat = new CategoriEntity();
-                        cat.Name = c.Name;
-                        cat.Id = c.Id;
+                        catOut.Name = c.Name;
+                        catOut.Id = c.Id;
                         break;
                     }
                 }
-                if (cat == null) { return null; }
-                return cat;
+                if (catOut.Name == null || catOut.Name == "")
+                {
+                    catOut.Name = "No category";
+                    catOut.Id = "0";
+                }
+                return catOut;
             }
         }
 
         //Get suggestions from database for a specific team
         public async Task<List<SuggViewmodel>> GetSuggestionsOfTeam(string teamId)
         {
-            List<SuggestionEntity> suggs = await _DBR.GetSuggestionOfTeam(teamId);
+            List<SuggestionEntity>? suggs = await _DBR.GetSuggestionOfTeam(teamId);
             List<SuggViewmodel> suggsViewmodel = new List<SuggViewmodel>();
+            if (suggs == null) { return suggsViewmodel; }
             foreach (SuggestionEntity s in suggs)
             {
-                s.CategoryEntity = searchForCategory(s.Category);
+                s.CategoryEntity = SearchForCategoryEntity(s.Category);
                 SuggViewmodel sugg = new SuggViewmodel(s);
                 suggsViewmodel.Add(sugg);
             }
@@ -100,11 +110,12 @@ namespace BlazorTipz.ViewModels.Suggestion
         //Get suggestions from database for a specific user
         public async Task<List<SuggViewmodel>> GetSuggestionsOfUser(string userId)
         {
-            List<SuggestionEntity> suggs = await _DBR.GetSuggestionsOfCreator(userId);
+            List<SuggestionEntity>? suggs = await _DBR.GetSuggestionsOfCreator(userId);
             List<SuggViewmodel> suggsViewmodel = new List<SuggViewmodel>();
+            if (suggs == null) { return suggsViewmodel; }
             foreach (SuggestionEntity s in suggs)
             {
-                s.CategoryEntity = searchForCategory(s.Category);
+                s.CategoryEntity = SearchForCategoryEntity(s.Category);
                 SuggViewmodel sugg = new SuggViewmodel(s);
                 suggsViewmodel.Add(sugg);
             }
