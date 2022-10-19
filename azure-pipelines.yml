@@ -33,6 +33,8 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
     testAssemblyVer2: |
-     **\*test.dll
+     **\*Tests*.dll
+     !**\*TestAdapter.dll
      !**\obj\**
-     
+     !**\bin\**\ref\**
+    diagnosticsEnabled: True
