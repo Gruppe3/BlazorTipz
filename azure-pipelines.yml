@@ -33,11 +33,7 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'testSelector: 'testAssemblies'
     testAssemblyVer2: |
-      **\*test.dll
-      !**\*TestAdapter.dll
-      !**\obj\**
-      !**\testhost.dll
-      !*testhost.dll
-    searchFolder: '$(System.DefaultWorkingDirectory)'
-    diagnosticsEnabled: true
-    codeCoverageEnabled: true
+     **\*test.dll
+     !**\obj\**
+     
+     
