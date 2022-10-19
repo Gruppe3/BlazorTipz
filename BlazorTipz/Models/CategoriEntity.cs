@@ -15,7 +15,7 @@ namespace BlazorTipz.Models
         public CategoriEntity()
         {
         }
-        //the couse of many problems
+        
         public CategoriEntity(Category cat)
         {
             this.Name = cat.Name;  
