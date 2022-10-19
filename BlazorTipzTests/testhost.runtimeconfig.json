@@ -1,5 +1,5 @@
 {
-  //runtimeconfig jason
+  //testhost.runtimeconfig
   "runtimeOptions": {
     "configProperties": {
       "System.GC.Server": true
