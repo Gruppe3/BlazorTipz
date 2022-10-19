@@ -38,3 +38,6 @@ steps:
       !**\obj\**
       !**\testhost.dll
       !*testhost.dll
+    searchFolder: '$(System.DefaultWorkingDirectory)'
+    diagnosticsEnabled: true
+    codeCoverageEnabled: true
