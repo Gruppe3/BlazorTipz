@@ -111,9 +111,13 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
         }
 
         [TestMethod()]
-        [DataRow("1", 1)]
-        [DataRow("2", 2)]
-        public async Task GetSuggestionsOfTeamTest(string teamId, int testCase)
+        [DataRow("1", true)]
+        [DataRow("2", true)]
+        [DataRow("3", false)]
+        [DataRow("4", false)]
+        [DataRow("", false)]
+        [DataRow("-44", false)]
+        public async Task GetSuggestionsOfTeamTest(string teamId, bool goodCase)
         {
             // arrange
             DummyDBR dDBR = new DummyDBR();
@@ -123,36 +127,26 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
             List<SuggViewmodel> testResult = await _UnitUnderTest.GetSuggestionsOfTeam(teamId);
 
             // assert
-            Assert.IsNotNull(testResult);
-            if (testResult.Count <= 0)
+            if (goodCase)
             {
-                Assert.Fail("No suggestions found");
-            }
-            else if (testCase == 1)
-            {
+                if (testResult.Count <= 0) { Assert.Fail("Something went wrong"); }
                 foreach (SuggViewmodel sugg in testResult)
                 {
                     Assert.AreEqual(teamId, sugg.OwnerTeam);
                 }
             }
-            else if (testCase == 2)
+            else if (!goodCase)
             {
-                Assert.AreEqual(2, testResult.Count);
-                foreach (SuggViewmodel sugg in testResult)
-                {
-                    Assert.AreEqual(teamId, sugg.OwnerTeam);
-                }
+                Assert.AreEqual(0, testResult.Count);
             }
-            if (testCase == null)
-            {
-                Assert.Fail();
-            }
+            
         }
 
         [TestMethod()]
-        [DataRow("1", 1)]
-        [DataRow("2", 2)]
-        public async Task GetSuggestionsOfUserTest(string userId, int testCase)
+        [DataRow("1", true)]
+        [DataRow("2", true)]
+        [DataRow("", false)]
+        public async Task GetSuggestionsOfUserTest(string userId, bool goodCase)
         {
             // arrange
             DummyDBR dDBR = new DummyDBR();
@@ -162,29 +156,17 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
             List<SuggViewmodel> testResult = await _UnitUnderTest.GetSuggestionsOfUser(userId);
 
             // assert
-            Assert.IsNotNull(testResult);
-            if (testResult.Count <= 0)
+            if (goodCase)
             {
-                Assert.Fail("No suggestions found");
-            }
-            else if (testCase == 1)
-            {
+                if (testResult.Count <= 0) { Assert.Fail("Something went wrong"); }
                 foreach (SuggViewmodel sugg in testResult)
                 {
                     Assert.AreEqual(userId, sugg.Creator);
                 }
             }
-            else if (testCase == 2)
+            else if (!goodCase)
             {
-                Assert.AreEqual(2, testResult.Count);
-                foreach (SuggViewmodel sugg in testResult)
-                {
-                    Assert.AreEqual(userId, sugg.Creator);
-                }
-            }
-            if (testCase == null)
-            {
-                Assert.Fail();
+                Assert.AreEqual(0, testResult.Count);
             }
         }
     }
