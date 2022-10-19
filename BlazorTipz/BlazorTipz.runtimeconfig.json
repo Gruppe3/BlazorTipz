@@ -1,0 +1,8 @@
+{
+  //runtimeconfig jason
+  "runtimeOptions": {
+    "configProperties": {
+      "System.GC.Server": true
+    }
+  }
+}
