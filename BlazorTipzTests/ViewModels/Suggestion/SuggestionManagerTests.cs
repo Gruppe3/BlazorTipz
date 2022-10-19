@@ -135,14 +135,6 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
                     Assert.AreEqual(teamId, sugg.OwnerTeam);
                 }
             }
-            else if (testCase == 2)
-            {
-                Assert.AreEqual(2, testResult.Count);
-                foreach (SuggViewmodel sugg in testResult)
-                {
-                    Assert.AreEqual(teamId, sugg.OwnerTeam);
-                }
-            }
             if (testCase == null)
             {
                 Assert.Fail();
@@ -176,13 +168,12 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
             }
             else if (testCase == 2)
             {
-                Assert.AreEqual(2, testResult.Count);
                 foreach (SuggViewmodel sugg in testResult)
                 {
                     Assert.AreEqual(userId, sugg.Creator);
                 }
             }
-            if (testCase == null)
+            if (testResult == null)
             {
                 Assert.Fail();
             }
