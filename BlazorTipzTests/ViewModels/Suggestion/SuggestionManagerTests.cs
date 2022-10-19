@@ -111,9 +111,11 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
         }
 
         [TestMethod()]
-        [DataRow("1", 1)]
-        [DataRow("2", 2)]
-        public async Task GetSuggestionsOfTeamTest(string teamId, int testCase)
+        [DataRow("1", true)]
+        [DataRow("2", true)]
+        [DataRow("", false)]
+        [DataRow("-44", false)]
+        public async Task GetSuggestionsOfTeamTest(string teamId, bool goodCase)
         {
             // arrange
             DummyDBR dDBR = new DummyDBR();
@@ -123,28 +125,24 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
             List<SuggViewmodel> testResult = await _UnitUnderTest.GetSuggestionsOfTeam(teamId);
 
             // assert
-            Assert.IsNotNull(testResult);
-            if (testResult.Count <= 0)
-            {
-                Assert.Fail("No suggestions found");
-            }
-            else if (testCase == 1)
+            if (goodCase)
             {
                 foreach (SuggViewmodel sugg in testResult)
                 {
                     Assert.AreEqual(teamId, sugg.OwnerTeam);
                 }
             }
-            if (testCase == null)
+            else if (!goodCase)
             {
-                Assert.Fail();
+                Assert.AreEqual(0, testResult.Count);
             }
         }
 
         [TestMethod()]
-        [DataRow("1", 1)]
-        [DataRow("2", 2)]
-        public async Task GetSuggestionsOfUserTest(string userId, int testCase)
+        [DataRow("1", true)]
+        [DataRow("2", true)]
+        [DataRow("", false)]
+        public async Task GetSuggestionsOfUserTest(string userId, bool goodCase)
         {
             // arrange
             DummyDBR dDBR = new DummyDBR();
@@ -154,28 +152,16 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
             List<SuggViewmodel> testResult = await _UnitUnderTest.GetSuggestionsOfUser(userId);
 
             // assert
-            Assert.IsNotNull(testResult);
-            if (testResult.Count <= 0)
-            {
-                Assert.Fail("No suggestions found");
-            }
-            else if (testCase == 1)
+            if (goodCase)
             {
                 foreach (SuggViewmodel sugg in testResult)
                 {
                     Assert.AreEqual(userId, sugg.Creator);
                 }
             }
-            else if (testCase == 2)
+            else if (!goodCase)
             {
-                foreach (SuggViewmodel sugg in testResult)
-                {
-                    Assert.AreEqual(userId, sugg.Creator);
-                }
-            }
-            if (testResult == null)
-            {
-                Assert.Fail();
+                Assert.AreEqual(0, testResult.Count);
             }
         }
     }
