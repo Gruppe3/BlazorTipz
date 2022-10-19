@@ -5,6 +5,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
 	<GenerateRuntimeConfigDevFile>true</GenerateRuntimeConfigDevFile>
+	<GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+	<IsPackable>false</IsPackable>
 	<UserSecretsId>b8d40651-852e-4c4b-98f1-fc2615c53505</UserSecretsId>
 	<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
