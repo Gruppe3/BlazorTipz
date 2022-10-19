@@ -61,6 +61,7 @@ namespace BlazorTipzTests.ViewModels.DummyClass
                 SuggestionEntity sugg = new SuggestionEntity();
                 sugg.sugId = i.ToString();
                 sugg.owner = i.ToString();
+                sugg.Category = "HMS";
                 sugg.sugTitle = "TestTitle" + i.ToString();
                 sugg.sugDesc = "DescribingTest" + i.ToString();
                 sugg.createdAt = DateTime.Now.ToString();
