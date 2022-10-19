@@ -113,6 +113,8 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
         [TestMethod()]
         [DataRow("1", true)]
         [DataRow("2", true)]
+        [DataRow("3", false)]
+        [DataRow("4", false)]
         [DataRow("", false)]
         [DataRow("-44", false)]
         public async Task GetSuggestionsOfTeamTest(string teamId, bool goodCase)
@@ -127,6 +129,7 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
             // assert
             if (goodCase)
             {
+                if (testResult.Count <= 0) { Assert.Fail("Something went wrong"); }
                 foreach (SuggViewmodel sugg in testResult)
                 {
                     Assert.AreEqual(teamId, sugg.OwnerTeam);
@@ -136,6 +139,7 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
             {
                 Assert.AreEqual(0, testResult.Count);
             }
+            
         }
 
         [TestMethod()]
@@ -154,6 +158,7 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
             // assert
             if (goodCase)
             {
+                if (testResult.Count <= 0) { Assert.Fail("Something went wrong"); }
                 foreach (SuggViewmodel sugg in testResult)
                 {
                     Assert.AreEqual(userId, sugg.Creator);
