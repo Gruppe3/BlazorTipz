@@ -1,9 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using BlazorTipz.ViewModels.User;
-using DocumentFormat.OpenXml.Spreadsheet;
-using Org.BouncyCastle.Asn1.Ocsp;
-
 namespace BlazorTipz.Views
 {
     public partial class UserSettings
@@ -13,6 +10,8 @@ namespace BlazorTipz.Views
 
         UserViewmodel userDto = new UserViewmodel();
         UserViewmodel? CUser;
+
+        
         //checks if there is a current user
         protected override async Task OnInitializedAsync()
         {
@@ -64,11 +63,12 @@ namespace BlazorTipz.Views
             NavigationManager.NavigateTo("/", true);
         }
 
-        //Check password
+        //Check password of CUser and change settings
         public async Task<ActionResult<string>> CheckPassword(UserViewmodel request)
         {
             string token;
             string err;
+            request.employmentId = CUser.employmentId;
             //returns token or err
             (token, err) = await _userManager.Login(request);
             //If error is null
