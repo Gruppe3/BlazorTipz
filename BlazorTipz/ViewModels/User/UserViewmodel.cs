@@ -1,5 +1,6 @@
 ﻿using BlazorTipz.Models;
 using BlazorTipz.Data;
+using BlazorTipz.ViewModels.Team;
 
 namespace BlazorTipz.ViewModels.User
 {
@@ -14,9 +15,11 @@ namespace BlazorTipz.ViewModels.User
         public string RepeatPassword { get; set; } = string.Empty;
         public int listnum { get; set; } = 0;
         public bool firstTimeLogin{ get; set; }
+        public List<TeamMemberViewmodel> TeamMembers { get; set; }
+        
         public UserViewmodel()
         {
-
+            TeamMembers = new List<TeamMemberViewmodel>();
         }
         
         // passerer inn data fra UserDb og setter lokale verdier 
@@ -28,6 +31,7 @@ namespace BlazorTipz.ViewModels.User
             this.role = user.role;
             this.teamId = user.teamId;
             this.firstTimeLogin = user.firstTimeLogin;
+            TeamMembers = new List<TeamMemberViewmodel>();
         }
     }
 
