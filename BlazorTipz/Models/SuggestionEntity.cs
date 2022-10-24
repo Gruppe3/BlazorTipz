@@ -11,6 +11,7 @@ namespace BlazorTipz.Models
         public string creator { get; set; }
         public string completer { get; set; }
         public SuggStatus status { get; set; }
+        public double value { get; set; }
         public string sugTitle { get; set; }
         public string sugDesc { get; set; }
         public string createdAt { get; set; }
@@ -35,6 +36,7 @@ namespace BlazorTipz.Models
             this.JustDoIt = sugg.JustDoIt;
             this.creator = sugg.Creator;
             this.status = sugg.Status;
+            this.value = sugg.Value;
             this.createdAt = sugg.StartDate;
             this.lastChanged = sugg.UpdatedDate;
 

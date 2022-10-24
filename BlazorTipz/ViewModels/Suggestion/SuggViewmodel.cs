@@ -13,7 +13,8 @@ namespace BlazorTipz.ViewModels.Suggestion
         public string OwnerTeam { get; set; }
         public string Creator { get; set; }
         public SuggStatus Status { get; set; } = SuggStatus.Waiting;
-        public string StartDate { get; set; }
+        public double Value { get; set; }
+        public string StartDate { get; set; } 
         public string UpdatedDate { get; set; } = string.Empty;
 
 
@@ -32,8 +33,10 @@ namespace BlazorTipz.ViewModels.Suggestion
             this.Status = Suggestion.status;
             this.StartDate = Suggestion.createdAt;
             this.UpdatedDate = Suggestion.lastChanged;
+            this.Value = Suggestion.value;
 
             this.category = new Category(Suggestion.CategoryEntity);
         }
+
     }
 }

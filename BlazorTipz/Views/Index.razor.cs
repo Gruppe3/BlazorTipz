@@ -8,6 +8,7 @@ namespace BlazorTipz.Views
     public partial class Index
     {
         bool isLoaded;
+        double value = 19;
         
         List<SuggViewmodel> UserSug = new List<SuggViewmodel>();
         UserViewmodel currentUser = new UserViewmodel();
@@ -39,10 +40,13 @@ namespace BlazorTipz.Views
                 //Sets currentUser to user
                 currentUser = user;
             }
+            
+
             //Get team suggestions
             UserSug = await _suggestionManager.GetSuggestionsOfUser(currentUser.employmentId);
             isLoaded = true;
         }
+        
 
         private void NavigateToLogin()
         {
