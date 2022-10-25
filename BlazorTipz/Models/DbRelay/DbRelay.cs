@@ -223,9 +223,10 @@ namespace BlazorTipz.Models.DbRelay
         }
 
         public async Task AddTeamMemberToTeam(List<TeamMemberEntity> memberList)
-        {
+        {   // This method adds a list of team members to a team
+            // On duplicate key, it updates the role and active-status of the user
             try
-            {
+            {   
                 foreach (TeamMemberEntity member in memberList)
                 {
                     var sql = "INSERT INTO TeamMembers (UserId, TeamId, Role, Active) VALUES (@empId, @teamId, @role, @active) ON DUPLICATE KEY UPDATE Role = @role, Active = @active;";
@@ -243,37 +244,43 @@ namespace BlazorTipz.Models.DbRelay
             catch (Exception ex) { }
         }
 
-        public Task<List<TeamMemberEntity>>? GetTeamMemberList(string empId)
+        public async Task<List<TeamMemberEntity>> GetTeamMemberList(string empId)
         {
+            var EntityList = new List<TeamMemberEntity>();
             try
             {
-                var sql = "SELECT a.name as EmpName, b.teamName as TeamName, c.UserId, c.TeamId, c.JoinedAt,c.Role FROM Users a, Teams b, TeamMembers c WHERE a.employmentId = c.UserId AND b.teamId = c.TeamId AND c.Active = 1 AND c.UserId = @empId;";
-                
-                return _data.LoadData<TeamMemberEntity, dynamic>(sql, new { empId }, _config.GetConnectionString("default"));
+                var sql = "SELECT u.name as EmpName, t.teamName as TeamName, tm.UserId, tm.TeamId, tm.JoinedAt, tm.Role FROM Users u, Teams t, TeamMembers tm WHERE u.employmentId = tm.UserId AND t.teamId = tm.TeamId AND tm.Active = 1 AND tm.UserId = @empId;";
+
+                EntityList = await _data.LoadData<TeamMemberEntity, dynamic>(sql, new { empId }, _config.GetConnectionString("default"));
+                return EntityList;
             }
-            catch (Exception ex) { return null; }
+            catch (Exception ex) { return EntityList; }
+        }
+        
+        public async Task<List<TeamMemberEntity>> GetTeamMembersByTeam(string teamId)
+        {
+            var EntityList = new List<TeamMemberEntity>();
+            try
+            {
+                var sql = "SELECT u.name as EmpName, t.teamName as TeamName, tm.UserId, tm.TeamId, tm.JoinedAt, tm.Role FROM Users u, Teams t, TeamMembers tm WHERE u.employmentId = tm.UserId AND t.teamId = tm.TeamId AND tm.Active = 1 AND tm.TeamId = @teamId;";
+                
+                EntityList = await _data.LoadData<TeamMemberEntity, dynamic>(sql, new { teamId }, _config.GetConnectionString("default"));
+                return EntityList;
+            }
+            catch (Exception ex) { return EntityList; }
         }
 
-        public Task<List<TeamMemberEntity>>? GetTeamMembersByTeam(string teamId)
+        public async Task<List<TeamMemberEntity>> GetAllTeamMemberLists()
         {
+            List<TeamMemberEntity> EntityList = new();
             try
             {
-                var sql = "SELECT a.name as EmpName, b.teamName as TeamName, c.UserId, c.TeamId, c.JoinedAt,c.Role FROM Users a, Teams b, TeamMembers c WHERE a.employmentId = c.UserId AND b.teamId = c.TeamId AND c.Active = 1 AND c.TeamId = @teamId;";
+                var sql = "SELECT u.name as EmpName, t.teamName as TeamName, tm.UserId, tm.TeamId, tm.JoinedAt, tm.Role, tm.Active FROM Users u, Teams t, TeamMembers tm WHERE u.employmentId = tm.UserId AND t.teamId = tm.TeamId;";
 
-                return _data.LoadData<TeamMemberEntity, dynamic>(sql, new { teamId }, _config.GetConnectionString("default"));
+                EntityList = await _data.LoadData<TeamMemberEntity, dynamic>(sql, new { }, _config.GetConnectionString("default"));
+                return EntityList;
             }
-            catch (Exception ex) { return null; }
-        }
-
-        public Task<List<TeamMemberEntity>>? GetAllTeamMemberLists()
-        {
-            try
-            {
-                var sql = "SELECT a.name as EmpName, b.teamName as TeamName, c.UserId, c.TeamId, c.JoinedAt,c.Role, c.Active FROM Users a, Teams b, TeamMembers c WHERE a.employmentId = c.UserId AND b.teamId = c.TeamId;";
-                
-                return _data.LoadData<TeamMemberEntity, dynamic>(sql, new { }, _config.GetConnectionString("default"));
-            }
-            catch (Exception ex) { return null; }
+            catch (Exception ex) { return EntityList; }
         }
 
         //get all Active teams from database
