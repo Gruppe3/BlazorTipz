@@ -46,4 +46,11 @@ steps:
 - task: Docker@2
   inputs:
     command: 'buildAndPush'
-    Dockerfile: '**/**/Dockerfile'
+    repository: 'mydockerregistry.azurecr.io/mydockerimage'
+    Dockerfile: '**/Dockerfile'
+    containerRegistry: 'myDockerRegistry'
+    tags: |
+     $(Build.BuildId)
+     latest
+     
+    
