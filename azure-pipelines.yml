@@ -43,14 +43,9 @@ steps:
   inputs:
     dockerVersion: '17.09.0-ce'
 
-- task: Docker@2
+- task: PublishBuildArtifacts@1
   inputs:
-    command: 'buildAndPush'
-    repository: 'mydockerregistry.azurecr.io/mydockerimage'
-    Dockerfile: '**/Dockerfile'
-    containerRegistry: 'myDockerRegistry'
-    tags: |
-     $(Build.BuildId)
-     latest
-     
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
     
