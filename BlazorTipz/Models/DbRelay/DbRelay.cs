@@ -371,6 +371,26 @@ namespace BlazorTipz.Models.DbRelay
             }
             catch (Exception ex) { return null; }
         }
-
+        //update a suggestion entry
+        public async Task updateSuggestion(SuggestionEntity sug)
+        {
+            try
+            {
+                var sql = "UPDATE Suggestions SET owner = @owner, creator = @creator, sugTitle = @sugTitle, sugDesc = @sugDesc, status = @status, Category = @Category, JustDoIt = @JustDoIt WHERE sugId = @sugId;";
+                await _data.SaveData(sql, new
+                {
+                    owner = sug.owner,
+                    creator = sug.creator,
+                    sugTitle = sug.sugTitle,
+                    sugDesc = sug.sugDesc,
+                    status = sug.status.ToString(),
+                    Category = sug.Category,
+                    JustDoIt = sug.JustDoIt,
+                    sugId = sug.sugId
+                },
+                _config.GetConnectionString("default"));
+            }
+            catch (Exception ex) { }
+        }
     }
 }

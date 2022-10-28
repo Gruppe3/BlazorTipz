@@ -45,6 +45,8 @@ namespace BlazorTipz.Models.DbRelay
         //@param status = a type of SuggStatus (enum class)
         //if return null = error
         Task<List<SuggestionEntity>?> GetSuggestionsByStatus(SuggStatus status);
+        //update a suggestion entry
+        Task updateSuggestion(SuggestionEntity sug);
 
     }
 }
