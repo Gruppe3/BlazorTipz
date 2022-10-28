@@ -15,7 +15,16 @@ namespace BlazorTipz.ViewModels.Suggestion
         public SuggStatus Status { get; set; } = SuggStatus.Waiting;
         public string StartDate { get; set; }
         public string UpdatedDate { get; set; } = string.Empty;
-
+        public string? Ansvarlig { get; set; }
+        public string Frist { get; set; }
+        //picture
+        public byte[]? BeforeImage { get; set; }
+        public byte[]? AfterImage { get; set; }
+        //for view
+        public string OwnerTeamName { get; set; }
+        public string CreatorName { get; set; }
+        public string AnsvarligName { get; set; }
+       
 
 
         public SuggViewmodel()
@@ -32,8 +41,13 @@ namespace BlazorTipz.ViewModels.Suggestion
             this.Status = Suggestion.status;
             this.StartDate = Suggestion.createdAt;
             this.UpdatedDate = Suggestion.lastChanged;
+            this.Ansvarlig = Suggestion.Assigned;
+            this.Frist = Suggestion.Deadline;
+            this.BeforeImage = Suggestion.BeforeImage;
+            this.AfterImage = Suggestion.AfterImage;
 
             this.category = new Category(Suggestion.CategoryEntity);
         }
     }
+    
 }
