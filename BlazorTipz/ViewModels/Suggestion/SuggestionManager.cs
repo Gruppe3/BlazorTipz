@@ -1,6 +1,7 @@
 ﻿using BlazorTipz.Models;
 using BlazorTipz.Models.DbRelay;
 using BlazorTipz.Models.AppStorage;
+using Org.BouncyCastle.Crypto.Modes.Gcm;
 
 namespace BlazorTipz.ViewModels.Suggestion
 {
@@ -121,6 +122,15 @@ namespace BlazorTipz.ViewModels.Suggestion
             }
             return suggsViewmodel;
         }
+        //get a suggestion from database with sugId
+        public async Task<SuggViewmodel> GetSuggestion(string sugId)
+        {
+            SuggestionEntity? sugg = await _DBR.GetSuggestion(sugId);
+            if (sugg == null) { return new SuggViewmodel(); }
+            sugg.CategoryEntity = SearchForCategoryEntity(sugg.Category);
+            SuggViewmodel suggViewmodel = new SuggViewmodel(sugg);
+            return suggViewmodel;
+        }
 
 
 
@@ -135,6 +145,58 @@ namespace BlazorTipz.ViewModels.Suggestion
             if (sugg.StartDate == null || sugg.StartDate == "") { err = "No supplied start date"; return err; }
 
             return err;
+        }
+        private async Task<string?> updateSuggestion(SuggViewmodel sugg)
+        {
+            string? err = validateSuggestion(sugg);
+            if (err != null)
+            {
+                return err;
+            }
+            SuggestionEntity suggEntity = new SuggestionEntity(sugg);
+            suggEntity.Category = searchForCategoryId(sugg.category);
+            if (suggEntity == null) { err = "Program failure"; return err; }
+            await _DBR.updateSuggestion(suggEntity);
+
+            return err;
+        }
+        public async Task<string?> ApproveAndUpdateSuggestion(SuggViewmodel sugg)
+        {
+            string? err = null;
+            SuggViewmodel suggOld = await GetSuggestion(sugg.Id);
+            if (suggOld == null) { err = "No suggestion found"; return err; }
+
+            suggOld.Title = sugg.Title;
+            suggOld.Description = sugg.Description;
+            suggOld.category = suggOld.category;
+            suggOld.OwnerTeam = suggOld.OwnerTeam;
+            suggOld.Status = sugg.Status;
+            suggOld.Ansvarlig = sugg.Ansvarlig;
+            suggOld.Frist = sugg.Frist;
+            suggOld.BeforeImage = sugg.BeforeImage;
+            suggOld.AfterImage = sugg.AfterImage;
+
+            err = await updateSuggestion(suggOld);
+
+            return err;
+        }
+        public async Task<string?> UpdateSuggestion(SuggViewmodel sugg)
+        {
+            string? err = null;
+            SuggViewmodel suggOld = await GetSuggestion(sugg.Id);
+            if (suggOld == null) { err = "No suggestion found"; return err; }
+
+            suggOld.Description = sugg.Description;
+            suggOld.category = suggOld.category;
+            suggOld.OwnerTeam = suggOld.OwnerTeam;
+            suggOld.Status = sugg.Status;
+            suggOld.Ansvarlig = sugg.Ansvarlig;
+            suggOld.AfterImage = sugg.AfterImage;
+
+            err = await updateSuggestion(suggOld);
+
+            return err;
+            
         }
     }
 }
