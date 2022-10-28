@@ -123,10 +123,10 @@ namespace BlazorTipz.ViewModels.Suggestion
             return suggsViewmodel;
         }
         //get a suggestion from database with sugId
-        public async Task<SuggViewmodel> GetSuggestion(string sugId)
+        public async Task<SuggViewmodel?> GetSuggestion(string sugId)
         {
             SuggestionEntity? sugg = await _DBR.GetSuggestion(sugId);
-            if (sugg == null) { return new SuggViewmodel(); }
+            if (sugg == null) { return null; }
             sugg.CategoryEntity = SearchForCategoryEntity(sugg.Category);
             SuggViewmodel suggViewmodel = new SuggViewmodel(sugg);
             return suggViewmodel;

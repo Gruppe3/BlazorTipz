@@ -139,7 +139,7 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
             {
                 Assert.AreEqual(0, testResult.Count);
             }
-            
+
         }
 
         [TestMethod()]
@@ -167,6 +167,95 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
             else if (!goodCase)
             {
                 Assert.AreEqual(0, testResult.Count);
+            }
+        }
+
+        [TestMethod()]
+        [DataRow("1", true)]
+        [DataRow("35", false)]
+        public async Task GetSuggestionTest(string testId,bool goodCase)
+        {
+            // arrange
+            DummyDBR dDBR = new DummyDBR();
+            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage());
+            
+            // act
+            SuggViewmodel testResult = await _UnitUnderTest.GetSuggestion(testId);
+
+            // assert
+            if (goodCase)
+            {
+                Assert.IsNotNull(testResult);
+            }
+            else if (!goodCase)
+            {
+                Assert.IsNull(testResult);
+            }
+        }
+        
+
+        [TestMethod()]
+        [DataRow("1", true)]
+        [DataRow("46", false)]
+        public async Task ApproveAndUpdateSuggestionTest(string testID, bool goodcase)
+        {
+            // arrange
+            DummyDBR dDBR = new DummyDBR();
+            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage());
+            string? err = null;
+            SuggViewmodel testSugg = new SuggViewmodel();
+            testSugg.Id = testID;
+            testSugg.Title = "Test";
+            testSugg.Description = "Test";
+            testSugg.OwnerTeam = "1";
+            testSugg.Creator = "1";
+            testSugg.StartDate = DateTime.Now.ToLocalTime().ToString("yyyyMMddHHmmss");
+            Category cat = new Category();
+            cat.Name = "HMS";
+            testSugg.category = cat;
+            
+            //act
+            err = await _UnitUnderTest.ApproveAndUpdateSuggestion(testSugg);
+            //Assert
+            if (goodcase)
+            {
+                Assert.IsNull(err);
+            }
+            else
+            {
+                Assert.IsNotNull(err);    
+            }
+        }
+
+        [TestMethod()]
+        [DataRow("1",true)]
+        [DataRow("39", false)]
+        public async Task UpdateSuggestionTest(string testID, bool goodcase)
+        {
+            // arrange
+            DummyDBR dDBR = new DummyDBR();
+            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage());
+            string? err = null;
+            SuggViewmodel testSugg = new SuggViewmodel();
+            testSugg.Id = testID;
+            testSugg.Title = "Test";
+            testSugg.Description = "Test";
+            testSugg.OwnerTeam = "1";
+            testSugg.Creator = "1";
+            testSugg.StartDate = DateTime.Now.ToLocalTime().ToString("yyyyMMddHHmmss");
+            Category cat = new Category();
+            cat.Name = "HMS";
+            testSugg.category = cat;
+            //act
+            err = await _UnitUnderTest.UpdateSuggestion(testSugg);
+            //Assert
+            if (goodcase)
+            {
+                Assert.IsNull(err);
+            }
+            else
+            {
+                Assert.IsNotNull(err);
             }
         }
     }

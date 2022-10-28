@@ -251,5 +251,20 @@ namespace BlazorTipzTests.ViewModels.DummyClass
         {
             return _Suggestions.Where(x => x.status == status).ToList();
         }
+
+        public async Task updateSuggestion(SuggestionEntity sug)
+        {
+            SuggestionEntity sugg = _Suggestions.Where(x => x.sugId == sug.sugId).FirstOrDefault();
+            if (sugg != null)
+            {
+                sugg.sugTitle = sug.sugTitle;
+                sugg.sugDesc = sug.sugDesc;
+                sugg.status = sug.status;
+                sugg.owner = sug.owner;
+                sugg.assigned = sug.assigned;
+                sugg.deadline = sug.deadline;
+                sugg.Category = sug.Category;
+            }
+        }
     }
 }
