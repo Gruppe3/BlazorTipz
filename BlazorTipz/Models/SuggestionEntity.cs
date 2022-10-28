@@ -19,8 +19,8 @@ namespace BlazorTipz.Models
         public bool JustDoIt { get; set; }
         public byte[]? BeforeImage { get; set; }
         public byte[]? AfterImage { get; set; }
-        public string? Assigned { get; set; }
-        public string Deadline { get; set; }
+        public string? assigned { get; set; }
+        public string deadline { get; set; }
         //ekstra fields
         public CategoriEntity CategoryEntity { get; set; }
 
@@ -42,8 +42,8 @@ namespace BlazorTipz.Models
             this.lastChanged = sugg.UpdatedDate;
             this.AfterImage = sugg.AfterImage;
             this.BeforeImage = sugg.BeforeImage;
-            this.Assigned = sugg.Ansvarlig;
-            this.Deadline = sugg.Frist;
+            this.assigned = sugg.Ansvarlig;
+            this.deadline = sugg.Frist;
             
             this.CategoryEntity = new CategoriEntity(sugg.category);
         }

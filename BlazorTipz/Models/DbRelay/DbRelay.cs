@@ -376,17 +376,17 @@ namespace BlazorTipz.Models.DbRelay
         {
             try
             {
-                var sql = "UPDATE Suggestions SET owner = @owner, creator = @creator, sugTitle = @sugTitle, sugDesc = @sugDesc, status = @status, Category = @Category, JustDoIt = @JustDoIt WHERE sugId = @sugId;";
+                var sql = "UPDATE Suggestions SET owner = @Owner, sugTitle = @SugTitle, sugDesc = @SugDesc, status = @Status, Category = @Category, assigned = @Assigned, deadline = @Deadline WHERE sugId = @SugId;";
                 await _data.SaveData(sql, new
                 {
-                    owner = sug.owner,
-                    creator = sug.creator,
-                    sugTitle = sug.sugTitle,
-                    sugDesc = sug.sugDesc,
-                    status = sug.status.ToString(),
+                    Owner = sug.owner,
+                    SugTitle = sug.sugTitle,
+                    SugDesc = sug.sugDesc,
+                    Status = sug.status.ToString(),
                     Category = sug.Category,
-                    JustDoIt = sug.JustDoIt,
-                    sugId = sug.sugId
+                    Assigned = sug.assigned,
+                    Deadline = sug.deadline,
+                    SugId = sug.sugId
                 },
                 _config.GetConnectionString("default"));
             }
