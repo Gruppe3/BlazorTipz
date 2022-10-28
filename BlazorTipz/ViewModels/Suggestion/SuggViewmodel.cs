@@ -41,8 +41,8 @@ namespace BlazorTipz.ViewModels.Suggestion
             this.Status = Suggestion.status;
             this.StartDate = Suggestion.createdAt;
             this.UpdatedDate = Suggestion.lastChanged;
-            this.Ansvarlig = Suggestion.Assigned;
-            this.Frist = Suggestion.Deadline;
+            this.Ansvarlig = Suggestion.assigned;
+            this.Frist = Suggestion.deadline;
             this.BeforeImage = Suggestion.BeforeImage;
             this.AfterImage = Suggestion.AfterImage;
             this.Id = Suggestion.sugId;
