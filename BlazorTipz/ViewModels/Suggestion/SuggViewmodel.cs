@@ -5,7 +5,7 @@ namespace BlazorTipz.ViewModels.Suggestion
 {
     public class SuggViewmodel
     {
-        
+        public string? Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public bool JustDoIt { get; set; } = false;
@@ -45,9 +45,11 @@ namespace BlazorTipz.ViewModels.Suggestion
             this.Frist = Suggestion.Deadline;
             this.BeforeImage = Suggestion.BeforeImage;
             this.AfterImage = Suggestion.AfterImage;
+            this.Id = Suggestion.sugId;
 
             this.category = new Category(Suggestion.CategoryEntity);
         }
+        
     }
     
 }

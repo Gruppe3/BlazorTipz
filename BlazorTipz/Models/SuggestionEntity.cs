@@ -6,7 +6,7 @@ namespace BlazorTipz.Models
     public class SuggestionEntity
     {
         //db colums
-        public string sugId { get; set; }
+        public string? sugId { get; set; }
         public string owner { get; set; }
         public string creator { get; set; }
         public string completer { get; set; }
@@ -31,6 +31,7 @@ namespace BlazorTipz.Models
 
         public SuggestionEntity(SuggViewmodel sugg)
         {
+            this.sugId = sugg.Id;
             this.owner = sugg.OwnerTeam;
             this.sugTitle = sugg.Title;
             this.sugDesc = sugg.Description;
