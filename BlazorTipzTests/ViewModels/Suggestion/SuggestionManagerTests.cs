@@ -1,4 +1,6 @@
 ﻿using BlazorTipz.ViewModels.Suggestion;
+using BlazorTipz.ViewModels.Team;
+using BlazorTipz.ViewModels.User;
 using BlazorTipzTests.ViewModels.DummyClass;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -7,13 +9,15 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
     [TestClass()]
     public class SuggestionManagerTests
     {
+        private IUserManager _UM { get; set; } = new UserManager(new DummyDBR(), new Components.AuthenticationComponent());
+        private ITeamManager _TM = new TeamManager(new DummyDBR(), new UserManager(new DummyDBR(), new Components.AuthenticationComponent()));
 
         [TestMethod()]
         public void SuggestionManagerTest()
         {
             // arrange and act
             DummyDBR dDBR = new DummyDBR();
-            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage());
+            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
 
             // assert
             Assert.IsNotNull(_UnitUnderTest);
@@ -32,7 +36,7 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
         {
             // arrange
             DummyDBR dDBR = new DummyDBR();
-            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage());
+            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
 
             string error1 = "No supplied suggestion";
             string error2 = "No supplied title";
@@ -97,7 +101,7 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
         {
             // arrange
             DummyDBR dDBR = new DummyDBR();
-            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage());
+            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
 
             // act
             List<Category> testResult = _UnitUnderTest.GetCategories();
@@ -121,7 +125,7 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
         {
             // arrange
             DummyDBR dDBR = new DummyDBR();
-            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage());
+            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
 
             // act
             List<SuggViewmodel> testResult = await _UnitUnderTest.GetSuggestionsOfTeam(teamId);
@@ -150,7 +154,7 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
         {
             // arrange
             DummyDBR dDBR = new DummyDBR();
-            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage());
+            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
 
             // act
             List<SuggViewmodel> testResult = await _UnitUnderTest.GetSuggestionsOfUser(userId);
@@ -177,7 +181,7 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
         {
             // arrange
             DummyDBR dDBR = new DummyDBR();
-            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage());
+            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
             
             // act
             SuggViewmodel testResult = await _UnitUnderTest.GetSuggestion(testId);
@@ -201,7 +205,7 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
         {
             // arrange
             DummyDBR dDBR = new DummyDBR();
-            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage());
+            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
             string? err = null;
             SuggViewmodel testSugg = new SuggViewmodel();
             testSugg.Id = testID;
@@ -234,7 +238,7 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
         {
             // arrange
             DummyDBR dDBR = new DummyDBR();
-            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage());
+            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
             string? err = null;
             SuggViewmodel testSugg = new SuggViewmodel();
             testSugg.Id = testID;

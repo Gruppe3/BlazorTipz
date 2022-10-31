@@ -279,7 +279,7 @@ namespace BlazorTipz.ViewModels.User.Tests
 
             //act
             await _userManager.GetUsers();
-            user = _userManager.SearchActiveUsers(empId);
+            user = await _userManager.SearchActiveUsers(empId);
 
             //assert
             if (goodCase) 
