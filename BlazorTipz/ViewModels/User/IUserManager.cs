@@ -28,10 +28,16 @@ namespace BlazorTipz.ViewModels.User
         void logout();
         Task<string> updateCurrentUser(UserViewmodel user);
         Task<List<UserViewmodel>> GetUsers();
+
+        //serach active users by id or name
+        //returns a user if found
+        //null if nothing found
+        Task<UserViewmodel?> SearchActiveUsers(string search);
         Task<string?> updateRole(UserViewmodel user, RoleE role, bool upgradeRole);
         Task<UserViewmodel?> getUser(string empid);
         Task<string?> updateUserTeam(string empid, string teamId);
         Task<List<UserViewmodel>> updateUsersList();
         string generatePassword();
+        
     }
 }

@@ -1,5 +1,7 @@
 ﻿using BlazorTipz.Data;
 using BlazorTipz.Models;
+using BlazorTipz.ViewModels.User;
+using BlazorTipz.ViewModels.Team;
 
 namespace BlazorTipz.ViewModels.Suggestion
 {
@@ -21,10 +23,10 @@ namespace BlazorTipz.ViewModels.Suggestion
         public byte[]? BeforeImage { get; set; }
         public byte[]? AfterImage { get; set; }
         //for view
-        public string OwnerTeamName { get; set; }
-        public string CreatorName { get; set; }
-        public string AnsvarligName { get; set; }
-       
+        public string OwnerTeamName { get; set; } = string.Empty;
+        public string CreatorName { get; set; } = string.Empty;
+        public string AnsvarligName { get; set; } = string.Empty;
+
 
 
         public SuggViewmodel()
@@ -49,7 +51,52 @@ namespace BlazorTipz.ViewModels.Suggestion
 
             this.category = new Category(Suggestion.CategoryEntity);
         }
-        
+
+        public async Task<string> GetCreatorName(IUserManager _userManager)
+        {
+            if (_userManager == null) { return "Error"; }
+            if(CreatorName == string.Empty)
+            {
+                UserViewmodel user = await _userManager.getUser(Creator);
+                if (user != null) { CreatorName = user.name; }
+            }
+            return CreatorName;
+        }
+        public async Task SetCreatorName(IUserManager _userManager)
+        {
+            await GetCreatorName(_userManager);
+        }
+        public async Task<string> GetAnsvarligName(IUserManager _userManager)
+        {
+            if (_userManager == null) { return "Ikke Satt"; }
+            if (CreatorName == string.Empty)
+            {
+                UserViewmodel user = await _userManager.getUser(Ansvarlig);
+                if (user != null) { AnsvarligName = user.name; }
+            }
+            return AnsvarligName;
+        }
+        public async Task SetAnsvarligName(IUserManager _userManager)
+        {
+            await GetAnsvarligName(_userManager);
+        }
+
+        public async Task<string> GetOwnerTeamName(ITeamManager _teamManager)
+        {
+            if (_teamManager == null) { return "Error"; }
+            if (OwnerTeamName == string.Empty)
+            {
+                TeamViewmodel team = await _teamManager.getTeam(OwnerTeam);
+                if (team != null) { OwnerTeamName = team.name; }
+            }
+            return OwnerTeamName;
+        }
+
+        public async Task SetOwnerTeamName(ITeamManager _teamManager)
+        {
+            await GetOwnerTeamName(_teamManager);
+        }
+
     }
     
 }
