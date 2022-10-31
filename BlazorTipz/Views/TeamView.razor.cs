@@ -3,6 +3,7 @@ using BlazorTipz.ViewModels.Team;
 using BlazorTipz.ViewModels.User;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Radzen;
+using Category = BlazorTipz.ViewModels.Category;
 
 namespace BlazorTipz.Views
 {
@@ -12,11 +13,15 @@ namespace BlazorTipz.Views
         public TeamViewmodel currentTeam = new TeamViewmodel();
         UserViewmodel CUser;
         TeamViewmodel Cteam;
+        public SuggViewmodel suggUpdate = new SuggViewmodel();
+        public List<Category>? Categories;
+
         private List<TeamViewmodel> teams = new List<TeamViewmodel>();
         List<SuggViewmodel> teamSug = new List<SuggViewmodel>();
 
         public string TeamCheck { get; set; }
         public string teamU { get; set; }
+        public string Feedback { get; set; }
 
 
         //Get team from user
@@ -51,6 +56,8 @@ namespace BlazorTipz.Views
             }
             //Get team suggestions
             teamSug = await _suggestionManager.GetSuggestionsOfTeam(currentTeam.id);
+            List<Category> toset = _suggestionManager.GetCategories();
+            Categories = toset;
         }
 
         //Update DB
