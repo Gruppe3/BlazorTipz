@@ -2,6 +2,8 @@
 using BlazorTipz.Data;
 using BlazorTipz.Models;
 using BlazorTipz.Models.DbRelay;
+using BlazorTipz.ViewModels.Team;
+using System.ComponentModel;
 using System.Runtime.Serialization;
 
 namespace BlazorTipz.ViewModels.User
@@ -54,8 +56,7 @@ namespace BlazorTipz.ViewModels.User
 
                 //setter token
                 token = dbUser.AuthToken;
-                UserViewmodel userView = new UserViewmodel(dbUser);
-                CurrentUser = userView;
+                await SetCurrentUser(new UserViewmodel(dbUser));
 
                 err = null;
                 return (token, err);
@@ -194,7 +195,7 @@ namespace BlazorTipz.ViewModels.User
             string empId = _Auth.GetClaimValue(token);
             UserDb user = await _DBR.getLoginUser(empId);
             if (user == null) { err = "User not found"; return (null, err); };
-            CurrentUser = new UserViewmodel(user);
+            await SetCurrentUser(new UserViewmodel(user));
             await getUsers();
             return (CurrentUser, err);
         }
@@ -206,6 +207,30 @@ namespace BlazorTipz.ViewModels.User
         public UserViewmodel getCurrentUser()
         {
             return CurrentUser;
+        }
+        public async Task SetCurrentUser(UserViewmodel user)
+        {
+            await UpdateUserTeamMem();
+            CurrentUser = user;
+        }
+            
+        private async Task UpdateUserTeamMem()
+        {
+            if (CurrentUser != null)
+            {
+                List<TeamMemberViewmodel> TeamMemViewList = new();
+                List<TeamMemberEntity> TeamMemEntList;
+
+                TeamMemEntList = await _DBR.GetTeamMemberList(CurrentUser.employmentId);
+                {
+                    foreach (TeamMemberEntity TeamMemEntity in TeamMemEntList)
+                    {
+                        TeamMemberViewmodel teamMember = new(TeamMemEntity);
+                        TeamMemViewList.Add(teamMember);
+                    }
+                    CurrentUser.TeamMembers = TeamMemViewList;
+                }
+            }
         }
 
         //Updates current user
