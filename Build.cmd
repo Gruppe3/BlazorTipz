@@ -11,11 +11,22 @@ docker container run --rm -it -d --name ndtipz --publish 80:80 ndtipz
 ::Docker killing container
 docker kill mariadb
 
-::Launch mariadb database
-docker run --rm --name mariadb -p 3308:3306/tcp -v "%cd%\database":/var/lib/mysql -e MYSQL_ROOT_PASSWORD=Test1234 -d mariadb:10.5.11
+::Docker update mariadb
+docker pull mariadb:10.5.11
 
-::Fill database with data
-docker exec -i mariadb mysql -u root -p Test1234 < BlazorTipzDDL.sql
+::Launch mariadb database in Docker on port 3308:3306/tcp
+docker container run --rm -it -d --name mariadb --publish 3308:3306/tcp -e MYSQL_ROOT_PASSWORD=ndtipz mariadb:10.5.11
+
+::Docker copy BlazorTipzDDL.sql into mariadb container
+docker cp BlazorTipzDDL.sql mariadb:/docker-entrypoint-initdb.d/BlazorTipzDDL.sql
+::fetch and run the sql script to create the database
+docker exec -i -u root mariadb mysql -h 127.0.0.1 -p 3308:3306 -pndtipz -f mariadb < BlazorTipzDDL.sql
+
+
+
+
+
+
 
 echo.
 echo "Link: http://localhost:80/"
