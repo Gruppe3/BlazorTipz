@@ -142,6 +142,30 @@ namespace BlazorTipz.ViewModels.Team
 
             return (rTeam, null);
         }
+        public async Task<TeamViewmodel?> SearchTeams(string search) 
+        { 
+            if (Teams == null)
+            {
+                await getTeams();
+            }
+            foreach (TeamViewmodel team in Teams)
+            {
+                if (team.name.ToLower().Contains(search.ToLower()))
+                {
+                    return team;
+                }
+                else if (team.leader.ToLower().Contains(search.ToLower()))
+                {
+                    return team;
+                }
+                else if (team.id.ToLower().Contains(search.ToLower()))
+                {
+                    return team;
+                }
+            }
+            return null;
+        }
+        
 
         
 

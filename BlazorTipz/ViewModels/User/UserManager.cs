@@ -261,21 +261,32 @@ namespace BlazorTipz.ViewModels.User
                 return ActiveUsers;
             }
         }
-        //Search by empId in ActiveUsers
-        public UserViewmodel? SearchActiveUsers(string empId)
+
+        //serach active users by id or name
+        //returns a user if found
+        //if null nothing found
+        public async Task<UserViewmodel?> SearchActiveUsers(string search)
         {
-            if(ActiveUsers == null) { return null; }
-            UserViewmodel? retUser = null;
-            foreach(UserViewmodel user in ActiveUsers)
+            if (search == null || search == string.Empty) { return null; }
+
+            List<UserViewmodel> Ausers = await GetUsers();
+            UserViewmodel? target = null;
+            foreach (UserViewmodel u in Ausers)
             {
-                if(user.employmentId == empId)
+                if (u.name == search)
                 {
-                    retUser = user;
+                    target = u;
+                    break;
+                }
+                else if (u.employmentId == search)
+                {
+                    target = u;
                     break;
                 }
             }
-            return retUser;
-        }
+            return target;
+        } 
+        
 
         // Updates the list of users.
         public async Task<List<UserViewmodel>> updateUsersList()
@@ -304,7 +315,7 @@ namespace BlazorTipz.ViewModels.User
             }
             //check if Active list updated correctly
             UserViewmodel? checkUser;
-            checkUser = SearchActiveUsers(user.employmentId);
+            checkUser = await SearchActiveUsers(user.employmentId);
             if(checkUser != null)
             {
                 if(checkUser.role != role)

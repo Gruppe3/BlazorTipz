@@ -1,6 +1,8 @@
 ﻿using BlazorTipz.Models;
 using BlazorTipz.Models.DbRelay;
 using BlazorTipz.Models.AppStorage;
+using BlazorTipz.ViewModels.User;
+using BlazorTipz.ViewModels.Team;
 
 namespace BlazorTipz.ViewModels.Suggestion
 {
@@ -8,14 +10,18 @@ namespace BlazorTipz.ViewModels.Suggestion
     {
         private readonly IDbRelay _DBR;
         private readonly IAppStorage _AS;
+        private readonly IUserManager _UM;
+        private readonly ITeamManager _TM;
 
         private List<CategoriEntity> categories; 
         // Constructor
-        public SuggestionManager(IDbRelay DBR, IAppStorage AS)
+        public SuggestionManager(IDbRelay DBR, IAppStorage AS, IUserManager UM, ITeamManager TM)
         {
             _DBR = DBR;
             _AS = AS;
             categories = _AS.GetCategories();
+            _UM = UM;
+            _TM = TM;
         }
 
         public async Task<string?> saveSuggestion(SuggViewmodel sugg)
@@ -102,6 +108,7 @@ namespace BlazorTipz.ViewModels.Suggestion
             {
                 s.CategoryEntity = SearchForCategoryEntity(s.Category);
                 SuggViewmodel sugg = new SuggViewmodel(s);
+                await fillNameFieldsInSugg(sugg);
                 suggsViewmodel.Add(sugg);
             }
             return suggsViewmodel;
@@ -117,11 +124,32 @@ namespace BlazorTipz.ViewModels.Suggestion
             {
                 s.CategoryEntity = SearchForCategoryEntity(s.Category);
                 SuggViewmodel sugg = new SuggViewmodel(s);
+                await fillNameFieldsInSugg(sugg);
                 suggsViewmodel.Add(sugg);
             }
             return suggsViewmodel;
         }
+        //get a suggestion from database with sugId
+        public async Task<SuggViewmodel?> GetSuggestion(string sugId)
+        {
+            SuggestionEntity? sugg = await _DBR.GetSuggestion(sugId);
+            if (sugg == null) { return null; }
+            sugg.CategoryEntity = SearchForCategoryEntity(sugg.Category);
+            SuggViewmodel suggViewmodel = new SuggViewmodel(sugg);
+            await fillNameFieldsInSugg(suggViewmodel);
+            return suggViewmodel;
+        }
 
+        private async Task fillNameFieldsInSugg(SuggViewmodel sugg)
+        {
+            UserViewmodel? UsCreSearch = await _UM.SearchActiveUsers(sugg.Creator);
+            UserViewmodel? UsAnsSearch = await _UM.SearchActiveUsers(sugg.Ansvarlig);
+            TeamViewmodel? TeamOwnerSearch = await _TM.SearchTeams(sugg.OwnerTeam);
+            if (UsCreSearch == null) {await sugg.GetCreatorName(_UM); } else { sugg.CreatorName = UsCreSearch.name; }
+            if (UsAnsSearch == null) { await sugg.GetAnsvarligName(_UM); } else { sugg.AnsvarligName = UsAnsSearch.name; }
+            if (TeamOwnerSearch == null) { await sugg.GetOwnerTeamName(_TM); } else { sugg.OwnerTeamName = TeamOwnerSearch.name; }
+
+        }
 
 
         public string? validateSuggestion(SuggViewmodel sugg)
@@ -135,6 +163,71 @@ namespace BlazorTipz.ViewModels.Suggestion
             if (sugg.StartDate == null || sugg.StartDate == "") { err = "No supplied start date"; return err; }
 
             return err;
+        }
+        private async Task<string?> updateSuggestion(SuggViewmodel sugg)
+        {
+            string? err = validateSuggestion(sugg);
+            if (err != null)
+            {
+                return err;
+            }
+            SuggestionEntity suggEntity = new SuggestionEntity(sugg);
+            suggEntity.Category = searchForCategoryId(sugg.category);
+            if (suggEntity == null) { err = "Program failure"; return err; }
+            await _DBR.updateSuggestion(suggEntity);
+
+            return err;
+        }
+        private async Task<string?> ApproveAndUpdateSuggestion(SuggViewmodel sugg)
+        {
+            string? err = null;
+            SuggViewmodel suggOld = await GetSuggestion(sugg.Id);
+            if (suggOld == null) { err = "No suggestion found"; return err; }
+
+            suggOld.Title = sugg.Title;
+            suggOld.Description = sugg.Description;
+            suggOld.category = suggOld.category;
+            suggOld.OwnerTeam = suggOld.OwnerTeam;
+            suggOld.Status = sugg.Status;
+            suggOld.Ansvarlig = sugg.Ansvarlig;
+            suggOld.Frist = sugg.Frist;
+            suggOld.BeforeImage = sugg.BeforeImage;
+            suggOld.AfterImage = sugg.AfterImage;
+
+            err = await updateSuggestion(suggOld);
+
+            return err;
+        }
+        public async Task<string?> UpdateSuggestion(SuggViewmodel sugg, UserViewmodel currentUser)
+        {
+            
+            string? err = null;
+            SuggViewmodel suggOld = await GetSuggestion(sugg.Id);
+            if (suggOld == null) { err = "No suggestion found"; return err; }
+            if (suggOld.Ansvarlig == null || suggOld.Ansvarlig == "") {
+                err = await ApproveAndUpdateSuggestion(sugg);
+                return err;
+            }
+            if (suggOld.Creator == currentUser.employmentId || suggOld.Ansvarlig == currentUser.employmentId || suggOld.OwnerTeam == currentUser.teamId)
+            {
+                suggOld.Title = sugg.Title;
+                suggOld.Description = sugg.Description;
+                suggOld.category = suggOld.category;
+                suggOld.OwnerTeam = suggOld.OwnerTeam;
+                suggOld.Status = sugg.Status;
+                suggOld.Ansvarlig = sugg.Ansvarlig;
+                suggOld.Frist = sugg.Frist;
+                suggOld.BeforeImage = sugg.BeforeImage;
+                suggOld.AfterImage = sugg.AfterImage;
+
+                err = await updateSuggestion(suggOld);
+            }
+            else
+            {
+                err = "You are not the creator of this suggestion";
+            }
+            return err;
+            
         }
     }
 }

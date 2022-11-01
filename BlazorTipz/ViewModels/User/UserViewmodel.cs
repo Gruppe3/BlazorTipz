@@ -14,6 +14,8 @@ namespace BlazorTipz.ViewModels.User
         public string RepeatPassword { get; set; } = string.Empty;
         public int listnum { get; set; } = 0;
         public bool firstTimeLogin{ get; set; }
+
+        public string TeamName { get; set; } = string.Empty;
         public UserViewmodel()
         {
 
