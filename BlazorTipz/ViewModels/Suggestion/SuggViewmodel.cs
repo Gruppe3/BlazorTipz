@@ -27,6 +27,8 @@ namespace BlazorTipz.ViewModels.Suggestion
         public string CreatorName { get; set; } = string.Empty;
         public string AnsvarligName { get; set; } = string.Empty;
 
+        public DateTime? FristTid { get; set; }
+
 
 
         public SuggViewmodel()
@@ -97,6 +99,14 @@ namespace BlazorTipz.ViewModels.Suggestion
             await GetOwnerTeamName(_teamManager);
         }
 
+        public void SetFristTidToFrist()
+        {
+            if(FristTid == null) { return; }
+
+            string? temp = FristTid.ToString();
+            Frist = temp;
+        }
+        //from string to datetime
     }
     
 }

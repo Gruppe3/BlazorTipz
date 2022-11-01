@@ -1,8 +1,10 @@
-﻿using BlazorTipz.ViewModels.Suggestion;
+﻿using BlazorTipz.Data;
+using BlazorTipz.ViewModels.Suggestion;
 using BlazorTipz.ViewModels.Team;
 using BlazorTipz.ViewModels.User;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Radzen;
+using System.Collections.Generic;
 using Category = BlazorTipz.ViewModels.Category;
 
 namespace BlazorTipz.Views
@@ -15,8 +17,11 @@ namespace BlazorTipz.Views
         TeamViewmodel Cteam;
         public SuggViewmodel suggUpdate = new SuggViewmodel();
         public List<Category>? Categories;
-
+       
+        private List<UserViewmodel> users = new List<UserViewmodel>();
         private List<TeamViewmodel> teams = new List<TeamViewmodel>();
+        private List<SuggStatus> statuses = new List<SuggStatus>(); 
+
         List<SuggViewmodel> teamSug = new List<SuggViewmodel>();
 
         public string TeamCheck { get; set; }
@@ -58,6 +63,8 @@ namespace BlazorTipz.Views
             teamSug = await _suggestionManager.GetSuggestionsOfTeam(currentTeam.id);
             List<Category> toset = _suggestionManager.GetCategories();
             Categories = toset;
+            users = await _userManager.GetUsers();
+            statuses.AddRange(new List<SuggStatus>() { SuggStatus.Plan, SuggStatus.Do, SuggStatus.Study, SuggStatus.Act, SuggStatus.Complete, SuggStatus.Rejected });
         }
 
         //Update DB
@@ -65,7 +72,11 @@ namespace BlazorTipz.Views
         {
             NavigationManager.NavigateTo("/teamView", true);
         }
-
+        void OnChange(object value, string name)
+        {
+            var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
+        }
+        public void updateSugg() { }
         
     }
 }
