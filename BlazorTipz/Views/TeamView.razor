@@ -99,7 +99,7 @@
                                                 <RadzenLabel Text="Frist" />
                                             </div>
                                             <div class="col">
-                                                <RadzenDatePicker Min="DateTime.Today.AddDays(1)" @bind-Value=@suggUpdate.FristTid TValue="DateTime?" Class="w-100" />
+                                                <RadzenDatePicker Min="DateTime.Today.AddDays(1)" @bind-Value=@suggUpdate.FristTid TValue="DateTime?" ShowTime="false" Class="w-100" />
                                             </div>
                                         </div>
                                         
@@ -131,6 +131,14 @@
                                                     ;
                                                 }
                                                 </RadzenText>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-5">
+                                            <div class="col-md-4" style="align-self: center;">
+                                                <RadzenLabel Text="Frist" />
+                                            </div>
+                                            <div class="col">
+                                                <RadzenText>@suggUpdate.Frist</RadzenText>
                                             </div>
                                         </div>
                                 }

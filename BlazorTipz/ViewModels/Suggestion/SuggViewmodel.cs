@@ -52,6 +52,7 @@ namespace BlazorTipz.ViewModels.Suggestion
             this.Id = Suggestion.sugId;
 
             this.category = new Category(Suggestion.CategoryEntity);
+            SetFristToFristTid();
         }
 
         public async Task<string> GetCreatorName(IUserManager _userManager)
@@ -107,6 +108,13 @@ namespace BlazorTipz.ViewModels.Suggestion
             Frist = temp;
         }
         //from string to datetime
+        public void SetFristToFristTid()
+        {
+            if (Frist == string.Empty ||Frist == null) { return; }
+
+            DateTime temp = DateTime.Parse(Frist);
+            FristTid = temp;
+        }
     }
     
 }

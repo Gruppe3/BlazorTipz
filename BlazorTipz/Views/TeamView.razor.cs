@@ -76,7 +76,26 @@ namespace BlazorTipz.Views
         {
             var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
         }
-        public void updateSugg() { }
-        
+        public async Task updateSugg() {
+            if (suggUpdate.Id != null)
+            {
+                string? err;
+                err = await _suggestionManager.UpdateSuggestion(suggUpdate,CUser);
+                if (err != null)
+                {
+                    Feedback = err;
+                }
+                else
+                {
+                    Feedback = "Suggestion updated";
+                }
+            }
+            else
+            {
+                Feedback = "Suggestion not found";
+            }
+            UpdateDB();
+        }
+
     }
 }

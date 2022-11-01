@@ -196,40 +196,6 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
                 Assert.IsNull(testResult);
             }
         }
-        
-
-        [TestMethod()]
-        [DataRow("1", true)]
-        [DataRow("46", false)]
-        public async Task ApproveAndUpdateSuggestionTest(string testID, bool goodcase)
-        {
-            // arrange
-            DummyDBR dDBR = new DummyDBR();
-            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
-            string? err = null;
-            SuggViewmodel testSugg = new SuggViewmodel();
-            testSugg.Id = testID;
-            testSugg.Title = "Test";
-            testSugg.Description = "Test";
-            testSugg.OwnerTeam = "1";
-            testSugg.Creator = "1";
-            testSugg.StartDate = DateTime.Now.ToLocalTime().ToString("yyyyMMddHHmmss");
-            Category cat = new Category();
-            cat.Name = "HMS";
-            testSugg.category = cat;
-            
-            //act
-            err = await _UnitUnderTest.ApproveAndUpdateSuggestion(testSugg);
-            //Assert
-            if (goodcase)
-            {
-                Assert.IsNull(err);
-            }
-            else
-            {
-                Assert.IsNotNull(err);    
-            }
-        }
 
         [TestMethod()]
         [DataRow("1",true)]
@@ -250,8 +216,10 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
             Category cat = new Category();
             cat.Name = "HMS";
             testSugg.category = cat;
+            UserViewmodel user = new UserViewmodel();
+            user.employmentId = "1";
             //act
-            err = await _UnitUnderTest.UpdateSuggestion(testSugg);
+            err = await _UnitUnderTest.UpdateSuggestion(testSugg,user);
             //Assert
             if (goodcase)
             {

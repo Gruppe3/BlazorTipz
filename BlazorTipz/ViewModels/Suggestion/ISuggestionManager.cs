@@ -1,4 +1,6 @@
-﻿namespace BlazorTipz.ViewModels.Suggestion
+﻿using BlazorTipz.ViewModels.User;
+
+namespace BlazorTipz.ViewModels.Suggestion
 {
     public interface ISuggestionManager
     {
@@ -17,10 +19,7 @@
         //get a suggestion from database with sugId
         Task<SuggViewmodel> GetSuggestion(string sugId);
         
-        //when approving or rejaecting a suggestion
-        Task<string?> ApproveAndUpdateSuggestion(SuggViewmodel sugg);
-        
         //when generally updating a suggestion
-        Task<string?> UpdateSuggestion(SuggViewmodel sugg);
+        Task<string?> UpdateSuggestion(SuggViewmodel sugg, UserViewmodel currentUser);
     }
 }

@@ -178,7 +178,7 @@ namespace BlazorTipz.ViewModels.Suggestion
 
             return err;
         }
-        public async Task<string?> ApproveAndUpdateSuggestion(SuggViewmodel sugg)
+        private async Task<string?> ApproveAndUpdateSuggestion(SuggViewmodel sugg)
         {
             string? err = null;
             SuggViewmodel suggOld = await GetSuggestion(sugg.Id);
@@ -198,21 +198,34 @@ namespace BlazorTipz.ViewModels.Suggestion
 
             return err;
         }
-        public async Task<string?> UpdateSuggestion(SuggViewmodel sugg)
+        public async Task<string?> UpdateSuggestion(SuggViewmodel sugg, UserViewmodel currentUser)
         {
+            
             string? err = null;
             SuggViewmodel suggOld = await GetSuggestion(sugg.Id);
             if (suggOld == null) { err = "No suggestion found"; return err; }
+            if (suggOld.Ansvarlig == null || suggOld.Ansvarlig == "") {
+                err = await ApproveAndUpdateSuggestion(sugg);
+                return err;
+            }
+            if (suggOld.Creator == currentUser.employmentId || suggOld.Ansvarlig == currentUser.employmentId || suggOld.OwnerTeam == currentUser.teamId)
+            {
+                suggOld.Title = sugg.Title;
+                suggOld.Description = sugg.Description;
+                suggOld.category = suggOld.category;
+                suggOld.OwnerTeam = suggOld.OwnerTeam;
+                suggOld.Status = sugg.Status;
+                suggOld.Ansvarlig = sugg.Ansvarlig;
+                suggOld.Frist = sugg.Frist;
+                suggOld.BeforeImage = sugg.BeforeImage;
+                suggOld.AfterImage = sugg.AfterImage;
 
-            suggOld.Description = sugg.Description;
-            suggOld.category = suggOld.category;
-            suggOld.OwnerTeam = suggOld.OwnerTeam;
-            suggOld.Status = sugg.Status;
-            suggOld.Ansvarlig = sugg.Ansvarlig;
-            suggOld.AfterImage = sugg.AfterImage;
-
-            err = await updateSuggestion(suggOld);
-
+                err = await updateSuggestion(suggOld);
+            }
+            else
+            {
+                err = "You are not the creator of this suggestion";
+            }
             return err;
             
         }
