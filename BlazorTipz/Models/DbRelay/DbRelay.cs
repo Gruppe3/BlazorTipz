@@ -239,7 +239,7 @@ namespace BlazorTipz.Models.DbRelay
                         role = member.Role,
                         active = member.Active
                     }, 
-                    _config.GetConnectionString("default"));
+                    _config.GetConnectionString(ConnectionString));
                 }
                 
             }
@@ -253,7 +253,7 @@ namespace BlazorTipz.Models.DbRelay
             {
                 var sql = "SELECT u.name as EmpName, t.teamName as TeamName, tm.UserId, tm.TeamId, tm.JoinedAt, tm.Role FROM Users u, Teams t, TeamMembers tm WHERE u.employmentId = tm.UserId AND t.teamId = tm.TeamId AND tm.Active = 1 AND tm.UserId = @empId;";
 
-                EntityList = await _data.LoadData<TeamMemberEntity, dynamic>(sql, new { empId }, _config.GetConnectionString("default"));
+                EntityList = await _data.LoadData<TeamMemberEntity, dynamic>(sql, new { empId }, _config.GetConnectionString(ConnectionString));
                 return EntityList;
             }
             catch (Exception ex) { return EntityList; }
@@ -266,7 +266,7 @@ namespace BlazorTipz.Models.DbRelay
             {
                 var sql = "SELECT u.name as EmpName, t.teamName as TeamName, tm.UserId, tm.TeamId, tm.JoinedAt, tm.Role FROM Users u, Teams t, TeamMembers tm WHERE u.employmentId = tm.UserId AND t.teamId = tm.TeamId AND tm.Active = 1 AND tm.TeamId = @teamId;";
                 
-                EntityList = await _data.LoadData<TeamMemberEntity, dynamic>(sql, new { teamId }, _config.GetConnectionString("default"));
+                EntityList = await _data.LoadData<TeamMemberEntity, dynamic>(sql, new { teamId }, _config.GetConnectionString(ConnectionString));
                 return EntityList;
             }
             catch (Exception ex) { return EntityList; }
@@ -279,7 +279,7 @@ namespace BlazorTipz.Models.DbRelay
             {
                 var sql = "SELECT u.name as EmpName, t.teamName as TeamName, tm.UserId, tm.TeamId, tm.JoinedAt, tm.Role, tm.Active FROM Users u, Teams t, TeamMembers tm WHERE u.employmentId = tm.UserId AND t.teamId = tm.TeamId;";
 
-                EntityList = await _data.LoadData<TeamMemberEntity, dynamic>(sql, new { }, _config.GetConnectionString("default"));
+                EntityList = await _data.LoadData<TeamMemberEntity, dynamic>(sql, new { }, _config.GetConnectionString(ConnectionString));
                 return EntityList;
             }
             catch (Exception ex) { return EntityList; }

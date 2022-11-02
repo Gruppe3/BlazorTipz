@@ -19,6 +19,7 @@ namespace BlazorTipzTests.ViewModels.DummyClass
         private List<UserEntity> _Users = new List<UserEntity>();
         private List<TeamEntity> _Teams = new List<TeamEntity>();
         private List<SuggestionEntity> _Suggestions = new List<SuggestionEntity>();
+        private List<TeamMemberEntity> _TeamMembers = new List<TeamMemberEntity>();
 
         public string ConnectionString { private get; set; } = "default";
 
@@ -267,6 +268,30 @@ namespace BlazorTipzTests.ViewModels.DummyClass
                 sugg.dueDate = sug.dueDate;
                 sugg.categoryId = sug.categoryId;
             }
+        }
+
+        public async Task AddTeamMemberToTeam(List<TeamMemberEntity> memberList)
+        {
+            foreach (TeamMemberEntity member in memberList)
+            {
+                _TeamMembers.Add(member);
+            }
+        }
+
+        public async Task<List<TeamMemberEntity>> GetTeamMemberList(string empId)
+        {
+            return _TeamMembers.Where(x => x.UserId == empId).ToList();
+
+        }
+
+        public async Task<List<TeamMemberEntity>> GetTeamMembersByTeam(string teamId)
+        {
+            return _TeamMembers.Where(x => x.TeamId == teamId).ToList();
+        }
+        
+        public async Task<List<TeamMemberEntity>> GetAllTeamMemberLists()
+        {
+            return _TeamMembers.ToList();
         }
     }
 }
