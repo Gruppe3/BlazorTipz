@@ -50,13 +50,6 @@ namespace BlazorTipz.Shared
         //Get team from user
         protected override async Task OnInitializedAsync()
         {
-            UserViewmodel testUser = new UserViewmodel();
-            testUser.employmentId = "000000";
-            testUser.name = "Super User";
-            testUser.password = "Test1234";
-            testUser.role = RoleE.Admin;
-            await _userManager.registerUserSingel(testUser);
-
             var token = await _localStorage.GetItemAsync<string>("token");
             if (token != null)
             {

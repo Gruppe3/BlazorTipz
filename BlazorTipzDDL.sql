@@ -103,7 +103,7 @@ ADD CONSTRAINT fk_TeamMembers_user FOREIGN KEY (userId) REFERENCES Users (employ
 
 
 Insert into Users (employmentId, userName, userRole, firstTimeLogin, passwordHash, passwordSalt)
-values ("000001", "SuperUser", "Admin", 0, "pqa[Èl_; S+uÑúE   FZA¯ ¥%ä} B(I½k M  ÛÀÇ  2Ýæ?Ö1ÉùQì¨;¿   ,Ìn-  ",
+values ("000000", "SuperUser", "Admin", 0, "pqa[Èl_; S+uÑúE   FZA¯ ¥%ä} B(I½k M  ÛÀÇ  2Ýæ?Ö1ÉùQì¨;¿   ,Ìn-  ",
 	"êÜ«(!dÑädÆ D  ðòg ¤g Gfa·! n3L_  ÕeäÅ õ ZWÏ×Àª hÐ ý à_ ÈíµAªÍFF Í üb   ?  ¦åC;6 ýMÓ ¦>_ÎÕqËÑaäßñ 3%ß+P  ('Â¼àR À¦ ðæ YSU<   ä ø)");
 
 

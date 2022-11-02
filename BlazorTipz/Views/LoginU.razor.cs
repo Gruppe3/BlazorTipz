@@ -18,13 +18,6 @@ namespace BlazorTipz.Views
         //Async means it will wait for things to load in with await.
         public async Task<ActionResult<string>> LoginUs(UserViewmodel request)
         {
-            UserViewmodel testUser = new UserViewmodel();
-            testUser.employmentId = "000000";
-            testUser.name = "Super User";
-            testUser.password = "Test1234";
-            testUser.role = RoleE.Admin;
-            await _userM.registerUserSingel(testUser);
-            
             string token;
             string err;
             //returns token or err

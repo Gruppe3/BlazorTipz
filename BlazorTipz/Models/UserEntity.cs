@@ -30,6 +30,8 @@ namespace BlazorTipz.Models
         public string AuthToken { get; private set; } 
         public string password { get; set; }
 
+        public string passHash { get; set; }
+        public string passSalt { get; set; }
         //inject _data
 
 
@@ -91,6 +93,9 @@ namespace BlazorTipz.Models
             CreatePasswordHash(pass, out byte[] passHash, out byte[] passSalt);
             passwordHash = passHash;
             passwordSalt = passSalt;
+            //get database values
+            this.passHash = Convert.ToBase64String(passHash);
+            this.passSalt = Convert.ToBase64String(passSalt);
         }
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
