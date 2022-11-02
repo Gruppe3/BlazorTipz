@@ -14,13 +14,15 @@ namespace BlazorTipzTests.ViewModels.DummyClass
 {
     public class DummyDBR : IDbRelay
     {
+        
         //DummyDatabaseTables
         private List<UserEntity> _Users = new List<UserEntity>();
         private List<TeamEntity> _Teams = new List<TeamEntity>();
         private List<SuggestionEntity> _Suggestions = new List<SuggestionEntity>();
-        
 
-    public DummyDBR()
+        public string ConnectionString { private get; set; } = "default";
+
+        public DummyDBR()
         {
             fillDummyDB();
         }
