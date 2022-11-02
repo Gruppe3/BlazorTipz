@@ -1,6 +1,5 @@
 ﻿<!--Namespace-->
 @page "/userSettings"
-
 <!--Accesses classes defined here-->
 @using BlazorTipz.Data
 @using Microsoft.AspNetCore.Mvc
@@ -10,6 +9,7 @@
 @inject ILocalStorageService _localStorage
 @inject NavigationManager NavigationManager
 @inject IUserManager _userManager
+@inject DialogService DialogService
 
 <PageTitle>User Settings</PageTitle>
 
@@ -18,7 +18,7 @@
 <div class="justify-content-center">
     <div class="row">
         <div class="col-lg-6 offset-lg-3">
-            <RadzenTemplateForm TItem="UserViewmodel" Data=userDto Submit=ChangeSettings>
+            <RadzenTemplateForm TItem="UserViewmodel" Data=userDto Submit=PasswordCheck>
                 <div class="row mb-5">
                     <div class="col-md-4" style="align-self: center;">
                         <RadzenLabel Text="Fullt navn" />
@@ -64,3 +64,30 @@
 <h1 style="opacity:0;">:)</h1>
 <h1 style="opacity:0;">:)</h1>
 
+@code{
+    async Task PasswordCheck()
+    {
+        await DialogService.OpenAsync($"Skriv inn ditt forrige passord for og endre", ds =>
+        @<div>
+            <RadzenTemplateForm TItem="UserViewmodel" Data=@userDto Submit=CheckPassword>
+    
+                <div class="row mb-5">
+                    <div class="col-md-4" style="align-self: center;">
+                        <RadzenLabel Text="Gammelt passord" />
+                    </div>
+                    <div class="col">
+                        <!--Binder til userDto.password-->
+                        <RadzenTextBox style="display: block" Name="password" @bind-Value=@userDto.password Class="w-100" type="password" />
+                        <RadzenLengthValidator Component="password" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
+                    </div>
+                </div>
+                <div class="center">
+                    <RadzenButton ButtonType="ButtonType.Submit" Text="Login"></RadzenButton>
+                </div>
+                <div class="center">
+                    <a>@Checker</a>
+                </div>
+            </RadzenTemplateForm>
+        </div>, new DialogOptions() { CloseDialogOnOverlayClick = true });
+}
+}

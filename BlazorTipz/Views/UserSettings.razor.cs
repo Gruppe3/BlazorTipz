@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using BlazorTipz.ViewModels.User;
-
 namespace BlazorTipz.Views
 {
     public partial class UserSettings
@@ -11,6 +10,8 @@ namespace BlazorTipz.Views
 
         UserViewmodel userDto = new UserViewmodel();
         UserViewmodel? CUser;
+
+        
         //checks if there is a current user
         protected override async Task OnInitializedAsync()
         {
@@ -60,6 +61,35 @@ namespace BlazorTipz.Views
         private void back()
         {
             NavigationManager.NavigateTo("/", true);
+        }
+
+        //Check password of CUser and change settings
+        public async Task<ActionResult<string>> CheckPassword(UserViewmodel request)
+        {
+            string token;
+            string err;
+            request.employmentId = CUser.employmentId;
+            //returns token or err
+            (token, err) = await _userManager.Login(request);
+            //If error is null
+            if (err == null)
+            {
+                await _localStorage.SetItemAsync("token", token);
+                await ChangeSettings(request);
+                return token;
+            }
+            //If token is null
+            else if (token == null)
+            {
+                Checker = err;
+                return err;
+            }
+            //If something else happens
+            else
+            {
+                Checker = "something went horribly wrong";
+                return "Fatal";
+            }
         }
     }
 }

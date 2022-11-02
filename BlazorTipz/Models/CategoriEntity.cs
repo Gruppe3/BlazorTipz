@@ -4,13 +4,13 @@ namespace BlazorTipz.Models
 {
     public class CategoriEntity
     {
-        public string Id { get; set; }
-        public string Name { get; set; }
+        public string catId { get; set; }
+        public string catName { get; set; }
 
         public CategoriEntity(string id, string name)
         {
-            Id = id;
-            Name = name;
+            this.catId = id;
+            this.catName = name;
         }
         public CategoriEntity()
         {
@@ -18,7 +18,7 @@ namespace BlazorTipz.Models
         
         public CategoriEntity(Category cat)
         {
-            this.Name = cat.Name;  
+            this.catName = cat.Name;  
         }
     }
 }

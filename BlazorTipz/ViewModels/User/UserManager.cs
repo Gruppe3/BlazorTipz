@@ -36,9 +36,9 @@ namespace BlazorTipz.ViewModels.User
         public async Task<(string, string)> Login(UserViewmodel user)
         {
             //User entity
-            UserDb tryUser = new UserDb(user);
+            UserEntity tryUser = new UserEntity(user);
             //Sends emplyment id to userdb through interface relay
-            UserDb dbUser = await _DBR.getLoginUser(tryUser.employmentId);
+            UserEntity dbUser = await _DBR.getLoginUser(tryUser.employmentId);
             string token;
             string err;
 
@@ -81,11 +81,11 @@ namespace BlazorTipz.ViewModels.User
             if (toRegisterUser.name == null|| toRegisterUser.name =="") { err = "no name"; return (err, null); };
             if (toRegisterUser.password == null|| toRegisterUser.password == "") { err = "no password given"; return (err, null); };
 
-            UserDb userDb = await _DBR.lookUpUser(toRegisterUser.employmentId);
+            UserEntity userDb = await _DBR.lookUpUser(toRegisterUser.employmentId);
             if (userDb != null) { err = "User alrady exists"; return (err, null); }
 
-            UserDb toSaveUser = new UserDb(toRegisterUser);
-            List<UserDb> toSave = new List<UserDb>();
+            UserEntity toSaveUser = new UserEntity(toRegisterUser);
+            List<UserEntity> toSave = new List<UserEntity>();
             toSave.Add(toSaveUser);
             if (toSave.Count == 0) { err = "somthing went wrong"; return (err, null); };
 
@@ -193,7 +193,7 @@ namespace BlazorTipz.ViewModels.User
         {
             string err = null;
             string empId = _Auth.GetClaimValue(token);
-            UserDb user = await _DBR.getLoginUser(empId);
+            UserEntity user = await _DBR.getLoginUser(empId);
             if (user == null) { err = "User not found"; return (null, err); };
             await SetCurrentUser(new UserViewmodel(user));
             await getUsers();
@@ -247,7 +247,7 @@ namespace BlazorTipz.ViewModels.User
             CurrentUser.firstTimeLogin = user.firstTimeLogin;
             if (CurrentUser.employmentId == null) { err = "no emplayment Id"; return err; };
 
-            UserDb toSave = new UserDb(CurrentUser);
+            UserEntity toSave = new UserEntity(CurrentUser);
             if (toSave == null) { err = "Application err"; return err; };
             await _DBR.updateUserEntry(toSave);
 
@@ -259,10 +259,10 @@ namespace BlazorTipz.ViewModels.User
         {
             if (ActiveUsers == null)
             {
-                List<UserDb> dblist = await _DBR.getActiveUsers();
+                List<UserEntity> dblist = await _DBR.getActiveUsers();
                 if (dblist == null) { return null; }
                 List<UserViewmodel> ActUsers = new List<UserViewmodel>();
-                foreach (UserDb u in dblist)
+                foreach (UserEntity u in dblist)
                 {
                     UserViewmodel user = new UserViewmodel(u);
                     ActUsers.Add(user);
@@ -286,21 +286,32 @@ namespace BlazorTipz.ViewModels.User
                 return ActiveUsers;
             }
         }
-        //Search by empId in ActiveUsers
-        public UserViewmodel? SearchActiveUsers(string empId)
+
+        //serach active users by id or name
+        //returns a user if found
+        //if null nothing found
+        public async Task<UserViewmodel?> SearchActiveUsers(string search)
         {
-            if(ActiveUsers == null) { return null; }
-            UserViewmodel? retUser = null;
-            foreach(UserViewmodel user in ActiveUsers)
+            if (search == null || search == string.Empty) { return null; }
+
+            List<UserViewmodel> Ausers = await GetUsers();
+            UserViewmodel? target = null;
+            foreach (UserViewmodel u in Ausers)
             {
-                if(user.employmentId == empId)
+                if (u.name == search)
                 {
-                    retUser = user;
+                    target = u;
+                    break;
+                }
+                else if (u.employmentId == search)
+                {
+                    target = u;
                     break;
                 }
             }
-            return retUser;
-        }
+            return target;
+        } 
+        
 
         // Updates the list of users.
         public async Task<List<UserViewmodel>> updateUsersList()
@@ -318,18 +329,18 @@ namespace BlazorTipz.ViewModels.User
             {
                 if (role < user.role|| role==user.role) { return "Alrady at needed role or higher"; }
                 user.role = role;
-                await _DBR.updateUserEntry(new UserDb(user));
+                await _DBR.updateUserEntry(new UserEntity(user));
                 await updateUsersList();
             }
             else
             {
                 user.role = role;
-                await _DBR.updateUserEntry(new UserDb(user));
+                await _DBR.updateUserEntry(new UserEntity(user));
                 await updateUsersList();
             }
             //check if Active list updated correctly
             UserViewmodel? checkUser;
-            checkUser = SearchActiveUsers(user.employmentId);
+            checkUser = await SearchActiveUsers(user.employmentId);
             if(checkUser != null)
             {
                 if(checkUser.role != role)
@@ -380,7 +391,7 @@ namespace BlazorTipz.ViewModels.User
                     if (u.employmentId == empid)
                     {
                         u.teamId = teamId;
-                        await _DBR.updateUserEntry(new UserDb(u));
+                        await _DBR.updateUserEntry(new UserEntity(u));
                         return null;
                         break;
                     }
@@ -395,7 +406,7 @@ namespace BlazorTipz.ViewModels.User
                     if (u.employmentId == empid)
                     {
                         u.teamId = teamId;
-                        await _DBR.updateUserEntry(new UserDb(u));
+                        await _DBR.updateUserEntry(new UserEntity(u));
                         return null;
                         break;
                     }

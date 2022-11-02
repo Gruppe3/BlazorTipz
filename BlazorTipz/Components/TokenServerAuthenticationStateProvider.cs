@@ -29,6 +29,18 @@ namespace BlazorTipz.Components
             var user = new ClaimsPrincipal(identity);
             var state = new AuthenticationState(user);
 
+            //check if token is expired
+            if (identity.IsAuthenticated)
+            {
+                var expiresAt = long.Parse(identity.FindFirst("exp").Value);
+                var expiresAtDateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(expiresAt);
+                if (expiresAtDateTimeOffset < DateTime.Now)
+                {
+                    await _localStorage.RemoveItemAsync("token");
+                    state = new AuthenticationState(new ClaimsPrincipal());
+                }
+            }
+
             NotifyAuthenticationStateChanged(Task.FromResult(state));
 
             return state;
