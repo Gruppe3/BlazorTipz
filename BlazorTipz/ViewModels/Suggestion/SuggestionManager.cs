@@ -33,7 +33,7 @@ namespace BlazorTipz.ViewModels.Suggestion
             }
             
             SuggestionEntity suggEntity = new SuggestionEntity(sugg);
-            suggEntity.Category = searchForCategoryId(sugg.category);
+            suggEntity.categoryId = searchForCategoryId(sugg.category);
             if (suggEntity == null) { err = "Program failure"; return err; }
             await _DBR.saveSuggestion(suggEntity);
 
@@ -50,7 +50,7 @@ namespace BlazorTipz.ViewModels.Suggestion
             foreach (CategoriEntity c in categoris)
             {
                 Category cat = new Category();
-                cat.Name = c.Name;
+                cat.Name = c.catName;
                 cats.Add(cat);
             }
             return cats;
@@ -61,9 +61,9 @@ namespace BlazorTipz.ViewModels.Suggestion
                 string id = "";
                 foreach (CategoriEntity c in _AS.GetCategories())
                 {
-                    if (c.Name == cat.Name)
+                    if (c.catName == cat.Name)
                     {
-                        id = c.Id;
+                        id = c.catId;
                         break;
                     }
                 }
@@ -76,23 +76,23 @@ namespace BlazorTipz.ViewModels.Suggestion
                 CategoriEntity catOut = new();
                 if (catInn == null || catInn == "")
                 {
-                    catOut.Name = "No category";
-                    catOut.Id = "0";
+                    catOut.catName = "No category";
+                    catOut.catId = "0";
                     return catOut;
                 }
                 foreach (CategoriEntity c in _AS.GetCategories())
                 {
-                    if (c.Id == catInn || c.Name == catInn)
+                    if (c.catId == catInn || c.catName == catInn)
                     {
-                        catOut.Name = c.Name;
-                        catOut.Id = c.Id;
+                        catOut.catName = c.catName;
+                        catOut.catId = c.catId;
                         break;
                     }
                 }
-                if (catOut.Name == null || catOut.Name == "")
+                if (catOut.catName == null || catOut.catName == "")
                 {
-                    catOut.Name = "No category";
-                    catOut.Id = "0";
+                    catOut.catName = "No category";
+                    catOut.catId = "0";
                 }
                 return catOut;
             }
@@ -106,7 +106,7 @@ namespace BlazorTipz.ViewModels.Suggestion
             if (suggs == null) { return suggsViewmodel; }
             foreach (SuggestionEntity s in suggs)
             {
-                s.CategoryEntity = SearchForCategoryEntity(s.Category);
+                s.CategoryEntity = SearchForCategoryEntity(s.categoryId);
                 SuggViewmodel sugg = new SuggViewmodel(s);
                 await fillNameFieldsInSugg(sugg);
                 suggsViewmodel.Add(sugg);
@@ -122,7 +122,7 @@ namespace BlazorTipz.ViewModels.Suggestion
             if (suggs == null) { return suggsViewmodel; }
             foreach (SuggestionEntity s in suggs)
             {
-                s.CategoryEntity = SearchForCategoryEntity(s.Category);
+                s.CategoryEntity = SearchForCategoryEntity(s.categoryId);
                 SuggViewmodel sugg = new SuggViewmodel(s);
                 await fillNameFieldsInSugg(sugg);
                 suggsViewmodel.Add(sugg);
@@ -134,7 +134,7 @@ namespace BlazorTipz.ViewModels.Suggestion
         {
             SuggestionEntity? sugg = await _DBR.GetSuggestion(sugId);
             if (sugg == null) { return null; }
-            sugg.CategoryEntity = SearchForCategoryEntity(sugg.Category);
+            sugg.CategoryEntity = SearchForCategoryEntity(sugg.categoryId);
             SuggViewmodel suggViewmodel = new SuggViewmodel(sugg);
             await fillNameFieldsInSugg(suggViewmodel);
             return suggViewmodel;
@@ -172,7 +172,7 @@ namespace BlazorTipz.ViewModels.Suggestion
                 return err;
             }
             SuggestionEntity suggEntity = new SuggestionEntity(sugg);
-            suggEntity.Category = searchForCategoryId(sugg.category);
+            suggEntity.categoryId = searchForCategoryId(sugg.category);
             if (suggEntity == null) { err = "Program failure"; return err; }
             await _DBR.updateSuggestion(suggEntity);
 

@@ -7,20 +7,23 @@ namespace BlazorTipz.Models
     {
         //db colums
         public string? sugId { get; set; }
-        public string owner { get; set; }
-        public string creator { get; set; }
-        public string completer { get; set; }
-        public SuggStatus status { get; set; }
+        public string ownerId { get; set; }
+        public string creatorId { get; set; }
+        public string? assignedId { get; set; }
+        public string? completerId { get; set; }
+        public SuggStatus sugStatus { get; set; }
+        public string? sugProgression { get; set; }
         public string sugTitle { get; set; }
         public string sugDesc { get; set; }
         public string createdAt { get; set; }
         public string lastChanged { get; set; }
-        public string Category { get; set; }
-        public bool JustDoIt { get; set; }
-        public byte[]? BeforeImage { get; set; }
-        public byte[]? AfterImage { get; set; }
-        public string? assigned { get; set; }
-        public string deadline { get; set; }
+        public string dueDate { get; set; }
+        public string categoryId { get; set; }
+        public bool justDoIt { get; set; }
+        public string? beforeImage { get; set; }
+        public string? afterImage { get; set; }
+        
+        
         //ekstra fields
         public CategoriEntity CategoryEntity { get; set; }
 
@@ -32,18 +35,18 @@ namespace BlazorTipz.Models
         public SuggestionEntity(SuggViewmodel sugg)
         {
             this.sugId = sugg.Id;
-            this.owner = sugg.OwnerTeam;
+            this.ownerId = sugg.OwnerTeam;
             this.sugTitle = sugg.Title;
             this.sugDesc = sugg.Description;
-            this.JustDoIt = sugg.JustDoIt;
-            this.creator = sugg.Creator;
-            this.status = sugg.Status;
+            this.justDoIt = sugg.JustDoIt;
+            this.creatorId = sugg.Creator;
+            this.sugStatus = sugg.Status;
             this.createdAt = sugg.StartDate;
             this.lastChanged = sugg.UpdatedDate;
-            this.AfterImage = sugg.AfterImage;
-            this.BeforeImage = sugg.BeforeImage;
-            this.assigned = sugg.Ansvarlig;
-            this.deadline = sugg.Frist;
+            this.afterImage = sugg.AfterImage;
+            this.beforeImage = sugg.BeforeImage;
+            this.assignedId = sugg.Ansvarlig;
+            this.dueDate = sugg.Frist;
             
             this.CategoryEntity = new CategoriEntity(sugg.category);
         }

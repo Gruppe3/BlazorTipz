@@ -11,32 +11,37 @@ using BlazorTipz.ViewModels.User;
 
 namespace BlazorTipz.Models
 {
-    public class UserDb 
+    public class UserEntity 
     {
+        
         private readonly IConfiguration _config;
-        public string name { get; set; } = string.Empty;
+        
+        //database
+        public string userName { get; set; } = string.Empty;
         public string employmentId { get; set; }
-        public RoleE role { get; set; } = RoleE.User;
-        public string teamId { get; set; }
-        public string password { get; set; }
+        public RoleE userRole { get; set; } = RoleE.User;
+        public string? teamId { get; set; }
         public byte[] passwordHash { get; set; }
         public byte[] passwordSalt { get; set; }
         public bool active { get; set; } = true;
         public bool firstTimeLogin { get; set; }
-        public string AuthToken { get; private set; }
+        
+        //local
+        public string AuthToken { get; private set; } 
+        public string password { get; set; }
 
         //inject _data
 
 
 
         //constructor
-        public UserDb()
+        public UserEntity()
         {
             _config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", true, true)
                 .Build();
         }
-        public UserDb(UserViewmodel user)
+        public UserEntity(UserViewmodel user)
         {
             _config = new ConfigurationBuilder()
                  .AddJsonFile("appsettings.json", true, true)
@@ -44,8 +49,8 @@ namespace BlazorTipz.Models
             
             this.employmentId = user.employmentId;
             this.teamId = user.teamId;
-            this.name = user.name;
-            this.role = user.role;
+            this.userName = user.name;
+            this.userRole = user.role;
             this.firstTimeLogin = user.firstTimeLogin;
             if (user.password != null)
             {
@@ -59,8 +64,8 @@ namespace BlazorTipz.Models
             var claims = new List<Claim>
             {
             new Claim(ClaimTypes.Name, this.employmentId),
-            new Claim(JwtRegisteredClaimNames.GivenName, this.name),
-            new Claim(ClaimTypes.Role, this.role.ToString())
+            new Claim(JwtRegisteredClaimNames.GivenName, this.userName),
+            new Claim(ClaimTypes.Role, this.userRole.ToString())
         };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));

@@ -20,13 +20,13 @@ namespace BlazorTipz.ViewModels.Suggestion
         public string? Ansvarlig { get; set; }
         public string Frist { get; set; }
         //picture
-        public byte[]? BeforeImage { get; set; }
-        public byte[]? AfterImage { get; set; }
+        public string? BeforeImage { get; set; }
+        public string? AfterImage { get; set; }
         //for view
         public string OwnerTeamName { get; set; } = string.Empty;
         public string CreatorName { get; set; } = string.Empty;
         public string AnsvarligName { get; set; } = string.Empty;
-
+        
         public DateTime? FristTid { get; set; }
 
 
@@ -39,16 +39,16 @@ namespace BlazorTipz.ViewModels.Suggestion
         {
             this.Title = Suggestion.sugTitle;
             this.Description = Suggestion.sugDesc;
-            this.JustDoIt = Suggestion.JustDoIt;           
-            this.OwnerTeam = Suggestion.owner;
-            this.Creator = Suggestion.creator;
-            this.Status = Suggestion.status;
+            this.JustDoIt = Suggestion.justDoIt;           
+            this.OwnerTeam = Suggestion.ownerId;
+            this.Creator = Suggestion.creatorId;
+            this.Status = Suggestion.sugStatus;
             this.StartDate = Suggestion.createdAt;
             this.UpdatedDate = Suggestion.lastChanged;
-            this.Ansvarlig = Suggestion.assigned;
-            this.Frist = Suggestion.deadline;
-            this.BeforeImage = Suggestion.BeforeImage;
-            this.AfterImage = Suggestion.AfterImage;
+            this.Ansvarlig = Suggestion.assignedId;
+            this.Frist = Suggestion.dueDate;
+            this.BeforeImage = Suggestion.beforeImage;
+            this.AfterImage = Suggestion.afterImage;
             this.Id = Suggestion.sugId;
 
             this.category = new Category(Suggestion.CategoryEntity);

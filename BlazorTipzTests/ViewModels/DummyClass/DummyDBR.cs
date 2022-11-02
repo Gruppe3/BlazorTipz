@@ -15,8 +15,8 @@ namespace BlazorTipzTests.ViewModels.DummyClass
     public class DummyDBR : IDbRelay
     {
         //DummyDatabaseTables
-        private List<UserDb> _Users = new List<UserDb>();
-        private List<TeamDb> _Teams = new List<TeamDb>();
+        private List<UserEntity> _Users = new List<UserEntity>();
+        private List<TeamEntity> _Teams = new List<TeamEntity>();
         private List<SuggestionEntity> _Suggestions = new List<SuggestionEntity>();
         
 
@@ -31,9 +31,9 @@ namespace BlazorTipzTests.ViewModels.DummyClass
 
             for (int i = 0; i < 13; i++)
             {
-                UserDb user = new UserDb();
+                UserEntity user = new UserEntity();
                 user.employmentId = i.ToString();
-                user.name = "User" + i.ToString();
+                user.userName = "User" + i.ToString();
                 user.password = "password" + i.ToString();
                 user.passwordHashing(user.password);
                 user.teamId = "1";
@@ -46,7 +46,7 @@ namespace BlazorTipzTests.ViewModels.DummyClass
             }
             for (int i = 0; i < 5; i++)
             {
-                TeamDb team = new TeamDb();
+                TeamEntity team = new TeamEntity();
                 team.teamId = i.ToString();
                 team.teamName = "Team" + i.ToString();
                 team.teamLeader = i.ToString();
@@ -62,81 +62,81 @@ namespace BlazorTipzTests.ViewModels.DummyClass
                 sugg.sugId = i.ToString();
                 if (i < 3) 
                 { 
-                    sugg.owner = "1";
-                    sugg.creator = "1";
-                    sugg.Category = "HMS";    // HMS
+                    sugg.ownerId = "1";
+                    sugg.creatorId = "1";
+                    sugg.categoryId = "HMS";    // HMS
                 }
                 else { 
-                    sugg.owner = "2";
-                    sugg.creator = "2";
-                    sugg.Category = "2";    // Kvalitet
+                    sugg.ownerId = "2";
+                    sugg.creatorId = "2";
+                    sugg.categoryId = "2";    // Kvalitet
                 }
                 sugg.sugTitle = "TestTitle" + i.ToString();
                 sugg.sugDesc = "DescribingTest" + i.ToString();
                 sugg.createdAt = DateTime.Now.ToString();
-                sugg.JustDoIt = false;
+                sugg.justDoIt = false;
                 _Suggestions.Add(sugg);
             }
         }
 
 
 
-        public async Task<UserDb> getLoginUser(string empId)
+        public async Task<UserEntity> getLoginUser(string empId)
         {
             return _Users.Where(x => x.employmentId == empId).FirstOrDefault();
         }
-        public async Task<UserDb> lookUpUser(string empId)
+        public async Task<UserEntity> lookUpUser(string empId)
         {
             return _Users.Where(x => x.employmentId == empId).FirstOrDefault();
         }
-        public async Task addUserEntries(List<UserDb> toSaveUsers)
+        public async Task addUserEntries(List<UserEntity> toSaveUsers)
         {
-            foreach (UserDb user in toSaveUsers)
+            foreach (UserEntity user in toSaveUsers)
             {
                 _Users.Add(user);
             }
             //return "Successfully added " + x.ToString() + " users.";
             
         }
-        public async Task updateUserEntry(UserDb toSaveUser)
+        public async Task updateUserEntry(UserEntity toSaveUser)
         {
-            UserDb user = _Users.Where(x => x.employmentId == toSaveUser.employmentId).FirstOrDefault();
+            UserEntity user = _Users.Where(x => x.employmentId == toSaveUser.employmentId).FirstOrDefault();
             if (user != null)
             {
                 if (toSaveUser.passwordHash != null && toSaveUser.passwordSalt != null)
                 {
-                    user.name = toSaveUser.name;
+                    user.userName = toSaveUser.userName;
                     user.passwordSalt = toSaveUser.passwordSalt;
                     user.passwordHash = toSaveUser.passwordHash;
-                    user.role = toSaveUser.role;
+                    user.userRole = toSaveUser.userRole;
                     user.firstTimeLogin = toSaveUser.firstTimeLogin;
                 }
                 else if (toSaveUser.teamId != null)
                 {
-                    user.name = toSaveUser.name;
-                    user.role = toSaveUser.role;
+                    user.userName = toSaveUser.userName;
+                    user.userRole = toSaveUser.userRole;
                     user.teamId = toSaveUser.teamId;
                 }
                 else
                 {
-                    user.name = toSaveUser.name;
-                    user.role = toSaveUser.role;
+                    user.userName = toSaveUser.userName;
+                    user.userRole = toSaveUser.userRole;
                 }
             }
         }
-        public async Task<List<UserDb>> getActiveUsers()
+        public async Task<List<UserEntity>> getActiveUsers()
         {
             return await getUsersByActiveStatus(true);
         }
-        public async Task<List<UserDb>> getInactiveUsers()
+        public async Task<List<UserEntity>> getInactiveUsers()
         {
             return await getUsersByActiveStatus(false);
         }
-        private async Task<List<UserDb>> getUsersByActiveStatus(bool var)
+        private async Task<List<UserEntity>> getUsersByActiveStatus(bool var)
         {
-            List<UserDb> activeUsers = new List<UserDb>();
+            List<UserEntity> activeUsers = new List<UserEntity>();
 
-            foreach (UserDb user in _Users)
+            foreach (UserEntity user in _Users)
             {
                 if (user.active == var)
                 {
@@ -147,34 +147,34 @@ namespace BlazorTipzTests.ViewModels.DummyClass
         }
         public async Task changeUserStateTo(string empid, bool state)
         {
-            UserDb user = _Users.Where(x => x.employmentId == empid).FirstOrDefault();
+            UserEntity user = _Users.Where(x => x.employmentId == empid).FirstOrDefault();
             if (user != null)
             { 
                 user.active = state; 
             }
         }
-        public async Task changeUsersStateTo(List<UserDb> users, bool state)
+        public async Task changeUsersStateTo(List<UserEntity> users, bool state)
         {
-            foreach (UserDb user in users)
+            foreach (UserEntity user in users)
             {
                 user.active = state;
             }
         }
 
         //team/teams
-        public async Task<TeamDb> getSingleTeamDbFromDb(string teamId)
+        public async Task<TeamEntity> getSingleTeamDbFromDb(string teamId)
         {
             return _Teams.Where(x => x.teamId == teamId).FirstOrDefault();
         }
-        public async Task addTeamEntry(TeamDb team)
+        public async Task addTeamEntry(TeamEntity team)
         {
             string numb = _Teams.Count().ToString();
             team.teamId = numb;
             _Teams.Add(team);
         }
-        public async Task updateTeamEntry(TeamDb team)
+        public async Task updateTeamEntry(TeamEntity team)
         {
-            TeamDb teamEdit = _Teams.Where(x => x.teamId == team.teamId).FirstOrDefault();
+            TeamEntity teamEdit = _Teams.Where(x => x.teamId == team.teamId).FirstOrDefault();
             if (teamEdit != null)
             {
                 teamEdit.teamName = team.teamName;
@@ -182,19 +182,19 @@ namespace BlazorTipzTests.ViewModels.DummyClass
             }
             
         }
-        public async Task<List<TeamDb>> getActiveTeams()
+        public async Task<List<TeamEntity>> getActiveTeams()
         {
             return await getTeamsByActiveStatus(true);
         }
-        public async Task<List<TeamDb>> getInactiveTeams()
+        public async Task<List<TeamEntity>> getInactiveTeams()
         {
             return await getTeamsByActiveStatus(false);
         }
-        private async Task<List<TeamDb>> getTeamsByActiveStatus(bool var)
+        private async Task<List<TeamEntity>> getTeamsByActiveStatus(bool var)
         {
-            List<TeamDb> activeTeams = new List<TeamDb>();
+            List<TeamEntity> activeTeams = new List<TeamEntity>();
 
-            foreach (TeamDb team in _Teams)
+            foreach (TeamEntity team in _Teams)
             {
                 if (team.active == var)
                 {
@@ -205,15 +205,15 @@ namespace BlazorTipzTests.ViewModels.DummyClass
         }
         public async Task changeTeamStateTo(string teamid, bool state)
         {
-            TeamDb team = _Teams.Where(x => x.teamId == teamid).FirstOrDefault();
+            TeamEntity team = _Teams.Where(x => x.teamId == teamid).FirstOrDefault();
             if (team != null)
             {
                 team.active = state;
             }
         }
-        public async Task changeTeamsStateTo(List<TeamDb> teams, bool state)
+        public async Task changeTeamsStateTo(List<TeamEntity> teams, bool state)
         {
-            foreach (TeamDb team in teams)
+            foreach (TeamEntity team in teams)
             {
                 team.active = state;
             }
@@ -239,17 +239,17 @@ namespace BlazorTipzTests.ViewModels.DummyClass
 
         public async Task<List<SuggestionEntity>?> GetSuggestionsOfCreator(string empId)
         {
-            return _Suggestions.Where(x => x.creator == empId).ToList();
+            return _Suggestions.Where(x => x.creatorId == empId).ToList();
         }
 
         public async Task<List<SuggestionEntity>?> GetSuggestionOfTeam(string teamId)
         {
-            return _Suggestions.Where(x => x.owner == teamId).ToList();
+            return _Suggestions.Where(x => x.ownerId == teamId).ToList();
         }
 
         public async Task<List<SuggestionEntity>?> GetSuggestionsByStatus(SuggStatus status)
         {
-            return _Suggestions.Where(x => x.status == status).ToList();
+            return _Suggestions.Where(x => x.sugStatus == status).ToList();
         }
 
         public async Task updateSuggestion(SuggestionEntity sug)
@@ -259,11 +259,11 @@ namespace BlazorTipzTests.ViewModels.DummyClass
             {
                 sugg.sugTitle = sug.sugTitle;
                 sugg.sugDesc = sug.sugDesc;
-                sugg.status = sug.status;
-                sugg.owner = sug.owner;
-                sugg.assigned = sug.assigned;
-                sugg.deadline = sug.deadline;
-                sugg.Category = sug.Category;
+                sugg.sugStatus = sug.sugStatus;
+                sugg.ownerId = sug.ownerId;
+                sugg.assignedId = sug.assignedId;
+                sugg.dueDate = sug.dueDate;
+                sugg.categoryId = sug.categoryId;
             }
         }
     }
