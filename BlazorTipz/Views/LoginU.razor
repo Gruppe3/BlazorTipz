@@ -26,8 +26,9 @@
                     </div>
                     <div class="col">
                         <!--Binder til userDto.emplymentId-->
-                        <RadzenNumeric ShowUpDown="false" style="display: block" Name="id" 
-                        @bind-Value=@userDto.employmentId Class="w-100">id</RadzenNumeric>
+                        <RadzenMask Mask="******" CharacterPattern="[0-9]" Placeholder="000000" Name="id"
+                                    @bind-Value=@userDto.employmentId Class="w-100" />
+                        <RadzenLengthValidator Component="id" Min="6" Text="Må være 6 karakterer" Popup=@popup Style="position: absolute" />
                     </div>
                 </div>
                 <div class="row mb-5">
