@@ -48,15 +48,15 @@ namespace BlazorTipz.Models.DbRelay
             {
                 foreach (UserEntity tsu in toSaveUsers)
                 {
-                    var sql = "INSERT IGNORE INTO Users (employmentId, name, passwordHash, passwordSalt, role) VALUES (@employmentId, @name, @passwordHash, @passwordSalt, @role);";
+                    var sql = "INSERT IGNORE INTO Users (employmentId, userName, passwordHash, passwordSalt, userRole) VALUES (@EmploymentId, @UserName, @PasswordHash, @PasswordSalt, @UserRole);";
 
                     await _data.SaveData(sql, new
                     {
-                        employmentId = tsu.employmentId,
-                        name = tsu.userName,
-                        passwordSalt = tsu.passwordSalt,
-                        passwordHash = tsu.passwordHash,
-                        role = tsu.userRole.ToString()
+                        EmploymentId = tsu.employmentId,
+                        UserName = tsu.userName,
+                        PasswordSalt = tsu.passwordSalt,
+                        PasswordHash = tsu.passwordHash,
+                        UserRole = tsu.userRole.ToString()
                     },
                         _config.GetConnectionString(ConnectionString));
                 }
@@ -73,43 +73,43 @@ namespace BlazorTipz.Models.DbRelay
                 {
                     if (toSaveUser.passwordSalt != null)
                     {
-                        var sql = "UPDATE Users SET passwordHash = @passwordHash, name = @name, passwordSalt = @passwordSalt, role = @role, firstTimeLogin = @firstTimeLogin WHERE employmentId = @employmentId;";
+                        var sql = "UPDATE Users SET passwordHash = @PasswordHash, userName = @UserName, passwordSalt = @PasswordSalt, userRole = @UserRole, firstTimeLogin = @FirstTimeLogin WHERE employmentId = @EmploymentId;";
 
                         await _data.SaveData(sql, new
                         {
-                            employmentId = toSaveUser.employmentId,
-                            name = toSaveUser.userName,
-                            passwordSalt = toSaveUser.passwordSalt,
-                            passwordHash = toSaveUser.passwordHash,
-                            role = Role,
-                            firstTimeLogin = toSaveUser.firstTimeLogin
+                            EmploymentId = toSaveUser.employmentId,
+                            UserName = toSaveUser.userName,
+                            PasswordSalt = toSaveUser.passwordSalt,
+                            PasswordHash = toSaveUser.passwordHash,
+                            UserRole = Role,
+                            FirstTimeLogin = toSaveUser.firstTimeLogin
                         },
                             _config.GetConnectionString(ConnectionString));
                     }
                 }
                 else if(toSaveUser.teamId != null)
                 {
-                    var sql = "UPDATE Users SET name = @name, role = @role, teamId = @teamId WHERE employmentId = @employmentId;";
+                    var sql = "UPDATE Users SET userName = @UserName, userRole = @UserRole, teamId = @TeamId WHERE employmentId = @EmploymentId;";
 
                     await _data.SaveData(sql, new
                     {
-                        employmentId = toSaveUser.employmentId,
-                        name = toSaveUser.userName,
-                        role = Role,
-                        teamId = toSaveUser.teamId
+                        EmploymentId = toSaveUser.employmentId,
+                        UserName = toSaveUser.userName,
+                        UserRole = Role,
+                        TeamId = toSaveUser.teamId
                     },
                         _config.GetConnectionString(ConnectionString));
 
                 }
                 else
                 {
-                    var sql = "UPDATE Users SET name = @name, role = @role WHERE employmentId = @employmentId;";
+                    var sql = "UPDATE Users SET userName = @UserName, userRole = @UserRole WHERE employmentId = @EmploymentId;";
 
                     await _data.SaveData(sql, new
                     {
-                        employmentId = toSaveUser.employmentId,
-                        name = toSaveUser.userName,
-                        role = Role
+                        EmploymentId = toSaveUser.employmentId,
+                        UserName = toSaveUser.userName,
+                        UserRole = Role
                     },
                         _config.GetConnectionString(ConnectionString));
                 }
@@ -123,7 +123,7 @@ namespace BlazorTipz.Models.DbRelay
             
             try
             {
-                var sql = "SELECT name, employmentId, active FROM Users WHERE active = true;";
+                var sql = "SELECT * FROM Users WHERE active = true;";
 
                 var dbinfo = await _data.LoadData<UserEntity, dynamic>(sql, new { }, _config.GetConnectionString(ConnectionString));
 
@@ -137,7 +137,7 @@ namespace BlazorTipz.Models.DbRelay
         {
             try
             {
-                var sql = "SELECT name, employmentId, active FROM Users WHERE active = false;";
+                var sql = "SELECT * FROM Users WHERE active = false;";
 
                 var dbinfo = await _data.LoadData<UserEntity, dynamic>(sql, new { }, _config.GetConnectionString(ConnectionString));
 
@@ -149,11 +149,11 @@ namespace BlazorTipz.Models.DbRelay
         public async Task changeUserStateTo(string empId, bool state) {
             try
             {
-                var sql = "UPDATE Users SET active = @state WHERE employmentId = @empid;";
+                var sql = "UPDATE Users SET active = @State WHERE employmentId = @Empid;";
                 await _data.SaveData(sql, new
                 {
-                    state = state,
-                    empid = empId
+                    State = state,
+                    Empid = empId
                 },
                 _config.GetConnectionString(ConnectionString));
             } catch (Exception ex) { }
@@ -164,12 +164,12 @@ namespace BlazorTipz.Models.DbRelay
             {
                 foreach (UserEntity user in users)
                 {
-                    var sql = "UPDATE Users SET active = @state WHERE employmentId = @empid;";
+                    var sql = "UPDATE Users SET active = @State WHERE employmentId = @Empid;";
                     
                     await _data.SaveData(sql, new
                     {
-                        state = state,
-                        empid = user.employmentId
+                        State = state,
+                        Empid = user.employmentId
                     },
                     _config.GetConnectionString(ConnectionString));
                 }
@@ -185,9 +185,9 @@ namespace BlazorTipz.Models.DbRelay
         {
             try
             {
-                var sql = "SELECT * FROM Teams WHERE teamId = @teamid;";
+                var sql = "SELECT * FROM Teams WHERE teamId = @TeamId;";
                
-                TeamEntity team = await _data.LoadData<TeamEntity, dynamic>(sql, new { teamid = teamId }, _config.GetConnectionString(ConnectionString), true);
+                TeamEntity team = await _data.LoadData<TeamEntity, dynamic>(sql, new { TeamId = teamId }, _config.GetConnectionString(ConnectionString), true);
                 return team;
             }
             catch (Exception ex) { return null; }
@@ -198,11 +198,11 @@ namespace BlazorTipz.Models.DbRelay
         {
             try 
             {
-                var sql = "INSERT IGNORE INTO Teams (teamName, teamLeader) VALUES (@teamName, @teamLeader)";
+                var sql = "INSERT IGNORE INTO Teams (teamName, teamLeader) VALUES (@TeamName, @TeamLeader)";
                 await _data.SaveData(sql, new
                 {
-                    teamName = team.teamName,
-                    teamLeader = team.teamLeader
+                    TeamName = team.teamName,
+                    TeamLeader = team.teamLeader
                 }, _config.GetConnectionString(ConnectionString));
             } 
             catch (Exception ex) { }
@@ -213,12 +213,12 @@ namespace BlazorTipz.Models.DbRelay
         {
             try
             {
-                var sql = "UPDATE Teams SET teamName = @teamName, teamLeader = @teamLeader WHERE teamId = @teamId";
+                var sql = "UPDATE Teams SET teamName = @TeamName, teamLeader = @TeamLeader WHERE teamId = @TeamId";
                 await _data.SaveData(sql, new
                 {
-                    teamName = team.teamName,
-                    teamLeader = team.teamLeader,
-                    teamId = team.teamId
+                    TeamName = team.teamName,
+                    TeamLeader = team.teamLeader,
+                    TeamId = team.teamId
                 }, _config.GetConnectionString(ConnectionString));
             }
             catch (Exception ex) { }
@@ -256,11 +256,11 @@ namespace BlazorTipz.Models.DbRelay
         {
             try
             {
-                var sql = "UPDATE Teams SET active = @state WHERE teamId = @teamid;";
+                var sql = "UPDATE Teams SET active = @State WHERE teamId = @TeamId;";
                 await _data.SaveData(sql, new
                 {
-                    state = state,
-                    teamid = teamId
+                    State = state,
+                    TeamId = teamId
                 },
                 _config.GetConnectionString(ConnectionString));
             }
@@ -273,12 +273,12 @@ namespace BlazorTipz.Models.DbRelay
             {
                 foreach (TeamEntity team in teams)
                 {
-                    var sql = "UPDATE Teams SET active = @state WHERE teamId = @teamid;";
+                    var sql = "UPDATE Teams SET active = @State WHERE teamId = @TeamId;";
 
                     await _data.SaveData(sql, new
                     {
-                        state = state,
-                        teamid = team.teamId
+                        State = state,
+                        TeamId = team.teamId
                     },
                     _config.GetConnectionString(ConnectionString));
                 }
@@ -293,14 +293,14 @@ namespace BlazorTipz.Models.DbRelay
         {
             try
             {
-                var sql = "INSERT INTO Suggestions (owner, creator, sugTitle, sugDesc, status, Category, JustDoIt) values (@owner, @creator, @sugTitle, @sugDesc, @status, @Category, @JustDoIt);";
+                var sql = "INSERT INTO Suggestions (ownerId, creatorId, sugTitle, sugDesc, sugStatus, category, justDoIt) values (@OwnerId, @CreatorId, @SugTitle, @SugDesc, @SugStatus, @Category, @JustDoIt);";
                 await _data.SaveData(sql, new
                 {
-                    owner = suggestion.ownerId,
-                    creator = suggestion.creatorId,
-                    sugTitle = suggestion.sugTitle,
-                    sugDesc = suggestion.sugDesc,
-                    status = suggestion.sugStatus.ToString(),
+                    OwnerId = suggestion.ownerId,
+                    CreatorId = suggestion.creatorId,
+                    SugTitle = suggestion.sugTitle,
+                    SugDesc = suggestion.sugDesc,
+                    SugStatus = suggestion.sugStatus.ToString(),
                     Category = suggestion.categoryId,
                     JustDoIt = suggestion.justDoIt
                 },
@@ -327,8 +327,8 @@ namespace BlazorTipz.Models.DbRelay
         {
             try
             {
-                var sql = "SELECT * FROM Suggestions WHERE sugId = @sugId;";
-                SuggestionEntity sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { sugId = sugId }, _config.GetConnectionString(ConnectionString), true);
+                var sql = "SELECT * FROM Suggestions WHERE sugId = @SugId;";
+                SuggestionEntity sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { SugId = sugId }, _config.GetConnectionString(ConnectionString), true);
                 return sug;
             }
             catch (Exception ex) { return null; }
@@ -340,8 +340,8 @@ namespace BlazorTipz.Models.DbRelay
         {
             try
             {
-                var sql = "SELECT * FROM Suggestions WHERE creator = @creator;";
-                List<SuggestionEntity> sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { creator = empId }, _config.GetConnectionString(ConnectionString));
+                var sql = "SELECT * FROM Suggestions WHERE creatorId = @CreatorId;";
+                List<SuggestionEntity> sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { CreatorId = empId }, _config.GetConnectionString(ConnectionString));
                 return sug;
             }
             catch (Exception ex) { return null; }   
@@ -353,8 +353,8 @@ namespace BlazorTipz.Models.DbRelay
         {
             try
             {
-                var sql = "SELECT * FROM Suggestions WHERE owner = @owner;";
-                List<SuggestionEntity> sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { owner = teamId }, _config.GetConnectionString(ConnectionString));
+                var sql = "SELECT * FROM Suggestions WHERE ownerId = @OwnerId;";
+                List<SuggestionEntity> sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { OwnerId = teamId }, _config.GetConnectionString(ConnectionString));
                 return sug;
             }
             catch (Exception ex) { return null; }
@@ -367,8 +367,8 @@ namespace BlazorTipz.Models.DbRelay
         {
             try
             {
-                var sql = "SELECT * FROM Suggestions WHERE status = @status;";
-                List<SuggestionEntity> sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { status = status.ToString() }, _config.GetConnectionString(ConnectionString));
+                var sql = "SELECT * FROM Suggestions WHERE sugStatus = @SugStatus;";
+                List<SuggestionEntity> sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { SugStatus = status.ToString() }, _config.GetConnectionString(ConnectionString));
                 return sug;
             }
             catch (Exception ex) { return null; }
@@ -378,16 +378,16 @@ namespace BlazorTipz.Models.DbRelay
         {
             try
             {
-                var sql = "UPDATE Suggestions SET owner = @Owner, sugTitle = @SugTitle, sugDesc = @SugDesc, status = @Status, Category = @Category, assigned = @Assigned, deadline = @Deadline WHERE sugId = @SugId;";
+                var sql = "UPDATE Suggestions SET ownerId = @OwnerId, sugTitle = @SugTitle, sugDesc = @SugDesc, sugStatus = @SugStatus, category = @Category, assigned = @Assigned, dueDate = @DueDate WHERE sugId = @SugId;";
                 await _data.SaveData(sql, new
                 {
                     Owner = sug.ownerId,
                     SugTitle = sug.sugTitle,
                     SugDesc = sug.sugDesc,
-                    Status = sug.sugStatus.ToString(),
+                    SugStatus = sug.sugStatus.ToString(),
                     Category = sug.categoryId,
                     Assigned = sug.assignedId,
-                    Deadline = sug.dueDate,
+                    DueDate = sug.dueDate,
                     SugId = sug.sugId
                 },
                 _config.GetConnectionString(ConnectionString));
