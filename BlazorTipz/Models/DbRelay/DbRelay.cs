@@ -9,7 +9,7 @@ namespace BlazorTipz.Models.DbRelay
         private readonly IDataAccess _data;
         private readonly IConfiguration _config;
 
-        public string ConnectionString { private get; set; } = "mariadb";
+        public string ConnectionString { private get; set; } = "default";
 
         public DbRelay(IDataAccess data, IConfiguration connectionString)
         {
