@@ -7,13 +7,15 @@ using BlazorTipz.ViewModels.Team;
 using Microsoft.AspNetCore.Mvc;
 using Radzen;
 using System;
-
-
+using Microsoft.AspNetCore.Components.Forms;
+using Radzen.Blazor;
 
 namespace BlazorTipz.Shared
 {
     public partial class NavMenu
     {
+        RadzenUpload upload;
+        
         public UserViewmodel currentUser = new UserViewmodel();
         public TeamViewmodel currentTeam = new TeamViewmodel();
         UserViewmodel CUser;
@@ -142,6 +144,14 @@ namespace BlazorTipz.Shared
                 Feedback = "Forslag lagret";
                 return "Success";
             }
+        }
+        //uplodeded image to byte[]
+        public async Task OnUploadBeforeImage(InputFileChangeEventArgs e)
+        {
+            //var image = await e.File.RequestImageFileAsync("image/png", 500, 500);
+            //var buffer = new byte[image.Size];
+            //await image.OpenReadStream().ReadAsync(buffer);
+            //suggDto.BeforeImage = buffer;
         }
     }
 }

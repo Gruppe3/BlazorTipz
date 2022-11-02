@@ -14,18 +14,20 @@ namespace BlazorTipz.ViewModels.User
         public string RepeatPassword { get; set; } = string.Empty;
         public int listnum { get; set; } = 0;
         public bool firstTimeLogin{ get; set; }
+
+        public string TeamName { get; set; } = string.Empty;
         public UserViewmodel()
         {
 
         }
         
         // passerer inn data fra UserDb og setter lokale verdier 
-        public UserViewmodel(UserDb user)
+        public UserViewmodel(UserEntity user)
         {
             this.employmentId = user.employmentId;
-            this.name = user.name;
+            this.name = user.userName;
             this.password = user.password;
-            this.role = user.role;
+            this.role = user.userRole;
             this.teamId = user.teamId;
             this.firstTimeLogin = user.firstTimeLogin;
         }

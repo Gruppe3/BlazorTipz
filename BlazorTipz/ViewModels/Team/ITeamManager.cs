@@ -11,5 +11,8 @@
         Task<List<TeamViewmodel>> getTeams();
         Task updateTeam(TeamViewmodel team);
         Task<List<TeamViewmodel>> updateTeamsList();
+
+        //Search in active team, returns a team if found, null if nothing found
+        Task<TeamViewmodel?> SearchTeams(string search);
     }
 }

@@ -367,3 +367,4 @@ BlazorTipz/obj/
 BlazorTipz/bin/
 DataLibrary/obj/
 DataLibrary/bin/
+/database

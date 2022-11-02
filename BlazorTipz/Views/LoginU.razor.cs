@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using BlazorTipz.ViewModels.User;
+using BlazorTipz.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace BlazorTipz.Views
 {

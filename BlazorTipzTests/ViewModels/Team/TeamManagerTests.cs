@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using BlazorTipz.ViewModels.Team;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using BlazorTipz.ViewModels.User;
 using BlazorTipzTests.ViewModels.DummyClass;
 
@@ -77,10 +78,10 @@ namespace BlazorTipz.ViewModels.Team.Tests
             DummyDBR dDBR = new DummyDBR();
             TeamManager _UnitUnderTest = new TeamManager(dDBR, new UserManager(dDBR, new Components.AuthenticationComponent()));
             TeamViewmodel result;
-            
+
             //act
             result = await _UnitUnderTest.getTeam(teamId);
-            
+
             //assert
             if (good)
             {
@@ -90,7 +91,7 @@ namespace BlazorTipz.ViewModels.Team.Tests
             {
                 Assert.IsTrue(result.id == "");
             }
-            
+
         }
 
         [TestMethod()]
@@ -141,7 +142,7 @@ namespace BlazorTipz.ViewModels.Team.Tests
 
             //assert
             if (good)
-            { 
+            {
                 Assert.AreEqual(testTeam.id, teamFromList?.id);
                 Assert.AreEqual(testTeam.name, teamFromList?.name);
                 Assert.AreEqual(testTeam.leader, teamFromList?.leader);
@@ -219,6 +220,33 @@ namespace BlazorTipz.ViewModels.Team.Tests
             {
                 Assert.Fail("Invalid test method");
                 Assert.AreNotEqual(error5, err);
+            }
+        }
+
+        [TestMethod()]
+        [DataRow("0", true)]
+        [DataRow("Team1", true)]
+        [DataRow("2", true)]
+        [DataRow("5", false)]
+        [DataRow("Team5", false)]
+        [DataRow("Fail", false)]
+        public async Task SearchTeamsTest(string input,bool goodcase)
+        {
+            //arrange
+            DummyDBR dDBR = new DummyDBR();
+            TeamManager _UnitUnderTest = new TeamManager(dDBR, new UserManager(dDBR, new Components.AuthenticationComponent()));
+
+            //act
+            TeamViewmodel result = await _UnitUnderTest.SearchTeams(input);
+            //assert
+
+            if (goodcase)
+            {
+                Assert.IsNotNull(result);
+            }
+            else
+            {
+                Assert.IsNull(result);
             }
         }
     }

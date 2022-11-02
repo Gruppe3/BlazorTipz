@@ -1,4 +1,6 @@
 ﻿using BlazorTipz.ViewModels.Suggestion;
+using BlazorTipz.ViewModels.Team;
+using BlazorTipz.ViewModels.User;
 using BlazorTipzTests.ViewModels.DummyClass;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -7,13 +9,15 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
     [TestClass()]
     public class SuggestionManagerTests
     {
+        private IUserManager _UM { get; set; } = new UserManager(new DummyDBR(), new Components.AuthenticationComponent());
+        private ITeamManager _TM = new TeamManager(new DummyDBR(), new UserManager(new DummyDBR(), new Components.AuthenticationComponent()));
 
         [TestMethod()]
         public void SuggestionManagerTest()
         {
             // arrange and act
             DummyDBR dDBR = new DummyDBR();
-            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage());
+            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
 
             // assert
             Assert.IsNotNull(_UnitUnderTest);
@@ -32,7 +36,7 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
         {
             // arrange
             DummyDBR dDBR = new DummyDBR();
-            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage());
+            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
 
             string error1 = "No supplied suggestion";
             string error2 = "No supplied title";
@@ -97,7 +101,7 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
         {
             // arrange
             DummyDBR dDBR = new DummyDBR();
-            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage());
+            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
 
             // act
             List<Category> testResult = _UnitUnderTest.GetCategories();
@@ -121,7 +125,7 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
         {
             // arrange
             DummyDBR dDBR = new DummyDBR();
-            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage());
+            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
 
             // act
             List<SuggViewmodel> testResult = await _UnitUnderTest.GetSuggestionsOfTeam(teamId);
@@ -139,7 +143,7 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
             {
                 Assert.AreEqual(0, testResult.Count);
             }
-            
+
         }
 
         [TestMethod()]
@@ -150,7 +154,7 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
         {
             // arrange
             DummyDBR dDBR = new DummyDBR();
-            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage());
+            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
 
             // act
             List<SuggViewmodel> testResult = await _UnitUnderTest.GetSuggestionsOfUser(userId);
@@ -167,6 +171,63 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
             else if (!goodCase)
             {
                 Assert.AreEqual(0, testResult.Count);
+            }
+        }
+
+        [TestMethod()]
+        [DataRow("1", true)]
+        [DataRow("35", false)]
+        public async Task GetSuggestionTest(string testId,bool goodCase)
+        {
+            // arrange
+            DummyDBR dDBR = new DummyDBR();
+            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
+            
+            // act
+            SuggViewmodel testResult = await _UnitUnderTest.GetSuggestion(testId);
+
+            // assert
+            if (goodCase)
+            {
+                Assert.IsNotNull(testResult);
+            }
+            else if (!goodCase)
+            {
+                Assert.IsNull(testResult);
+            }
+        }
+
+        [TestMethod()]
+        [DataRow("1",true)]
+        [DataRow("39", false)]
+        public async Task UpdateSuggestionTest(string testID, bool goodcase)
+        {
+            // arrange
+            DummyDBR dDBR = new DummyDBR();
+            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
+            string? err = null;
+            SuggViewmodel testSugg = new SuggViewmodel();
+            testSugg.Id = testID;
+            testSugg.Title = "Test";
+            testSugg.Description = "Test";
+            testSugg.OwnerTeam = "1";
+            testSugg.Creator = "1";
+            testSugg.StartDate = DateTime.Now.ToLocalTime().ToString("yyyyMMddHHmmss");
+            Category cat = new Category();
+            cat.Name = "HMS";
+            testSugg.category = cat;
+            UserViewmodel user = new UserViewmodel();
+            user.employmentId = "1";
+            //act
+            err = await _UnitUnderTest.UpdateSuggestion(testSugg,user);
+            //Assert
+            if (goodcase)
+            {
+                Assert.IsNull(err);
+            }
+            else
+            {
+                Assert.IsNotNull(err);
             }
         }
     }

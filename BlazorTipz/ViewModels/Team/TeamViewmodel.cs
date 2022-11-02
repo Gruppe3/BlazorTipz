@@ -10,7 +10,7 @@ namespace BlazorTipz.ViewModels.Team
         public TeamViewmodel()
         {
         }
-        public TeamViewmodel(TeamDb team)
+        public TeamViewmodel(TeamEntity team)
         {
             this.id = team.teamId;
             this.name = team.teamName;

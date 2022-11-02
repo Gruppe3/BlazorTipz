@@ -21,9 +21,9 @@ namespace BlazorTipz.ViewModels.Team
         {
             if (Teams == null)
             {
-                List<TeamDb> dbTeams = await _DBR.getActiveTeams();
+                List<TeamEntity> dbTeams = await _DBR.getActiveTeams();
                 List<TeamViewmodel> teams = new List<TeamViewmodel>();
-                foreach (TeamDb dbTeam in dbTeams)
+                foreach (TeamEntity dbTeam in dbTeams)
                 {
                     TeamViewmodel team = new TeamViewmodel(dbTeam);
                     teams.Add(team);
@@ -62,8 +62,8 @@ namespace BlazorTipz.ViewModels.Team
         public async Task<List<TeamViewmodel>> getInactiveTeams()
         {
             List<TeamViewmodel> teams = new List<TeamViewmodel>();
-            List<TeamDb> dbTeams = await _DBR.getInactiveTeams();
-            foreach (TeamDb dbTeam in dbTeams)
+            List<TeamEntity> dbTeams = await _DBR.getInactiveTeams();
+            foreach (TeamEntity dbTeam in dbTeams)
             {
                 TeamViewmodel team = new TeamViewmodel(dbTeam);
                 teams.Add(team);
@@ -73,7 +73,7 @@ namespace BlazorTipz.ViewModels.Team
         // Update team
         public async Task updateTeam(TeamViewmodel team)
         {
-            TeamDb dbTeam = new TeamDb(team);
+            TeamEntity dbTeam = new TeamEntity(team);
             if (updateTeams(team))
             {
                 await _DBR.updateTeamEntry(dbTeam);
@@ -131,7 +131,7 @@ namespace BlazorTipz.ViewModels.Team
                 await _UM.updateRole(teamLeader, RoleE.TeamLeader, true);
             }
 
-            TeamDb dbTeam = new TeamDb(team);
+            TeamEntity dbTeam = new TeamEntity(team);
             await _DBR.addTeamEntry(dbTeam);
             await updateTeamsList();
             string teamid = getTeamId(team.name, team.leader);
@@ -142,6 +142,30 @@ namespace BlazorTipz.ViewModels.Team
 
             return (rTeam, null);
         }
+        public async Task<TeamViewmodel?> SearchTeams(string search) 
+        { 
+            if (Teams == null)
+            {
+                await getTeams();
+            }
+            foreach (TeamViewmodel team in Teams)
+            {
+                if (team.name.ToLower().Contains(search.ToLower()))
+                {
+                    return team;
+                }
+                else if (team.leader.ToLower().Contains(search.ToLower()))
+                {
+                    return team;
+                }
+                else if (team.id.ToLower().Contains(search.ToLower()))
+                {
+                    return team;
+                }
+            }
+            return null;
+        }
+        
 
         
 

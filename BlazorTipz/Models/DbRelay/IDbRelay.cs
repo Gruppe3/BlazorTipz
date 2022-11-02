@@ -4,26 +4,29 @@ namespace BlazorTipz.Models.DbRelay
 {
     public interface IDbRelay
     {
+        //a field to define a connection to use
+        //default to "default" connection
+        string ConnectionString { set; }
         //methodes for getting, setting and updating the database
 
         //User/Users
-        Task<UserDb> getLoginUser(string empId);
-        Task<UserDb> lookUpUser(string empId);
-        Task addUserEntries(List<UserDb> toSaveUsers);
-        Task updateUserEntry(UserDb toSaveUser);
-        Task<List<UserDb>> getActiveUsers();
-        Task<List<UserDb>> getInactiveUsers();
+        Task<UserEntity> getLoginUser(string empId);
+        Task<UserEntity> lookUpUser(string empId);
+        Task addUserEntries(List<UserEntity> toSaveUsers);
+        Task updateUserEntry(UserEntity toSaveUser);
+        Task<List<UserEntity>> getActiveUsers();
+        Task<List<UserEntity>> getInactiveUsers();
         Task changeUserStateTo(string empid, bool state);
-        Task changeUsersStateTo(List<UserDb> users, bool state);
+        Task changeUsersStateTo(List<UserEntity> users, bool state);
 
         //team/teams
-        Task<TeamDb> getSingleTeamDbFromDb(string teamId);
-        Task addTeamEntry(TeamDb team);
-        Task updateTeamEntry(TeamDb team);
-        Task<List<TeamDb>> getActiveTeams();
-        Task<List<TeamDb>> getInactiveTeams();
+        Task<TeamEntity> getSingleTeamDbFromDb(string teamId);
+        Task addTeamEntry(TeamEntity team);
+        Task updateTeamEntry(TeamEntity team);
+        Task<List<TeamEntity>> getActiveTeams();
+        Task<List<TeamEntity>> getInactiveTeams();
         Task changeTeamStateTo(string teamid, bool state);
-        Task changeTeamsStateTo(List<TeamDb> teams, bool state);
+        Task changeTeamsStateTo(List<TeamEntity> teams, bool state);
 
         // Suggestions
         Task saveSuggestion(SuggestionEntity suggestion);
@@ -45,6 +48,8 @@ namespace BlazorTipz.Models.DbRelay
         //@param status = a type of SuggStatus (enum class)
         //if return null = error
         Task<List<SuggestionEntity>?> GetSuggestionsByStatus(SuggStatus status);
+        //update a suggestion entry
+        Task updateSuggestion(SuggestionEntity sug);
 
     }
 }
