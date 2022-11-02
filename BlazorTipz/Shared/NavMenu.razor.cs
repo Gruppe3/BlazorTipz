@@ -148,10 +148,10 @@ namespace BlazorTipz.Shared
         //uplodeded image to byte[]
         public async Task OnUploadBeforeImage(InputFileChangeEventArgs e)
         {
-            var image = await e.File.RequestImageFileAsync("image/png", 500, 500);
-            var buffer = new byte[image.Size];
-            await image.OpenReadStream().ReadAsync(buffer);
-            suggDto.BeforeImage = buffer;
+            //var image = await e.File.RequestImageFileAsync("image/png", 500, 500);
+            //var buffer = new byte[image.Size];
+            //await image.OpenReadStream().ReadAsync(buffer);
+            //suggDto.BeforeImage = buffer;
         }
     }
 }

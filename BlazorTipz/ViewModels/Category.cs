@@ -9,7 +9,7 @@ namespace BlazorTipz.ViewModels
         public Category() { }
         public Category(CategoriEntity cat)
         {
-            this.Name = cat.Name;
+            this.Name = cat.catName;
         }
         //Override ToString
         public override string ToString()
