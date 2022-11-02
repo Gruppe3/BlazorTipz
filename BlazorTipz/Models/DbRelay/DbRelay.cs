@@ -354,7 +354,7 @@ namespace BlazorTipz.Models.DbRelay
         {
             try
             {
-                var sql = "INSERT INTO Suggestions (ownerId, creatorId, sugTitle, sugDesc, sugStatus, category, justDoIt) values (@OwnerId, @CreatorId, @SugTitle, @SugDesc, @SugStatus, @Category, @JustDoIt);";
+                var sql = "INSERT INTO Suggestions (ownerId, creatorId, sugTitle, sugDesc, sugStatus, categoryId, justDoIt) values (@OwnerId, @CreatorId, @SugTitle, @SugDesc, @SugStatus, @CategoryId, @JustDoIt);";
                 await _data.SaveData(sql, new
                 {
                     OwnerId = suggestion.ownerId,
@@ -362,15 +362,12 @@ namespace BlazorTipz.Models.DbRelay
                     SugTitle = suggestion.sugTitle,
                     SugDesc = suggestion.sugDesc,
                     SugStatus = suggestion.sugStatus.ToString(),
-                    Category = suggestion.categoryId,
+                    CategoryId = suggestion.categoryId,
                     JustDoIt = suggestion.justDoIt
                 },
                 _config.GetConnectionString(ConnectionString));
             }
-            catch (Exception ex)
-            {
-     
-            }
+            catch (Exception ex) { throw; }
         }
 
         // Saves a list of suggestions
@@ -408,6 +405,17 @@ namespace BlazorTipz.Models.DbRelay
             catch (Exception ex) { return null; }   
         }
 
+        public async Task<List<SuggestionEntity>?> GetAssignedSuggestions(string empId)
+        {
+            try
+            {
+                var sql = "SELECT * FROM Suggestions WHERE assignedId = @EmpId;";
+                List<SuggestionEntity> sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { EmpId = empId }, _config.GetConnectionString(ConnectionString));
+                return sug;
+            }
+            catch (Exception ex) { return null; }
+        }
+
         //get a list suggestion from database bound to owner id
         //if return = null error
         public async Task<List<SuggestionEntity>?> GetSuggestionOfTeam(string teamId)
@@ -439,14 +447,14 @@ namespace BlazorTipz.Models.DbRelay
         {
             try
             {
-                var sql = "UPDATE Suggestions SET ownerId = @OwnerId, sugTitle = @SugTitle, sugDesc = @SugDesc, sugStatus = @SugStatus, category = @Category, assigned = @Assigned, dueDate = @DueDate WHERE sugId = @SugId;";
+                var sql = "UPDATE Suggestions SET ownerId = @OwnerId, sugTitle = @SugTitle, sugDesc = @SugDesc, sugStatus = @SugStatus, categoryId = @CategoryId, assigned = @Assigned, dueDate = @DueDate WHERE sugId = @SugId;";
                 await _data.SaveData(sql, new
                 {
-                    Owner = sug.ownerId,
+                    OwnerId = sug.ownerId,
                     SugTitle = sug.sugTitle,
                     SugDesc = sug.sugDesc,
                     SugStatus = sug.sugStatus.ToString(),
-                    Category = sug.categoryId,
+                    CategoryId = sug.categoryId,
                     Assigned = sug.assignedId,
                     DueDate = sug.dueDate,
                     SugId = sug.sugId

@@ -48,7 +48,7 @@ namespace BlazorTipz.Models
             this.assignedId = sugg.Ansvarlig;
             this.dueDate = sugg.Frist;
             
-            this.CategoryEntity = new CategoriEntity(sugg.category);
+            this.CategoryEntity = new CategoriEntity(sugg.Category);
         }
     }
 }

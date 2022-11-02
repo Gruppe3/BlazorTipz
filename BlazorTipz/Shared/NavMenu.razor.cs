@@ -122,7 +122,7 @@ namespace BlazorTipz.Shared
             suggToSave.OwnerTeam = request.OwnerTeam;
             suggToSave.Creator = _userManager.getCurrentUser().employmentId;
             suggToSave.JustDoIt = request.JustDoIt;
-            suggToSave.category = request.category;
+            suggToSave.Category = request.Category;
             suggToSave.StartDate = DateTime.Now.ToLocalTime().ToString("yyyyMMddHHmmss");
             if (suggToSave.JustDoIt == true)
             {

@@ -293,5 +293,10 @@ namespace BlazorTipzTests.ViewModels.DummyClass
         {
             return _TeamMembers.ToList();
         }
+
+        public Task<List<SuggestionEntity>?> GetAssignedSuggestions(string empId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

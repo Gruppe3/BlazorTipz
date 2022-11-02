@@ -11,7 +11,7 @@ namespace BlazorTipz.ViewModels.Suggestion
         public string Title { get; set; }
         public string Description { get; set; }
         public bool JustDoIt { get; set; } = false;
-        public Category category { get; set; } 
+        public Category Category { get; set; } 
         public string OwnerTeam { get; set; }
         public string Creator { get; set; }
         public SuggStatus Status { get; set; } = SuggStatus.Waiting;
@@ -51,7 +51,7 @@ namespace BlazorTipz.ViewModels.Suggestion
             this.AfterImage = Suggestion.afterImage;
             this.Id = Suggestion.sugId;
 
-            this.category = new Category(Suggestion.CategoryEntity);
+            this.Category = new Category(Suggestion.CategoryEntity);
             SetFristToFristTid();
         }
 

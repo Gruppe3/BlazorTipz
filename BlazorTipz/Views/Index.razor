@@ -28,6 +28,43 @@
                     <RadzenCard Class="suggColor">
                         @if (isLoaded == true)
                         {
+                            <h1 class="d-flex justify-content-center">Forslag du er tilordnet</h1>
+                            <p class="d-flex justify-content-center">Sortert fra gammel til ny</p>
+                            <RadzenDataList WrapItems="true" AllowPaging="true" Data="@Assignedsugg" TItem="SuggViewmodel" PageSize="3"
+                                        PagerHorizontalAlign="HorizontalAlign.Center" PagerPosition="PagerPosition.Top">
+                                <Template Context="suggestions">
+                                    <RadzenCard Style="width: 100%; padding: 0; overflow: hidden;">
+                                        <a href="javascript:void(0);" class="nav__add" style="text-decoration-line: none;" @onclick="@(() =>
+                                            ShowCloseableFromOverlayDialog(suggestions.Title, suggestions.OwnerTeamName, suggestions.Description, suggestions.Status.ToString(), suggestions.Category.ToString()))">
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-lg p-3 product-title">
+                                                        <h2>@(suggestions.Title)</h2>
+                                                        <p>Added: @(suggestions.StartDate)</p>
+                                                        <p>Last Edited; @(suggestions.UpdatedDate)</p>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </RadzenCard>
+                                </Template>
+                            </RadzenDataList>
+                        }
+                        else
+                        {
+                            <div class="center">
+                                <div class="spinner"></div>
+                            </div>
+                        }
+                    </RadzenCard>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <RadzenCard Class="suggColor">
+                        @if (isLoaded == true)
+                        {
                             <h1 class="d-flex justify-content-center">Dine forslag</h1>
                             <p class="d-flex justify-content-center">Sortert fra gammel til ny</p>
                             <RadzenDataList WrapItems="true" AllowPaging="true" Data="@UserSug" TItem="SuggViewmodel" PageSize="3"
@@ -35,7 +72,7 @@
                                 <Template Context="suggestions">
                                     <RadzenCard Style="width: 100%; padding: 0; overflow: hidden;">
                                         <a href="javascript:void(0);" class="nav__add" style="text-decoration-line: none;" @onclick="@(() =>
-                                            ShowCloseableFromOverlayDialog(suggestions.Title, suggestions.OwnerTeamName, suggestions.Description, suggestions.Status.ToString(), suggestions.category.ToString()))">
+                                            ShowCloseableFromOverlayDialog(suggestions.Title, suggestions.OwnerTeamName, suggestions.Description, suggestions.Status.ToString(), suggestions.Category.ToString()))">
                                             <div class="container">
                                                 <div class="row">
                                                     <div class="col-lg p-3 product-title">

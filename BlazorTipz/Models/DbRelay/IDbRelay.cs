@@ -47,10 +47,13 @@ namespace BlazorTipz.Models.DbRelay
         //if return = null error
         Task<List<SuggestionEntity>?> GetSuggestionsOfCreator(string empId);
 
+        //get a list of suggestions assigned to spesified user
+        Task<List<SuggestionEntity>?> GetAssignedSuggestions(string empId);
+
         //get a list suggestion from database bound to owner id
         //if return = null error
         Task<List<SuggestionEntity>?> GetSuggestionOfTeam(string teamId);
-
+        
         //get a list suggestion from database bound to status
         //@param status = a type of SuggStatus (enum class)
         //if return null = error

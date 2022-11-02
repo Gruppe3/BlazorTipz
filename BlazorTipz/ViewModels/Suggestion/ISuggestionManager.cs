@@ -21,5 +21,11 @@ namespace BlazorTipz.ViewModels.Suggestion
         
         //when generally updating a suggestion
         Task<string?> UpdateSuggestion(SuggViewmodel sugg, UserViewmodel currentUser);
+
+        //returns a list of all suggestions assigned to current user 
+        Task<List<SuggViewmodel>> GetAllAssignedSuggestions();
+        
+        //returns a list of current-user-assigned suggestions filtered on status to Plan, Do, Study, Act 
+        Task<List<SuggViewmodel>> GetPreFilteredAssignedSuggestions();
     }
 }

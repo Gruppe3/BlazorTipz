@@ -195,7 +195,7 @@
                                             <RadzenLabel Text="Kategori" />
                                         </div>
                                         <div class="col">
-                                            <RadzenDropDownDataGrid @bind-Value=@suggUpdate.category FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
+                                            <RadzenDropDownDataGrid @bind-Value=@suggUpdate.Category FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
                                                     AllowFiltering="true" AllowClear="true" Data=@Categories TextProperty="Name" Placeholder="Kategori" Class="w-100">
                                                 <Columns>
                                                     <RadzenDropDownDataGridColumn Property="Name" Title="Kategori" />

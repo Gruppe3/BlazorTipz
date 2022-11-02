@@ -9,9 +9,10 @@ namespace BlazorTipz.Views
     {
         bool isLoaded;
         
-        List<SuggViewmodel> UserSug = new List<SuggViewmodel>();
-        UserViewmodel currentUser = new UserViewmodel();
-        TeamViewmodel currentTeam = new TeamViewmodel();
+        List<SuggViewmodel> UserSug = new();
+        List<SuggViewmodel> Assignedsugg = new();
+        UserViewmodel currentUser = new();
+        TeamViewmodel currentTeam = new();
         //Everytime page loads this runs
         protected override async Task OnInitializedAsync()
         {
@@ -41,6 +42,7 @@ namespace BlazorTipz.Views
             }
             //Get team suggestions
             UserSug = await _suggestionManager.GetSuggestionsOfUser(currentUser.employmentId);
+            Assignedsugg = await _suggestionManager.GetPreFilteredAssignedSuggestions();
             isLoaded = true;
         }
 
