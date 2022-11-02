@@ -9,6 +9,8 @@ namespace BlazorTipz.Models.DbRelay
         private readonly IDataAccess _data;
         private readonly IConfiguration _config;
 
+        public string ConnectionString { private get; set; } = "default";
+
         public DbRelay(IDataAccess data, IConfiguration connectionString)
         {
             _data = data;
@@ -23,7 +25,7 @@ namespace BlazorTipz.Models.DbRelay
             try
             {
                 var sql = "SELECT * FROM Users WHERE employmentId = @empid;";
-                UserDb dbinfo = await _data.LoadData<UserDb, dynamic>(sql, new { empid = empId }, _config.GetConnectionString("default"), true);
+                UserDb dbinfo = await _data.LoadData<UserDb, dynamic>(sql, new { empid = empId }, _config.GetConnectionString(ConnectionString), true);
                 return dbinfo;
             }
             catch (Exception ex) { return null; }
@@ -34,7 +36,7 @@ namespace BlazorTipz.Models.DbRelay
             try
             {
                 var sql = "SELECT name, employmentId FROM Users WHERE employmentId = @empid;";
-                UserDb dbinfo = await _data.LoadData<UserDb, dynamic>(sql, new { empid = empId }, _config.GetConnectionString("default"), true);
+                UserDb dbinfo = await _data.LoadData<UserDb, dynamic>(sql, new { empid = empId }, _config.GetConnectionString(ConnectionString), true);
                 return dbinfo;
             }
             catch (Exception ex) { return null; }
@@ -56,7 +58,7 @@ namespace BlazorTipz.Models.DbRelay
                         passwordHash = tsu.passwordHash,
                         role = tsu.role.ToString()
                     },
-                        _config.GetConnectionString("default"));
+                        _config.GetConnectionString(ConnectionString));
                 }
             }
             catch (Exception ex) { }
@@ -82,7 +84,7 @@ namespace BlazorTipz.Models.DbRelay
                             role = Role,
                             firstTimeLogin = toSaveUser.firstTimeLogin
                         },
-                            _config.GetConnectionString("default"));
+                            _config.GetConnectionString(ConnectionString));
                     }
                 }
                 else if(toSaveUser.teamId != null)
@@ -96,7 +98,7 @@ namespace BlazorTipz.Models.DbRelay
                         role = Role,
                         teamId = toSaveUser.teamId
                     },
-                        _config.GetConnectionString("default"));
+                        _config.GetConnectionString(ConnectionString));
 
                 }
                 else
@@ -109,7 +111,7 @@ namespace BlazorTipz.Models.DbRelay
                         name = toSaveUser.name,
                         role = Role
                     },
-                        _config.GetConnectionString("default"));
+                        _config.GetConnectionString(ConnectionString));
                 }
 
             }
@@ -123,7 +125,7 @@ namespace BlazorTipz.Models.DbRelay
             {
                 var sql = "SELECT name, employmentId, active FROM Users WHERE active = true;";
 
-                var dbinfo = await _data.LoadData<UserDb, dynamic>(sql, new { }, _config.GetConnectionString("default"));
+                var dbinfo = await _data.LoadData<UserDb, dynamic>(sql, new { }, _config.GetConnectionString(ConnectionString));
 
                 return dbinfo;
             }
@@ -137,7 +139,7 @@ namespace BlazorTipz.Models.DbRelay
             {
                 var sql = "SELECT name, employmentId, active FROM Users WHERE active = false;";
 
-                var dbinfo = await _data.LoadData<UserDb, dynamic>(sql, new { }, _config.GetConnectionString("default"));
+                var dbinfo = await _data.LoadData<UserDb, dynamic>(sql, new { }, _config.GetConnectionString(ConnectionString));
 
                 return dbinfo;
             }
@@ -153,7 +155,7 @@ namespace BlazorTipz.Models.DbRelay
                     state = state,
                     empid = empId
                 },
-                _config.GetConnectionString("default"));
+                _config.GetConnectionString(ConnectionString));
             } catch (Exception ex) { }
         }
         public async Task changeUsersStateTo(List<UserDb> users, bool state)
@@ -169,7 +171,7 @@ namespace BlazorTipz.Models.DbRelay
                         state = state,
                         empid = user.employmentId
                     },
-                    _config.GetConnectionString("default"));
+                    _config.GetConnectionString(ConnectionString));
                 }
                
             }
@@ -185,7 +187,7 @@ namespace BlazorTipz.Models.DbRelay
             {
                 var sql = "SELECT * FROM Teams WHERE teamId = @teamid;";
                
-                TeamDb team = await _data.LoadData<TeamDb, dynamic>(sql, new { teamid = teamId }, _config.GetConnectionString("default"), true);
+                TeamDb team = await _data.LoadData<TeamDb, dynamic>(sql, new { teamid = teamId }, _config.GetConnectionString(ConnectionString), true);
                 return team;
             }
             catch (Exception ex) { return null; }
@@ -201,7 +203,7 @@ namespace BlazorTipz.Models.DbRelay
                 {
                     teamName = team.teamName,
                     teamLeader = team.teamLeader
-                }, _config.GetConnectionString("default"));
+                }, _config.GetConnectionString(ConnectionString));
             } 
             catch (Exception ex) { }
         }
@@ -217,7 +219,7 @@ namespace BlazorTipz.Models.DbRelay
                     teamName = team.teamName,
                     teamLeader = team.teamLeader,
                     teamId = team.teamId
-                }, _config.GetConnectionString("default"));
+                }, _config.GetConnectionString(ConnectionString));
             }
             catch (Exception ex) { }
         }
@@ -229,7 +231,7 @@ namespace BlazorTipz.Models.DbRelay
             {
                 var sql = "SELECT * FROM Teams WHERE active = true;";
 
-                var dbinfo = await _data.LoadData<TeamDb, dynamic>(sql, new { }, _config.GetConnectionString("default"));
+                var dbinfo = await _data.LoadData<TeamDb, dynamic>(sql, new { }, _config.GetConnectionString(ConnectionString));
 
                 return dbinfo;
             }
@@ -242,7 +244,7 @@ namespace BlazorTipz.Models.DbRelay
             {
                 var sql = "SELECT * FROM Teams WHERE active = false;";
 
-                var dbinfo = await _data.LoadData<TeamDb, dynamic>(sql, new { }, _config.GetConnectionString("default"));
+                var dbinfo = await _data.LoadData<TeamDb, dynamic>(sql, new { }, _config.GetConnectionString(ConnectionString));
 
                 return dbinfo;
             }
@@ -260,7 +262,7 @@ namespace BlazorTipz.Models.DbRelay
                     state = state,
                     teamid = teamId
                 },
-                _config.GetConnectionString("default"));
+                _config.GetConnectionString(ConnectionString));
             }
             catch (Exception ex) { }
         }
@@ -278,7 +280,7 @@ namespace BlazorTipz.Models.DbRelay
                         state = state,
                         teamid = team.teamId
                     },
-                    _config.GetConnectionString("default"));
+                    _config.GetConnectionString(ConnectionString));
                 }
 
             }
@@ -302,7 +304,7 @@ namespace BlazorTipz.Models.DbRelay
                     Category = suggestion.Category,
                     JustDoIt = suggestion.JustDoIt
                 },
-                _config.GetConnectionString("default"));
+                _config.GetConnectionString(ConnectionString));
             }
             catch (Exception ex)
             {
@@ -326,7 +328,7 @@ namespace BlazorTipz.Models.DbRelay
             try
             {
                 var sql = "SELECT * FROM Suggestions WHERE sugId = @sugId;";
-                SuggestionEntity sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { sugId = sugId }, _config.GetConnectionString("default"), true);
+                SuggestionEntity sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { sugId = sugId }, _config.GetConnectionString(ConnectionString), true);
                 return sug;
             }
             catch (Exception ex) { return null; }
@@ -339,7 +341,7 @@ namespace BlazorTipz.Models.DbRelay
             try
             {
                 var sql = "SELECT * FROM Suggestions WHERE creator = @creator;";
-                List<SuggestionEntity> sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { creator = empId }, _config.GetConnectionString("default"));
+                List<SuggestionEntity> sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { creator = empId }, _config.GetConnectionString(ConnectionString));
                 return sug;
             }
             catch (Exception ex) { return null; }   
@@ -352,7 +354,7 @@ namespace BlazorTipz.Models.DbRelay
             try
             {
                 var sql = "SELECT * FROM Suggestions WHERE owner = @owner;";
-                List<SuggestionEntity> sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { owner = teamId }, _config.GetConnectionString("default"));
+                List<SuggestionEntity> sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { owner = teamId }, _config.GetConnectionString(ConnectionString));
                 return sug;
             }
             catch (Exception ex) { return null; }
@@ -366,7 +368,7 @@ namespace BlazorTipz.Models.DbRelay
             try
             {
                 var sql = "SELECT * FROM Suggestions WHERE status = @status;";
-                List<SuggestionEntity> sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { status = status.ToString() }, _config.GetConnectionString("default"));
+                List<SuggestionEntity> sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { status = status.ToString() }, _config.GetConnectionString(ConnectionString));
                 return sug;
             }
             catch (Exception ex) { return null; }
@@ -388,7 +390,7 @@ namespace BlazorTipz.Models.DbRelay
                     Deadline = sug.deadline,
                     SugId = sug.sugId
                 },
-                _config.GetConnectionString("default"));
+                _config.GetConnectionString(ConnectionString));
             }
             catch (Exception ex) { }
         }

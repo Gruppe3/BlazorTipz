@@ -4,6 +4,8 @@ namespace BlazorTipz.Models.DbRelay
 {
     public interface IDbRelay
     {
+        //a field to define a connection to use
+        string ConnectionString { set; }
         //methodes for getting, setting and updating the database
 
         //User/Users
