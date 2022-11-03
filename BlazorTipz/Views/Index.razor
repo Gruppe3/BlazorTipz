@@ -35,13 +35,15 @@
                                 <Template Context="suggestions">
                                     <RadzenCard Style="width: 100%; padding: 0; overflow: hidden;">
                                         <a href="javascript:void(0);" class="nav__add" style="text-decoration-line: none;" @onclick="@(() =>
-                                            ShowCloseableFromOverlayDialog(suggestions.Title, suggestions.OwnerTeamName, suggestions.Description, suggestions.Status.ToString(), suggestions.Category.ToString()))">
+                                            ShowCloseableFromOverlayDialog(suggestions))">
                                             <div class="container">
                                                 <div class="row">
                                                     <div class="col-lg p-3 product-title">
-                                                        <h2>@(suggestions.Title)</h2>
-                                                        <p>Added: @(suggestions.StartDate)</p>
-                                                        <p>Last Edited; @(suggestions.UpdatedDate)</p>
+                                                        <h2>
+                                                            @(suggestions.Title)
+                                                            <RadzenBadge BadgeStyle="BadgeStyle.Warning" Shade="Shade.Lighter" IsPill="@true" Text="@suggestions.Status.ToString()" Class="ml-2" />
+                                                        </h2>
+														<p>Last Edited; @(suggestions.UpdatedDate)</p>
 
                                                     </div>
                                                 </div>
@@ -72,11 +74,13 @@
                                 <Template Context="suggestions">
                                     <RadzenCard Style="width: 100%; padding: 0; overflow: hidden;">
                                         <a href="javascript:void(0);" class="nav__add" style="text-decoration-line: none;" @onclick="@(() =>
-                                            ShowCloseableFromOverlayDialog(suggestions.Title, suggestions.OwnerTeamName, suggestions.Description, suggestions.Status.ToString(), suggestions.Category.ToString()))">
+                                            ShowCloseableFromOverlayDialog(suggestions))">
                                             <div class="container">
                                                 <div class="row">
                                                     <div class="col-lg p-3 product-title">
-                                                        <h2>@(suggestions.Title)</h2>
+                                                        <h2>@(suggestions.Title)
+                                                            <RadzenBadge BadgeStyle="BadgeStyle.Warning" Shade="Shade.Lighter" IsPill="@true" Text="@suggestions.Status.ToString()" Class="ml-2" />
+                                                        </h2>
                                                         <p>Added: @(suggestions.StartDate)</p>
                                                         <p>Last Edited; @(suggestions.UpdatedDate)</p>
 
@@ -110,16 +114,18 @@
 </style>
 
 @code {
-
-    async Task ShowCloseableFromOverlayDialog(string title, string ownerTeam, string description, string status, string category)
-    {
-        await DialogService.OpenAsync($"Suggestion in {category}", ds =>
+    async Task ShowCloseableFromOverlayDialog(SuggViewmodel sugg)
+	{
+        await DialogService.OpenAsync($"Suggestion in {sugg.Category}", ds =>
     @<div>
         <h3>
-            @title
-            <RadzenBadge BadgeStyle="BadgeStyle.Warning" Shade="Shade.Lighter" IsPill="@true" Text="@status" Class="ml-2" />
+            @sugg.Title
+            <RadzenBadge BadgeStyle="BadgeStyle.Warning" Shade="Shade.Lighter" IsPill="@true" Text="@sugg.Status.ToString()" Class="ml-2" />
         </h3>
-        <p>@description</p>
+		<p>Lagt til: @sugg.StartDate</p>
+		<p>Sist endret; @sugg.UpdatedDate</p>
+        <p>Frist: <span style="">@sugg.FristTid</span></p>
+        <p>@sugg.Description</p>
     </div>, new DialogOptions() { CloseDialogOnOverlayClick = true });
     }
 }
