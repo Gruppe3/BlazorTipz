@@ -8,10 +8,11 @@ namespace BlazorTipz.Views
 {
     public partial class LoginU
     {
-        bool popup;
-        public string Checker { get; set; }
+        bool popup; 
+        public string Checker { get; set; } = string.Empty;
 
-        public string Link { get; set; }
+        //Brukes denne til noe?
+        public string Link { get; set; } = string.Empty; 
 
         UserViewmodel userDto = new UserViewmodel();
         //If Submit is pressed this runs, it takes in request from the form

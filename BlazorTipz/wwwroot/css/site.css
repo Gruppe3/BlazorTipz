@@ -22,13 +22,34 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     overflow-y: auto;
 }
-
-
-a.navbar-brand {
-    white-space: normal;
-    text-align: center;
-    word-break: break-all;
+#loggInnWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 96vh;
+    width: 100%;
 }
+#loggInnCard {
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    height: 510px;
+    max-width: 310px;
+    border: solid; 
+    background-color: var(--primary-color);
+}
+    /*#loggInnCard .h1 {
+        color: hsl(235, 50%, 10%) !important;
+        font-weight: 500 !important;
+        margin-bottom: 0.5rem !important;
+    }*/
+
+
+    a.navbar-brand {
+        white-space: normal;
+        text-align: center;
+        word-break: break-all;
+    }
 
 .footer {
     position: fixed;
@@ -120,7 +141,9 @@ a, .btn-link {
     justify-content: center;
     align-items: center;
     padding-top: 1rem;
-    margin-right: 0.5rem;
+    /*
+        margin-right: 0.5rem;
+    */
 }
 
 .center p {

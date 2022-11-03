@@ -13,41 +13,43 @@
 
 <PageTitle>Login</PageTitle>
 
-<h1 class="center">Logg på</h1>
-<p class="d-flex justify-content-center">Fyll inn AnsattNr og passord</p>
-<div class="justify-content-center">
-    <div class="row">
-        <div class="col-lg-6 offset-lg-3">
-            <!--Wants type UserViewmodel, field object is userDto-->
-            <RadzenTemplateForm TItem="UserViewmodel" Data=@userDto Submit=LoginUs>
-                <div class="row mb-5">
-                    <div class="col-md-4" style="align-self: center;">
-                        <RadzenLabel Text="Bruker ID" />
-                    </div>
-                    <div class="col" style="align-self: center;">
-                        <RadzenMask Mask="******" CharacterPattern="[0-9]" Placeholder="000000" Name="id"
-                                    @bind-Value=@userDto.employmentId Class="w-100" />
-                        <RadzenLengthValidator Component="id" Min="6" Text="Må være 6 karakterer" Popup=@popup Style="position: absolute" />
-						<RadzenRequiredValidator Component="id" Text="Må fylles ut" Popup=@popup Style="position: absolute" />
-                    </div>
-                </div>
-                <div class="row mb-5">
-                    <div class="col-md-4" style="align-self: center;">
-                        <RadzenLabel Text="Passord" />
-                    </div>
-                    <div class="col">
-                        <!--Binder til userDto.password-->
-                        <RadzenTextBox style="display: block" Name="password" @bind-Value=@userDto.password Class="w-100" type="password" />
-						<RadzenRequiredValidator Component="password" Text="Passord må fylles ut" Popup=@popup Style="position: absolute" />
-                    </div>
-                </div>
-                <div class="center">
-                    <RadzenButton ButtonType="ButtonType.Submit" Text="Logg på"></RadzenButton>
-                </div>
-                <div class="center">
-                    <a>@Checker</a>
-                </div>
-            </RadzenTemplateForm>
-        </div>
-    </div>
+<div id="loggInnWrapper">
+	<div id="loggInnCard" class="mx-auto align-items-center">
+		<h1 class="center">Logg inn</h1>
+		<p class="d-flex justify-content-center">Fyll inn AnsattNr og passord</p>
+
+		<div class="center">
+			<!--Wants type UserViewmodel, field object is userDto-->
+			<RadzenTemplateForm TItem="UserViewmodel" Data=@userDto Submit=LoginUs>
+				<div class="mb-5">
+					
+					<RadzenLabel Text="Bruker ID" />
+					<RadzenMask Mask="******" CharacterPattern="[0-9]" Placeholder="Skriv inn bruker-Id" Name="id" @bind-Value=@userDto.employmentId Class="w-100" />
+					<div style="position:relative">
+						<RadzenLengthValidator Component="id" Min="6" Text="Må være 6 karakterer" Popup=@popup Style="position: absolute" />
+						<RadzenRequiredValidator Component="id" Text="Må fylles ut" Popup=@popup Style="position: absolute; top: 1rem" />
+					</div>
+					
+				</div>
+				<div class="mb-5">
+					<!--Binder til userDto.password-->
+					<RadzenLabel Text="Passord" />
+					<RadzenTextBox style="display: block" Name="password" @bind-Value=@userDto.password Class="w-100" type="password" />
+					<RadzenRequiredValidator Component="password" Text="Passord må fylles ut" Popup=@popup Style="position: absolute" />
+				</div>
+				<div class="center mb-3">
+					<RadzenButton ButtonType="ButtonType.Submit" Text="Logg inn"></RadzenButton>
+				</div>
+
+				@if (Checker != "" && Checker != null)
+				{
+					<div class="alert alert-danger" role="alert">
+						@Checker
+					</div>
+				}
+			</RadzenTemplateForm>
+		</div>
+	</div>
 </div>
+
+
