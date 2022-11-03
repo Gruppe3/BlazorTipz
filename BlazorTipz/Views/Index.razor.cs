@@ -22,6 +22,7 @@ namespace BlazorTipz.Views
             if (token == null || token == "")
             {
                 NavigationManager.NavigateTo("/login", true);
+                return;
             }
             else
             //Returns UserViewmodel or an error
@@ -30,11 +31,13 @@ namespace BlazorTipz.Views
                 if (err != null || user == null)
                 {
                     NavigationManager.NavigateTo("/login", true);
+                    return;
                 }
 
                 if (user.firstTimeLogin == true)
                 {
                     NavigationManager.NavigateTo("/userSettings");
+                    return;
                 }
 
                 //Sets currentUser to user
@@ -44,11 +47,6 @@ namespace BlazorTipz.Views
             UserSug = await _suggestionManager.GetSuggestionsOfUser(currentUser.employmentId);
             Assignedsugg = await _suggestionManager.GetPreFilteredAssignedSuggestions();
             isLoaded = true;
-        }
-
-        private void NavigateToLogin()
-        {
-            NavigationManager.NavigateTo("login");
         }
     }
 }
