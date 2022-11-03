@@ -24,6 +24,7 @@ namespace BlazorTipz.Shared
         List<SuggViewmodel> team = new List<SuggViewmodel>();
         List<TeamViewmodel> teams = new List<TeamViewmodel>();
         List<Category> Categories;
+        List<UserViewmodel> Users = new List<UserViewmodel>();
         public string TeamCheck { get; set; }
         public string teamU { get; set; }
         private string ShowUser { get; set; } = "none";
@@ -79,6 +80,14 @@ namespace BlazorTipz.Shared
 
             Categories = _suggestionManager.GetCategories();
             suggDto.OwnerTeam = Cteam.id;
+
+            var users = await _userManager.GetUsers();
+            foreach (UserViewmodel u in users)
+            {
+                await u.GetTeamName(_teamManager);
+            }
+            Users = users;
+
         }
 
         private void ShowTeamP()
@@ -122,8 +131,9 @@ namespace BlazorTipz.Shared
             suggToSave.OwnerTeam = request.OwnerTeam;
             suggToSave.Creator = _userManager.getCurrentUser().employmentId;
             suggToSave.JustDoIt = request.JustDoIt;
-            suggToSave.category = request.category;
+            suggToSave.Category = request.Category;
             suggToSave.StartDate = DateTime.Now.ToLocalTime().ToString("yyyyMMddHHmmss");
+            suggToSave.Ansvarlig = request.Ansvarlig;
             if (suggToSave.JustDoIt == true)
             {
                 suggToSave.Status = SuggStatus.Plan;
