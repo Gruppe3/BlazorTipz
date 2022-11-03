@@ -211,7 +211,9 @@ namespace BlazorTipz.ViewModels.Suggestion
                 err = await ApproveAndUpdateSuggestion(sugg);
                 return err;
             }
-            if (suggOld.Creator == currentUser.employmentId || suggOld.Ansvarlig == currentUser.employmentId || suggOld.OwnerTeam == currentUser.teamId)
+            if (suggOld.Creator == currentUser.employmentId || 
+                suggOld.Ansvarlig == currentUser.employmentId || 
+                suggOld.OwnerTeam == currentUser.teamId)
             {
                 suggOld.Title = sugg.Title;
                 suggOld.Description = sugg.Description;
@@ -230,7 +232,6 @@ namespace BlazorTipz.ViewModels.Suggestion
                 err = "You are not the creator of this suggestion";
             }
             return err;
-            
         }
 
         public async Task<List<SuggViewmodel>> GetAllAssignedSuggestions()
