@@ -49,7 +49,7 @@ CREATE TABLE if not EXISTS Suggestions (
   creatorId char(6) NOT NULL,
   assignedId char(6) DEFAULT NULL,
   completerId char(6) DEFAULT NULL,
-  sugStatus int(1) NOT NULL,
+  sugStatus varchar(8) NOT NULL,
   sugProgression int(1) DEFAULT 0,
   sugTitle varchar(32) NOT NULL,
   sugDesc varchar(3000) NOT NULL,
@@ -81,7 +81,7 @@ CREATE TABLE if not EXISTS Departments (
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
 
 
---Constraint definition
+-- Constraint definition
 ALTER TABLE Users 
 ADD CONSTRAINT fk_Users_team FOREIGN KEY (teamId) REFERENCES Teams (teamId);
 
@@ -103,7 +103,7 @@ ADD CONSTRAINT fk_TeamMembers_user FOREIGN KEY (userId) REFERENCES Users (employ
 
 
 Insert into Users (employmentId, userName, userRole, firstTimeLogin, passwordHash, passwordSalt)
-values ("000000", "SuperUser", "Admin", 0, "pqa[Èl_; S+uÑúE   FZA¯ ¥%ä} B(I½k M  ÛÀÇ  2Ýæ?Ö1ÉùQì¨;¿   ,Ìn-  ",
-	"êÜ«(!dÑädÆ D  ðòg ¤g Gfa·! n3L_  ÕeäÅ õ ZWÏ×Àª hÐ ý à_ ÈíµAªÍFF Í üb   ?  ¦åC;6 ýMÓ ¦>_ÎÕqËÑaäßñ 3%ß+P  ('Â¼àR À¦ ðæ YSU<   ä ø)");
+values ("000000", "SuperUser", "Admin", 0, "X (~ ÙZfíM  ùÞ¯r ¤²pÎL ×   %± Någô _  Kö½Ö7@ý  ç\aJXC·à @[ ÖZoO4",
+	"±½  ¼é¶´2'#i ñ»ìí & 9´W  ¶    ¥4§ yâ  {³êYÍ  ïìK¨ü`kWÚ¢w }^¬ Ò ;ô [Õ*ZA  Ý< £  Æ ao  +¨ñ  ¥.­é »Ãá à¹ªO6æ üûSF¡ ¬ Ùý_#á í§!¢ë¶Ð¿");
 
 

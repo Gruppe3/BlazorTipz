@@ -61,7 +61,7 @@ namespace BlazorTipz.Models.DbRelay
                         _config.GetConnectionString(ConnectionString));
                 }
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { throw; }
         }
         //update user
         public async Task updateUserEntry(UserEntity toSaveUser)
@@ -115,7 +115,7 @@ namespace BlazorTipz.Models.DbRelay
                 }
 
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { throw; }
         }
 
         public async Task<List<UserEntity>> getActiveUsers()
@@ -156,7 +156,7 @@ namespace BlazorTipz.Models.DbRelay
                     Empid = empId
                 },
                 _config.GetConnectionString(ConnectionString));
-            } catch (Exception ex) { }
+            } catch (Exception ex) { throw; }
         }
         public async Task changeUsersStateTo(List<UserEntity> users, bool state)
         {
@@ -175,7 +175,7 @@ namespace BlazorTipz.Models.DbRelay
                 }
                
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { throw; }
         }
         
         //team/teams
@@ -205,7 +205,7 @@ namespace BlazorTipz.Models.DbRelay
                     TeamLeader = team.teamLeader
                 }, _config.GetConnectionString(ConnectionString));
             } 
-            catch (Exception ex) { }
+            catch (Exception ex) { throw; }
         }
 
         //update a single team in database
@@ -221,7 +221,68 @@ namespace BlazorTipz.Models.DbRelay
                     TeamId = team.teamId
                 }, _config.GetConnectionString(ConnectionString));
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { throw; }
+        }
+
+        public async Task AddTeamMemberToTeam(List<TeamMemberEntity> memberList)
+        {   // This method adds a list of team members to a team
+            // On duplicate key, it updates the role and active-status of the user
+            try
+            {   
+                foreach (TeamMemberEntity member in memberList)
+                {
+                    var sql = "INSERT INTO TeamMembers (UserId, TeamId, Role, Active) VALUES (@empId, @teamId, @role, @active) ON DUPLICATE KEY UPDATE Role = @role, Active = @active;";
+                    await _data.SaveData(sql, new
+                    {
+                        empId = member.UserId,
+                        teamId = member.TeamId,
+                        role = member.Role,
+                        active = member.Active
+                    }, 
+                    _config.GetConnectionString(ConnectionString));
+                }
+                
+            }
+            catch (Exception ex) { throw; }
+        }
+
+        public async Task<List<TeamMemberEntity>> GetTeamMemberList(string empId)
+        {
+            var EntityList = new List<TeamMemberEntity>();
+            try
+            {
+                var sql = "SELECT u.name as EmpName, t.teamName as TeamName, tm.UserId, tm.TeamId, tm.JoinedAt, tm.Role FROM Users u, Teams t, TeamMembers tm WHERE u.employmentId = tm.UserId AND t.teamId = tm.TeamId AND tm.Active = 1 AND tm.UserId = @empId;";
+
+                EntityList = await _data.LoadData<TeamMemberEntity, dynamic>(sql, new { empId }, _config.GetConnectionString(ConnectionString));
+                return EntityList;
+            }
+            catch (Exception ex) { return EntityList; }
+        }
+        
+        public async Task<List<TeamMemberEntity>> GetTeamMembersByTeam(string teamId)
+        {
+            var EntityList = new List<TeamMemberEntity>();
+            try
+            {
+                var sql = "SELECT u.name as EmpName, t.teamName as TeamName, tm.UserId, tm.TeamId, tm.JoinedAt, tm.Role FROM Users u, Teams t, TeamMembers tm WHERE u.employmentId = tm.UserId AND t.teamId = tm.TeamId AND tm.Active = 1 AND tm.TeamId = @teamId;";
+                
+                EntityList = await _data.LoadData<TeamMemberEntity, dynamic>(sql, new { teamId }, _config.GetConnectionString(ConnectionString));
+                return EntityList;
+            }
+            catch (Exception ex) { return EntityList; }
+        }
+
+        public async Task<List<TeamMemberEntity>> GetAllTeamMemberLists()
+        {
+            List<TeamMemberEntity> EntityList = new();
+            try
+            {
+                var sql = "SELECT u.name as EmpName, t.teamName as TeamName, tm.UserId, tm.TeamId, tm.JoinedAt, tm.Role, tm.Active FROM Users u, Teams t, TeamMembers tm WHERE u.employmentId = tm.UserId AND t.teamId = tm.TeamId;";
+
+                EntityList = await _data.LoadData<TeamMemberEntity, dynamic>(sql, new { }, _config.GetConnectionString(ConnectionString));
+                return EntityList;
+            }
+            catch (Exception ex) { return EntityList; }
         }
 
         //get all Active teams from database
@@ -264,7 +325,7 @@ namespace BlazorTipz.Models.DbRelay
                 },
                 _config.GetConnectionString(ConnectionString));
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { throw; }
         }
         //change a list of teams state to active or inactive
         public async Task changeTeamsStateTo(List<TeamEntity> teams, bool state)
@@ -284,7 +345,7 @@ namespace BlazorTipz.Models.DbRelay
                 }
 
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { throw; }
         }
 
         // Suggestions
@@ -293,7 +354,7 @@ namespace BlazorTipz.Models.DbRelay
         {
             try
             {
-                var sql = "INSERT INTO Suggestions (ownerId, creatorId, sugTitle, sugDesc, sugStatus, category, justDoIt) values (@OwnerId, @CreatorId, @SugTitle, @SugDesc, @SugStatus, @Category, @JustDoIt);";
+                var sql = "INSERT INTO Suggestions (ownerId, creatorId, sugTitle, sugDesc, sugStatus, categoryId, justDoIt, assignedId) values (@OwnerId, @CreatorId, @SugTitle, @SugDesc, @SugStatus, @CategoryId, @JustDoIt, @AssignedId);";
                 await _data.SaveData(sql, new
                 {
                     OwnerId = suggestion.ownerId,
@@ -301,15 +362,13 @@ namespace BlazorTipz.Models.DbRelay
                     SugTitle = suggestion.sugTitle,
                     SugDesc = suggestion.sugDesc,
                     SugStatus = suggestion.sugStatus.ToString(),
-                    Category = suggestion.categoryId,
-                    JustDoIt = suggestion.justDoIt
+                    CategoryId = suggestion.categoryId,
+                    JustDoIt = suggestion.justDoIt,
+                    AassignedId = suggestion.assignedId
                 },
                 _config.GetConnectionString(ConnectionString));
             }
-            catch (Exception ex)
-            {
-     
-            }
+            catch (Exception ex) { throw; }
         }
 
         // Saves a list of suggestions
@@ -347,6 +406,17 @@ namespace BlazorTipz.Models.DbRelay
             catch (Exception ex) { return null; }   
         }
 
+        public async Task<List<SuggestionEntity>?> GetAssignedSuggestions(string empId)
+        {
+            try
+            {
+                var sql = "SELECT * FROM Suggestions WHERE assignedId = @EmpId;";
+                List<SuggestionEntity> sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { EmpId = empId }, _config.GetConnectionString(ConnectionString));
+                return sug;
+            }
+            catch (Exception ex) { return null; }
+        }
+
         //get a list suggestion from database bound to owner id
         //if return = null error
         public async Task<List<SuggestionEntity>?> GetSuggestionOfTeam(string teamId)
@@ -378,21 +448,21 @@ namespace BlazorTipz.Models.DbRelay
         {
             try
             {
-                var sql = "UPDATE Suggestions SET ownerId = @OwnerId, sugTitle = @SugTitle, sugDesc = @SugDesc, sugStatus = @SugStatus, category = @Category, assigned = @Assigned, dueDate = @DueDate WHERE sugId = @SugId;";
+                var sql = "UPDATE Suggestions SET ownerId = @OwnerId, sugTitle = @SugTitle, sugDesc = @SugDesc, sugStatus = @SugStatus, categoryId = @CategoryId, assignedId = @AssignedId, dueDate = @DueDate WHERE sugId = @SugId;";
                 await _data.SaveData(sql, new
                 {
-                    Owner = sug.ownerId,
+                    OwnerId = sug.ownerId,
                     SugTitle = sug.sugTitle,
                     SugDesc = sug.sugDesc,
                     SugStatus = sug.sugStatus.ToString(),
-                    Category = sug.categoryId,
-                    Assigned = sug.assignedId,
+                    CategoryId = sug.categoryId,
+                    AssignedId = sug.assignedId,
                     DueDate = sug.dueDate,
                     SugId = sug.sugId
                 },
                 _config.GetConnectionString(ConnectionString));
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { throw; }
         }
     }
 }

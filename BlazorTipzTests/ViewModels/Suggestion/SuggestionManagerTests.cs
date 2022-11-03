@@ -54,7 +54,7 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
             testSugg.Description = Description;
             testSugg.OwnerTeam = OwnerTeam;
             testSugg.Creator = Creator;
-            testSugg.category = cat;
+            testSugg.Category = cat;
 
             if (testCase == 6) { } else { testSugg.StartDate = DateTime.Now.ToLocalTime().ToString("yyyyMMddHHmmss"); }
 
@@ -215,7 +215,7 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
             testSugg.StartDate = DateTime.Now.ToLocalTime().ToString("yyyyMMddHHmmss");
             Category cat = new Category();
             cat.Name = "HMS";
-            testSugg.category = cat;
+            testSugg.Category = cat;
             UserViewmodel user = new UserViewmodel();
             user.employmentId = "1";
             //act

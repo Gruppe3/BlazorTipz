@@ -24,16 +24,11 @@
                     <div class="col-md-4" style="align-self: center;">
                         <RadzenLabel Text="Bruker ID" />
                     </div>
-                    <!--
-                    <div class="col">
-                        <RadzenNumeric ShowUpDown="false" style="display: block" Name="id"
-                                       @bind-Value=@userDto.employmentId Class="w-100">id</RadzenNumeric>
-                    </div> 
-                    -->                    
                     <div class="col" style="align-self: center;">
                         <RadzenMask Mask="******" CharacterPattern="[0-9]" Placeholder="000000" Name="id"
                                     @bind-Value=@userDto.employmentId Class="w-100" />
                         <RadzenLengthValidator Component="id" Min="6" Text="Må være 6 karakterer" Popup=@popup Style="position: absolute" />
+						<RadzenRequiredValidator Component="id" Text="Må fylles ut" Popup=@popup Style="position: absolute" />
                     </div>
                 </div>
                 <div class="row mb-5">
@@ -43,7 +38,7 @@
                     <div class="col">
                         <!--Binder til userDto.password-->
                         <RadzenTextBox style="display: block" Name="password" @bind-Value=@userDto.password Class="w-100" type="password" />
-                        <RadzenLengthValidator Component="password" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
+						<RadzenRequiredValidator Component="password" Text="Passord må fylles ut" Popup=@popup Style="position: absolute" />
                     </div>
                 </div>
                 <div class="center">

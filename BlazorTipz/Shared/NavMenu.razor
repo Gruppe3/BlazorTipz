@@ -248,6 +248,21 @@
                                         <RadzenLabel Text="Just Do It" Component="CheckBox1" Style="margin-left: 8px; vertical-align: middle;" />
                                     </div>
                                 </div>
+                                <div class="row mb-5">
+                                    <div class="col-md-4" style="align-self: center;">
+                                        <RadzenLabel Text="Ansvarlig" />
+                                    </div>
+                                    <div class="col">
+                                        <RadzenDropDownDataGrid @bind-Value=@suggDto.Ansvarlig FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
+                                                            AllowFiltering="true" AllowClear="true" Data=@Users TextProperty="name" Placeholder="Ansvarlig" ValueProperty="employmentId" Class="w-100">
+                                            <Columns>
+                                                <RadzenDropDownDataGridColumn Property="name" Title="Navn" />
+                                                <RadzenDropDownDataGridColumn Property="TeamName" Title="Team Name" />
+                                            </Columns>
+
+                                        </RadzenDropDownDataGrid>
+                                    </div>
+                                </div>
                                 <!--Team dropdown-->
                                 <div class="row mb-5">
                                     <div class="col-md-4" style="align-self: center;">
@@ -271,7 +286,7 @@
                                         <RadzenLabel Text="Kategori" />
                                     </div>
                                     <div class="col">
-                                        <RadzenDropDownDataGrid @bind-Value=@suggDto.category FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
+                                        <RadzenDropDownDataGrid @bind-Value=@suggDto.Category FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
                                                             AllowFiltering="true" AllowClear="true" Data=@Categories TextProperty="Name" Placeholder="Kategori" Class="w-100">
                                             <Columns>
                                                 <RadzenDropDownDataGridColumn Property="Name" Title="Kategori" />

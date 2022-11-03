@@ -3,6 +3,7 @@ using BlazorTipz.Models.DbRelay;
 using BlazorTipz.Models.AppStorage;
 using BlazorTipz.ViewModels.User;
 using BlazorTipz.ViewModels.Team;
+using BlazorTipz.Data;
 
 namespace BlazorTipz.ViewModels.Suggestion
 {
@@ -13,7 +14,9 @@ namespace BlazorTipz.ViewModels.Suggestion
         private readonly IUserManager _UM;
         private readonly ITeamManager _TM;
 
-        private List<CategoriEntity> categories; 
+        private List<CategoriEntity> categories;
+        public List<SuggViewmodel> AssignedSuggestions;
+        
         // Constructor
         public SuggestionManager(IDbRelay DBR, IAppStorage AS, IUserManager UM, ITeamManager TM)
         {
@@ -33,7 +36,7 @@ namespace BlazorTipz.ViewModels.Suggestion
             }
             
             SuggestionEntity suggEntity = new SuggestionEntity(sugg);
-            suggEntity.categoryId = searchForCategoryId(sugg.category);
+            suggEntity.categoryId = searchForCategoryId(sugg.Category);
             if (suggEntity == null) { err = "Program failure"; return err; }
             await _DBR.saveSuggestion(suggEntity);
 
@@ -172,7 +175,7 @@ namespace BlazorTipz.ViewModels.Suggestion
                 return err;
             }
             SuggestionEntity suggEntity = new SuggestionEntity(sugg);
-            suggEntity.categoryId = searchForCategoryId(sugg.category);
+            suggEntity.categoryId = searchForCategoryId(sugg.Category);
             if (suggEntity == null) { err = "Program failure"; return err; }
             await _DBR.updateSuggestion(suggEntity);
 
@@ -186,7 +189,7 @@ namespace BlazorTipz.ViewModels.Suggestion
 
             suggOld.Title = sugg.Title;
             suggOld.Description = sugg.Description;
-            suggOld.category = suggOld.category;
+            suggOld.Category = suggOld.Category;
             suggOld.OwnerTeam = suggOld.OwnerTeam;
             suggOld.Status = sugg.Status;
             suggOld.Ansvarlig = sugg.Ansvarlig;
@@ -208,11 +211,13 @@ namespace BlazorTipz.ViewModels.Suggestion
                 err = await ApproveAndUpdateSuggestion(sugg);
                 return err;
             }
-            if (suggOld.Creator == currentUser.employmentId || suggOld.Ansvarlig == currentUser.employmentId || suggOld.OwnerTeam == currentUser.teamId)
+            if (suggOld.Creator == currentUser.employmentId || 
+                suggOld.Ansvarlig == currentUser.employmentId || 
+                suggOld.OwnerTeam == currentUser.teamId)
             {
                 suggOld.Title = sugg.Title;
                 suggOld.Description = sugg.Description;
-                suggOld.category = suggOld.category;
+                suggOld.Category = suggOld.Category;
                 suggOld.OwnerTeam = suggOld.OwnerTeam;
                 suggOld.Status = sugg.Status;
                 suggOld.Ansvarlig = sugg.Ansvarlig;
@@ -227,7 +232,39 @@ namespace BlazorTipz.ViewModels.Suggestion
                 err = "You are not the creator of this suggestion";
             }
             return err;
-            
+        }
+
+        public async Task<List<SuggViewmodel>> GetAllAssignedSuggestions()
+        {
+            List<SuggViewmodel> suggViewmodels = new();
+            List<SuggestionEntity>? entities = await _DBR.GetAssignedSuggestions(_UM.getCurrentUser().employmentId);
+            if (entities == null) { return suggViewmodels; }
+            foreach (SuggestionEntity e in entities)
+            {
+                e.CategoryEntity = SearchForCategoryEntity(e.categoryId);
+                SuggViewmodel sugg = new(e);
+                await fillNameFieldsInSugg(sugg);
+                suggViewmodels.Add(sugg);
+            }
+            return suggViewmodels;
+        }
+
+        public async Task<List<SuggViewmodel>> GetPreFilteredAssignedSuggestions()
+        {
+            List<SuggViewmodel> suggViewmodels = await GetAllAssignedSuggestions();
+            List<SuggViewmodel> filteredSuggestions = new();
+
+            foreach (SuggViewmodel sView in suggViewmodels)
+            {
+                if (sView.Status == SuggStatus.Plan || 
+                    sView.Status == SuggStatus.Do || 
+                    sView.Status == SuggStatus.Study || 
+                    sView.Status == SuggStatus.Act)
+                { 
+                    filteredSuggestions.Add(sView); 
+                }
+            }
+            return filteredSuggestions;
         }
     }
 }

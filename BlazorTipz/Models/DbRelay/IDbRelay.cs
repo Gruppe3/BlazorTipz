@@ -20,11 +20,18 @@ namespace BlazorTipz.Models.DbRelay
         Task changeUsersStateTo(List<UserEntity> users, bool state);
 
         //team/teams
+
         Task<TeamEntity> getSingleTeamDbFromDb(string teamId);
         Task addTeamEntry(TeamEntity team);
         Task updateTeamEntry(TeamEntity team);
         Task<List<TeamEntity>> getActiveTeams();
         Task<List<TeamEntity>> getInactiveTeams();
+
+        Task AddTeamMemberToTeam(List<TeamMemberEntity> memberList);
+        Task<List<TeamMemberEntity>> GetTeamMemberList(string empId);
+        Task<List<TeamMemberEntity>> GetTeamMembersByTeam(string teamId);
+        Task<List<TeamMemberEntity>> GetAllTeamMemberLists();
+
         Task changeTeamStateTo(string teamid, bool state);
         Task changeTeamsStateTo(List<TeamEntity> teams, bool state);
 
@@ -40,10 +47,13 @@ namespace BlazorTipz.Models.DbRelay
         //if return = null error
         Task<List<SuggestionEntity>?> GetSuggestionsOfCreator(string empId);
 
+        //get a list of suggestions assigned to spesified user
+        Task<List<SuggestionEntity>?> GetAssignedSuggestions(string empId);
+
         //get a list suggestion from database bound to owner id
         //if return = null error
         Task<List<SuggestionEntity>?> GetSuggestionOfTeam(string teamId);
-
+        
         //get a list suggestion from database bound to status
         //@param status = a type of SuggStatus (enum class)
         //if return null = error
