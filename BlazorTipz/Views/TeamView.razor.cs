@@ -80,7 +80,7 @@ namespace BlazorTipz.Views
             if (suggUpdate.Id != null)
             {
                 string? err;
-                suggUpdate.SetFristTidToFrist();
+                //suggUpdate.SetFristTidToFrist();
                 err = await _suggestionManager.UpdateSuggestion(suggUpdate,CUser);
                 if (err != null)
                 {

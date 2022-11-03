@@ -124,7 +124,7 @@
         </h3>
 		<p>Lagt til: @sugg.StartDate</p>
 		<p>Sist endret; @sugg.UpdatedDate</p>
-        <p>Frist: <span style="">@sugg.FristTid</span></p>
+        <p>Frist: <span style="">@sugg.Frist.ToShortDateString()</span></p>
         <p>@sugg.Description</p>
     </div>, new DialogOptions() { CloseDialogOnOverlayClick = true });
     }

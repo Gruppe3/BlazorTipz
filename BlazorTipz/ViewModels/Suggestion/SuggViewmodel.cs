@@ -18,7 +18,7 @@ namespace BlazorTipz.ViewModels.Suggestion
         public string StartDate { get; set; }
         public string UpdatedDate { get; set; } = string.Empty;
         public string? Ansvarlig { get; set; }
-        public string Frist { get; set; }
+        public DateTime Frist { get; set; }
         //picture
         public string? BeforeImage { get; set; }
         public string? AfterImage { get; set; }
@@ -27,7 +27,7 @@ namespace BlazorTipz.ViewModels.Suggestion
         public string CreatorName { get; set; } = string.Empty;
         public string AnsvarligName { get; set; } = string.Empty;
         
-        public DateTime? FristTid { get; set; }
+        //public DateTime? FristTid { get; set; }
 
 
 
@@ -52,7 +52,7 @@ namespace BlazorTipz.ViewModels.Suggestion
             this.Id = Suggestion.sugId;
 
             this.Category = new Category(Suggestion.CategoryEntity);
-            SetFristToFristTid();
+            //SetFristToFristTid();
         }
 
         public async Task<string> GetCreatorName(IUserManager _userManager)
@@ -100,21 +100,21 @@ namespace BlazorTipz.ViewModels.Suggestion
             await GetOwnerTeamName(_teamManager);
         }
 
-        public void SetFristTidToFrist()
-        {
-            if(FristTid == null) { return; }
+        //public void SetFristTidToFrist()
+        //{
+        //    if (FristTid == null) { return; }
 
-            string? temp = FristTid.ToString();
-            Frist = temp;
-        }
-        //from string to datetime
-        public void SetFristToFristTid()
-        {
-            if (Frist == string.Empty ||Frist == null) { return; }
+        //    string? temp = FristTid.ToString();
+        //    Frist = temp;
+        //}
+        ////from string to datetime
+        //public void SetFristToFristTid()
+        //{
+        //    if (Frist == string.Empty || Frist == null) { return; }
 
-            DateTime temp = DateTime.Parse(Frist);
-            FristTid = temp;
-        }
+        //    DateTime temp = DateTime.Parse(Frist);
+        //    FristTid = temp;
+        //}
     }
     
 }

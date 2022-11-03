@@ -17,7 +17,7 @@ namespace BlazorTipz.Models
         public string sugDesc { get; set; }
         public string createdAt { get; set; }
         public string lastChanged { get; set; }
-        public string dueDate { get; set; }
+        public DateTime dueDate { get; set; }
         public string categoryId { get; set; }
         public bool justDoIt { get; set; }
         public string? beforeImage { get; set; }
