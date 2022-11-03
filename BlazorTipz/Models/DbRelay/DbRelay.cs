@@ -61,7 +61,7 @@ namespace BlazorTipz.Models.DbRelay
                         _config.GetConnectionString(ConnectionString));
                 }
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { throw; }
         }
         //update user
         public async Task updateUserEntry(UserEntity toSaveUser)
@@ -115,7 +115,7 @@ namespace BlazorTipz.Models.DbRelay
                 }
 
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { throw; }
         }
 
         public async Task<List<UserEntity>> getActiveUsers()
@@ -156,7 +156,7 @@ namespace BlazorTipz.Models.DbRelay
                     Empid = empId
                 },
                 _config.GetConnectionString(ConnectionString));
-            } catch (Exception ex) { }
+            } catch (Exception ex) { throw; }
         }
         public async Task changeUsersStateTo(List<UserEntity> users, bool state)
         {
@@ -175,7 +175,7 @@ namespace BlazorTipz.Models.DbRelay
                 }
                
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { throw; }
         }
         
         //team/teams
@@ -205,7 +205,7 @@ namespace BlazorTipz.Models.DbRelay
                     TeamLeader = team.teamLeader
                 }, _config.GetConnectionString(ConnectionString));
             } 
-            catch (Exception ex) { }
+            catch (Exception ex) { throw; }
         }
 
         //update a single team in database
@@ -221,7 +221,7 @@ namespace BlazorTipz.Models.DbRelay
                     TeamId = team.teamId
                 }, _config.GetConnectionString(ConnectionString));
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { throw; }
         }
 
         public async Task AddTeamMemberToTeam(List<TeamMemberEntity> memberList)
@@ -243,7 +243,7 @@ namespace BlazorTipz.Models.DbRelay
                 }
                 
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { throw; }
         }
 
         public async Task<List<TeamMemberEntity>> GetTeamMemberList(string empId)
@@ -325,7 +325,7 @@ namespace BlazorTipz.Models.DbRelay
                 },
                 _config.GetConnectionString(ConnectionString));
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { throw; }
         }
         //change a list of teams state to active or inactive
         public async Task changeTeamsStateTo(List<TeamEntity> teams, bool state)
@@ -345,7 +345,7 @@ namespace BlazorTipz.Models.DbRelay
                 }
 
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { throw; }
         }
 
         // Suggestions
@@ -461,7 +461,7 @@ namespace BlazorTipz.Models.DbRelay
                 },
                 _config.GetConnectionString(ConnectionString));
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { throw; }
         }
     }
 }
