@@ -31,11 +31,12 @@ html, body {
     width: 100%;
 }
 #loggInnCard {
-    padding: 0.5rem;
+    position: absolute;
+    padding: 1.5rem;
     border-radius: 0.5rem;
     height: 510px;
+    width: 320px;
     max-width: 310px;
-    border: solid; 
     background-color: var(--primary-color);
 }
     /*#loggInnCard .h1 {
