@@ -1,7 +1,7 @@
 ﻿using BlazorTipz.Data;
 using BlazorTipz.Models;
-using BlazorTipz.ViewModels.User;
 using BlazorTipz.ViewModels.Team;
+using BlazorTipz.ViewModels.User;
 
 namespace BlazorTipz.ViewModels.Suggestion
 {

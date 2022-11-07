@@ -1,9 +1,7 @@
-﻿using BlazorTipz.Models;
+﻿using BlazorTipz.Data;
+using BlazorTipz.Models;
 using BlazorTipz.Models.DbRelay;
 using BlazorTipz.ViewModels.User;
-using BlazorTipz.Data;
-using System.Linq.Expressions;
-using System.Collections.Generic;
 
 namespace BlazorTipz.ViewModels.Team
 {

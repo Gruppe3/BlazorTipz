@@ -1,5 +1,5 @@
-﻿using BlazorTipz.Models;
-using BlazorTipz.Data;
+﻿using BlazorTipz.Data;
+using BlazorTipz.Models;
 using BlazorTipz.ViewModels.Team;
 
 namespace BlazorTipz.ViewModels.User
@@ -32,7 +32,6 @@ namespace BlazorTipz.ViewModels.User
             this.role = user.userRole;
             this.teamId = user.teamId;
             this.firstTimeLogin = user.firstTimeLogin;
-            TeamMembers = new List<TeamMemberViewmodel>();
         }
 
         public async Task<string?> GetTeamName(ITeamManager _TM)

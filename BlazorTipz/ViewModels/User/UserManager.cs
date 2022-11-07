@@ -2,9 +2,6 @@
 using BlazorTipz.Data;
 using BlazorTipz.Models;
 using BlazorTipz.Models.DbRelay;
-using BlazorTipz.ViewModels.Team;
-using System.ComponentModel;
-using System.Runtime.Serialization;
 
 namespace BlazorTipz.ViewModels.User
 {
