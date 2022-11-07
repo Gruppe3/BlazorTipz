@@ -1,9 +1,9 @@
-﻿using BlazorTipz.Models;
-using BlazorTipz.Models.DbRelay;
+﻿using BlazorTipz.Data;
+using BlazorTipz.Models;
 using BlazorTipz.Models.AppStorage;
-using BlazorTipz.ViewModels.User;
+using BlazorTipz.Models.DbRelay;
 using BlazorTipz.ViewModels.Team;
-using BlazorTipz.Data;
+using BlazorTipz.ViewModels.User;
 
 namespace BlazorTipz.ViewModels.Suggestion
 {

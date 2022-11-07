@@ -1,5 +1,5 @@
-﻿using BlazorTipz.Models;
-using BlazorTipz.Data;
+﻿using BlazorTipz.Data;
+using BlazorTipz.Models;
 using BlazorTipz.ViewModels.Team;
 
 namespace BlazorTipz.ViewModels.User
@@ -17,11 +17,10 @@ namespace BlazorTipz.ViewModels.User
         public bool firstTimeLogin{ get; set; }
 
         public string TeamName {private get; set; } = string.Empty;
-        public List<TeamMemberViewmodel> TeamMembers { get; set; }
         
         public UserViewmodel()
         {
-            TeamMembers = new List<TeamMemberViewmodel>();
+            
         }
         
         // passerer inn data fra UserDb og setter lokale verdier 
@@ -33,7 +32,6 @@ namespace BlazorTipz.ViewModels.User
             this.role = user.userRole;
             this.teamId = user.teamId;
             this.firstTimeLogin = user.firstTimeLogin;
-            TeamMembers = new List<TeamMemberViewmodel>();
         }
 
         public async Task<string?> GetTeamName(ITeamManager _TM)

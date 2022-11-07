@@ -223,68 +223,7 @@ namespace BlazorTipz.Models.DbRelay
             }
             catch (Exception ex) { throw; }
         }
-
-        public async Task AddTeamMemberToTeam(List<TeamMemberEntity> memberList)
-        {   // This method adds a list of team members to a team
-            // On duplicate key, it updates the role and active-status of the user
-            try
-            {   
-                foreach (TeamMemberEntity member in memberList)
-                {
-                    var sql = "INSERT INTO TeamMembers (UserId, TeamId, Role, Active) VALUES (@empId, @teamId, @role, @active) ON DUPLICATE KEY UPDATE Role = @role, Active = @active;";
-                    await _data.SaveData(sql, new
-                    {
-                        empId = member.UserId,
-                        teamId = member.TeamId,
-                        role = member.Role,
-                        active = member.Active
-                    }, 
-                    _config.GetConnectionString(ConnectionString));
-                }
-                
-            }
-            catch (Exception ex) { throw; }
-        }
-
-        public async Task<List<TeamMemberEntity>> GetTeamMemberList(string empId)
-        {
-            var EntityList = new List<TeamMemberEntity>();
-            try
-            {
-                var sql = "SELECT u.name as EmpName, t.teamName as TeamName, tm.UserId, tm.TeamId, tm.JoinedAt, tm.Role FROM Users u, Teams t, TeamMembers tm WHERE u.employmentId = tm.UserId AND t.teamId = tm.TeamId AND tm.Active = 1 AND tm.UserId = @empId;";
-
-                EntityList = await _data.LoadData<TeamMemberEntity, dynamic>(sql, new { empId }, _config.GetConnectionString(ConnectionString));
-                return EntityList;
-            }
-            catch (Exception ex) { return EntityList; }
-        }
         
-        public async Task<List<TeamMemberEntity>> GetTeamMembersByTeam(string teamId)
-        {
-            var EntityList = new List<TeamMemberEntity>();
-            try
-            {
-                var sql = "SELECT u.name as EmpName, t.teamName as TeamName, tm.UserId, tm.TeamId, tm.JoinedAt, tm.Role FROM Users u, Teams t, TeamMembers tm WHERE u.employmentId = tm.UserId AND t.teamId = tm.TeamId AND tm.Active = 1 AND tm.TeamId = @teamId;";
-                
-                EntityList = await _data.LoadData<TeamMemberEntity, dynamic>(sql, new { teamId }, _config.GetConnectionString(ConnectionString));
-                return EntityList;
-            }
-            catch (Exception ex) { return EntityList; }
-        }
-
-        public async Task<List<TeamMemberEntity>> GetAllTeamMemberLists()
-        {
-            List<TeamMemberEntity> EntityList = new();
-            try
-            {
-                var sql = "SELECT u.name as EmpName, t.teamName as TeamName, tm.UserId, tm.TeamId, tm.JoinedAt, tm.Role, tm.Active FROM Users u, Teams t, TeamMembers tm WHERE u.employmentId = tm.UserId AND t.teamId = tm.TeamId;";
-
-                EntityList = await _data.LoadData<TeamMemberEntity, dynamic>(sql, new { }, _config.GetConnectionString(ConnectionString));
-                return EntityList;
-            }
-            catch (Exception ex) { return EntityList; }
-        }
-
         //get all Active teams from database
         public async Task<List<TeamEntity>> getActiveTeams()
         {
