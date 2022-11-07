@@ -354,7 +354,7 @@ namespace BlazorTipz.Models.DbRelay
         {
             try
             {
-                var sql = "INSERT INTO Suggestions (ownerId, creatorId, sugTitle, sugDesc, sugStatus, categoryId, justDoIt) values (@OwnerId, @CreatorId, @SugTitle, @SugDesc, @SugStatus, @CategoryId, @JustDoIt);";
+                var sql = "INSERT INTO Suggestions (ownerId, creatorId, sugTitle, sugDesc, sugStatus, categoryId, justDoIt, assignedId) values (@OwnerId, @CreatorId, @SugTitle, @SugDesc, @SugStatus, @CategoryId, @JustDoIt, @AssignedId);";
                 await _data.SaveData(sql, new
                 {
                     OwnerId = suggestion.ownerId,
@@ -363,7 +363,8 @@ namespace BlazorTipz.Models.DbRelay
                     SugDesc = suggestion.sugDesc,
                     SugStatus = suggestion.sugStatus.ToString(),
                     CategoryId = suggestion.categoryId,
-                    JustDoIt = suggestion.justDoIt
+                    JustDoIt = suggestion.justDoIt,
+                    AassignedId = suggestion.assignedId
                 },
                 _config.GetConnectionString(ConnectionString));
             }

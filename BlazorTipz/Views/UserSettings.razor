@@ -65,29 +65,36 @@
 <h1 style="opacity:0;">:)</h1>
 
 @code{
-    async Task PasswordCheck()
+    async Task PasswordCheck(UserViewmodel request)
     {
-        await DialogService.OpenAsync($"Skriv inn ditt forrige passord for og endre", ds =>
-        @<div>
-            <RadzenTemplateForm TItem="UserViewmodel" Data=@userDto Submit=CheckPassword>
+        if(request.firstTimeLogin == true){
+            await ChangeSettings(request);
+        }
+        else
+        {
+            await DialogService.OpenAsync($"Skriv inn ditt forrige passord for og endre", ds =>
+            @<div>
+                <RadzenTemplateForm TItem="UserViewmodel" Data=@LoginCheckUser Submit=CheckPassword>
     
-                <div class="row mb-5">
-                    <div class="col-md-4" style="align-self: center;">
-                        <RadzenLabel Text="Gammelt passord" />
+                    <div class="row mb-5">
+                        <div class="col-md-4" style="align-self: center;">
+                            <RadzenLabel Text="Gammelt passord" />
+                        </div>
+                        <div class="col">
+                            <!--Binder til userDto.password-->
+                            <RadzenTextBox style="display: block" Name="password" @bind-Value=@LoginCheckUser.password Class="w-100" type="password" />
+                            <RadzenLengthValidator Component="password" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
+                        </div>
                     </div>
-                    <div class="col">
-                        <!--Binder til userDto.password-->
-                        <RadzenTextBox style="display: block" Name="password" @bind-Value=@userDto.password Class="w-100" type="password" />
-                        <RadzenLengthValidator Component="password" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
+                    <div class="center">
+                        <RadzenButton ButtonType="ButtonType.Submit" Text="Oppdater brukerdata"></RadzenButton>
                     </div>
-                </div>
-                <div class="center">
-                    <RadzenButton ButtonType="ButtonType.Submit" Text="Login"></RadzenButton>
-                </div>
-                <div class="center">
-                    <a>@Checker</a>
-                </div>
-            </RadzenTemplateForm>
-        </div>, new DialogOptions() { CloseDialogOnOverlayClick = true });
-}
+                    <div class="center">
+                        <a>@Checker</a>
+                    </div>
+                </RadzenTemplateForm>
+            </div>, 
+            new DialogOptions() { CloseDialogOnOverlayClick = true });
+        }
+    }
 }

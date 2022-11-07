@@ -11,7 +11,9 @@ namespace BlazorTipz.Views
         UserViewmodel userDto = new UserViewmodel();
         UserViewmodel? CUser;
 
-        
+        UserViewmodel LoginCheckUser = new();
+
+
         //checks if there is a current user
         protected override async Task OnInitializedAsync()
         {
@@ -20,22 +22,36 @@ namespace BlazorTipz.Views
             if (CurrentUser == null)
             {
                 NavigationManager.NavigateTo("/");
+                return;
             }
             else
             {
                 CUser = CurrentUser;
             }
+            userDto.name = CUser.name;
+            userDto.firstTimeLogin = CUser.firstTimeLogin;
         }
 
         //changes the current user details
         public async Task<ActionResult<UserViewmodel>> ChangeSettings(UserViewmodel request)
         {
+            string err;
             if (request.firstTimeLogin == true)
             {
                 request.firstTimeLogin = false;
+                err = await _userManager.updateCurrentUser(request);
+                if (err != null)
+                {
+                    request.firstTimeLogin = true;
+                    await _userManager.updateCurrentUser(request);
+                }            
+            }
+            else
+            {
+                err = await _userManager.updateCurrentUser(request);
             }
 
-            string err = await _userManager.updateCurrentUser(request);
+            err = await _userManager.updateCurrentUser(request);
             if (err != null)
             {
                 Checker = err;
@@ -75,7 +91,7 @@ namespace BlazorTipz.Views
             if (err == null)
             {
                 await _localStorage.SetItemAsync("token", token);
-                await ChangeSettings(request);
+                await ChangeSettings(userDto);
                 return token;
             }
             //If token is null
