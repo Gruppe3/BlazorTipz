@@ -17,11 +17,10 @@ namespace BlazorTipz.ViewModels.User
         public bool firstTimeLogin{ get; set; }
 
         public string TeamName {private get; set; } = string.Empty;
-        public List<TeamMemberViewmodel> TeamMembers { get; set; }
         
         public UserViewmodel()
         {
-            TeamMembers = new List<TeamMemberViewmodel>();
+            
         }
         
         // passerer inn data fra UserDb og setter lokale verdier 

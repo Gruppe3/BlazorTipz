@@ -27,11 +27,6 @@ namespace BlazorTipz.Models.DbRelay
         Task<List<TeamEntity>> getActiveTeams();
         Task<List<TeamEntity>> getInactiveTeams();
 
-        Task AddTeamMemberToTeam(List<TeamMemberEntity> memberList);
-        Task<List<TeamMemberEntity>> GetTeamMemberList(string empId);
-        Task<List<TeamMemberEntity>> GetTeamMembersByTeam(string teamId);
-        Task<List<TeamMemberEntity>> GetAllTeamMemberLists();
-
         Task changeTeamStateTo(string teamid, bool state);
         Task changeTeamsStateTo(List<TeamEntity> teams, bool state);
 
