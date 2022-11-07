@@ -364,4 +364,4 @@ FodyWeavers.xsd
 
 # miscellaneous
 /database
-*csproj.user
+*.csproj.user
