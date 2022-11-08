@@ -22,7 +22,49 @@
         <h1 class="center">Dashboard</h1>
         <p class="d-flex justify-content-center">Velkommen til Tipz!</p>
         
-        <div class="container-fluid">
+        <div class="ClosableSuggestionCard @IsHidden">
+			<div class="Clickable"></div>
+            <div class="SuggestionWrapper">
+                <div class="SuggestionTopcard">
+				    <div class="suggestion mb-2">
+                        <h3>
+                            @CurrentSugg.Title
+                            <RadzenBadge BadgeStyle="BadgeStyle.Warning" Shade="Shade.Lighter" IsPill="@true" Text="@CurrentSugg.Status.ToString()" Class="ml-2" />
+                        </h3>
+                        <div class="Comment_Details mb-3">
+                            @*<div>Lagt til: @CurrentSugg.StartDate</div>*@
+		                    <div>Sist endret; @CurrentSugg.UpdatedDate</div>
+                            <div>Frist: <span style="">@CurrentSugg.Frist.ToShortDateString()</span></div>
+                        </div>
+		               
+                        <p>@CurrentSugg.Description</p>
+	                </div>
+
+				    <div class="Comment_Editor mb-2">
+		                <div class="mb-2">
+					        <RadzenTextArea @bind-Value="@CommentDto.Comment" MaxLength="1000" Placeholder="Aa" Class="w-100 d-block" />
+			            </div>
+                        <div class="">
+						    <RadzenButton Text="Send" Class="d-inline-block" Click=@(() => SaveComment(CurrentSugg.Id, CommentDto)) />
+		                    <RadzenButton Text="Close" Class="d-inline-block" Click="@(() => CloseCloseableWindow())" />
+                        </div>
+		            </div>
+                </div>
+                <div class="Comments">
+                    @foreach (CommentViewmodel c in Comments)
+                    {
+                        <div class="Comment_Card">
+                            <p>@c.Comment</p>
+                            <div class="Comment_Details">
+                                <div>Skrevet av: @c.EmpName, <br> Skrevet: @c.TimeStamp</div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+		
+        <div class="@Mainpage container-fluid">
             <div class="row">
                 <div class="col">
                     <RadzenCard Class="suggColor">
@@ -35,7 +77,7 @@
                                 <Template Context="suggestions">
                                     <RadzenCard Style="width: 100%; padding: 0; overflow: hidden;">
                                         <a href="javascript:void(0);" class="nav__add" style="text-decoration-line: none;" @onclick="@(() =>
-                                            ShowCloseableFromOverlayDialog(suggestions))">
+                                            ShowCloseableWindow(suggestions))">
                                             <div class="container">
                                                 <div class="row">
                                                     <div class="col-lg p-3 product-title">
@@ -73,8 +115,9 @@
                                         PagerHorizontalAlign="HorizontalAlign.Center" PagerPosition="PagerPosition.Top">
                                 <Template Context="suggestions">
                                     <RadzenCard Style="width: 100%; padding: 0; overflow: hidden;">
+                                        
                                         <a href="javascript:void(0);" class="nav__add" style="text-decoration-line: none;" @onclick="@(() =>
-                                            ShowCloseableFromOverlayDialog(suggestions))">
+                                        ShowCloseableWindow(suggestions))">
                                             <div class="container">
                                                 <div class="row">
                                                     <div class="col-lg p-3 product-title">
@@ -115,9 +158,10 @@
 
 @code {
     async Task ShowCloseableFromOverlayDialog(SuggViewmodel sugg)
-	{
-        await DialogService.OpenAsync($"Suggestion in {sugg.Category}", ds =>
-    @<div>
+    {
+        UpdateComments(sugg.Id);
+        await DialogService.OpenAsync($"{sugg.Title}", ds =>
+    @<div class="suggestion">
         <h3>
             @sugg.Title
             <RadzenBadge BadgeStyle="BadgeStyle.Warning" Shade="Shade.Lighter" IsPill="@true" Text="@sugg.Status.ToString()" Class="ml-2" />
@@ -126,6 +170,23 @@
 		<p>Sist endret; @sugg.UpdatedDate</p>
         <p>Frist: <span style="">@sugg.Frist.ToShortDateString()</span></p>
         <p>@sugg.Description</p>
-    </div>, new DialogOptions() { CloseDialogOnOverlayClick = true });
+	<div>
+    </div class="Comments">
+        <div class="Comment_Editor">
+		    <RadzenTextArea @bind-Value="@CommentDto.Comment" Placeholder="Aa" />
+			<RadzenButton Text="Send" Click=@(() => SaveComment(sugg.Id, CommentDto)) />
+		    <RadzenButton Text="Refresh" Click="@(() => UpdateComments(sugg.Id))" />
+		</div>
+		
+        @foreach (CommentViewmodel c in Comments)
+        {
+            <div class="Comment_Card">
+                <p>@c.Comment</p>
+                <div class="Comment_Details">
+                    <p>Skrevet av: @c.EmpName, <br> Skrevet: @c.TimeStamp</p>
+                </div>
+            </div>
+        }
+    </div>, new DialogOptions() { CloseDialogOnOverlayClick = false  });
     }
 }

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using BlazorTipz.ViewModels.User;
 using BlazorTipz.ViewModels.Suggestion;
 using BlazorTipz.ViewModels.Team;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BlazorTipz.Views
 {
@@ -11,8 +12,19 @@ namespace BlazorTipz.Views
         
         List<SuggViewmodel> UserSug = new();
         List<SuggViewmodel> Assignedsugg = new();
+        List<CommentViewmodel> Comments = new();
+        
         UserViewmodel currentUser = new();
         TeamViewmodel currentTeam = new();
+        SuggViewmodel CurrentSugg = new();
+        CommentViewmodel CommentDto = new();
+
+
+        //CSS fields
+        //bool IsHidden = true;
+        string IsHidden = "is_hidden";
+        string Mainpage = "";
+
         //Everytime page loads this runs
         protected override async Task OnInitializedAsync()
         {
@@ -47,6 +59,46 @@ namespace BlazorTipz.Views
             UserSug = await _suggestionManager.GetSuggestionsOfUser(currentUser.employmentId);
             Assignedsugg = await _suggestionManager.GetPreFilteredAssignedSuggestions();
             isLoaded = true;
+        }
+
+        private async Task ShowCloseableWindow(SuggViewmodel sugg)
+        {
+            CurrentSugg = sugg;
+            if (sugg.Id != null) { await UpdateComments(sugg.Id); }
+            //IsHidden = false;
+            IsHidden = "";
+            Mainpage = "is-hidden";
+        }
+        private async Task CloseCloseableWindow()
+        {
+            //IsHidden = true;
+            IsHidden = "is_hidden";
+            Mainpage = "";
+        }
+
+        private async Task UpdateComments(string suggId)
+        {
+            string respons = string.Empty;
+            List<CommentViewmodel> comments = new();
+            
+            (comments, respons) = await _suggestionManager.GetComments(suggId);
+            if (respons.Equals("Success"))
+            {
+                Comments = comments;
+            }
+        }
+        private async Task SaveComment(string SugId, CommentViewmodel comment)
+        {
+            if (comment.Comment.IsNullOrEmpty()) { return; }
+
+            comment.SugId = SugId;
+            comment.EmpId = currentUser.employmentId;
+            string respons = await _suggestionManager.SaveComment(comment);
+            if (respons.Equals("Kommentar lagret"))
+            {
+                await UpdateComments(SugId);
+                CommentDto = new();
+            }
         }
     }
 }

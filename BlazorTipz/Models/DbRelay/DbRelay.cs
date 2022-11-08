@@ -403,5 +403,59 @@ namespace BlazorTipz.Models.DbRelay
             }
             catch (Exception ex) { throw; }
         }
+
+        public Task SaveComment(CommentEntity comment)
+        {
+            try
+            {
+                var sql = "INSERT INTO Comments (employmentId, sugId, content) values (@EmpId, @SugId, @Content);";
+                return _data.SaveData(sql, new
+                {
+                    EmpId = comment.employmentId,
+                    SugId = comment.sugId,
+                    Content = comment.content
+                },
+                _config.GetConnectionString(ConnectionString));
+            }
+            catch (Exception ex) { throw; }
+        }
+
+        public Task UpdateComment(CommentEntity comment)
+        {
+            try
+            {
+                var sql = "UPDATE Comments SET content = @Content, active = @Active WHERE employmentId = @EmpId AND sugId = @SugId AND createdAt = @CreatedAt;";
+                return _data.SaveData(sql, new
+                {
+                    EmpId = comment.employmentId,
+                    SugId = comment.sugId,
+                    CreatedAt = comment.createdAt,
+                    Content = comment.content,
+                    Active = comment.active
+                },
+                _config.GetConnectionString(ConnectionString));
+            }
+            catch (Exception ex) { throw; }
+        }
+
+        public Task<List<CommentEntity>> GetCommentsOfSuggestion(string sugId)
+        {
+            try
+            {
+                var sql = "SELECT c.employmentId, c.sugId, c.createdAt, c.content, c.active, Users.userName FROM Comments c INNER JOIN Users ON c.employmentId = Users.employmentId WHERE c.sugId = @SugId ORDER BY createdAt DESC;";
+                return _data.LoadData<CommentEntity, dynamic>(sql, new { SugId = sugId }, _config.GetConnectionString(ConnectionString));
+            }
+            catch (Exception ex) { throw; }
+        }
+
+        public Task<List<CommentEntity>> GetCommentsOfUser(string empId)
+        {
+            try
+            {
+                var sql = "SELECT c.employmentId, c.sugId, c.createdAt, c.content, c.active, Users.userName FROM Comments c INNER JOIN Users ON c.employmentId = Users.employmentId WHERE c.employmentId = @EmpId ORDER BY createdAt DESC;";
+                return _data.LoadData<CommentEntity, dynamic>(sql, new { EmpId = empId }, _config.GetConnectionString(ConnectionString));
+            }
+            catch (Exception ex) { throw; }
+        }
     }
 }

@@ -27,5 +27,11 @@ namespace BlazorTipz.ViewModels.Suggestion
         
         //returns a list of current-user-assigned suggestions filtered on status to Plan, Do, Study, Act 
         Task<List<SuggViewmodel>> GetPreFilteredAssignedSuggestions();
+
+        //Save comments 
+        Task<string> SaveComment(CommentViewmodel comment);
+        Task<string> UpdateComment(CommentViewmodel comment);
+        Task<(List<CommentViewmodel>, string)> GetComments(string sugId);
+        Task<(List<CommentViewmodel>, string)> GetAllCommentsFromUser(string empId);
     }
 }

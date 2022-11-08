@@ -4,6 +4,8 @@ using BlazorTipz.Models.AppStorage;
 using BlazorTipz.Models.DbRelay;
 using BlazorTipz.ViewModels.Team;
 using BlazorTipz.ViewModels.User;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace BlazorTipz.ViewModels.Suggestion
 {
@@ -265,6 +267,67 @@ namespace BlazorTipz.ViewModels.Suggestion
                 }
             }
             return filteredSuggestions;
+        }
+
+        //Sjekker om input string faller inn under karaktersettet latin1.
+        private bool IsValidISO(string input)
+        {
+            byte[] bytes = Encoding.GetEncoding("ISO-8859-1").GetBytes(input);
+            String result = Encoding.GetEncoding("ISO-8859-1").GetString(bytes);
+            return String.Equals(input, result);
+        }
+        
+
+        public async Task<string> SaveComment(CommentViewmodel commentView)
+        {
+            if (commentView.Comment.IsNullOrEmpty()) { return "No comment"; }
+            if (IsValidISO(commentView.Comment) == false) { return "Kommentar inneholder ukjente tegn"; }
+            
+            CommentEntity commentDto = new(commentView);
+            await _DBR.SaveComment(commentDto);
+            
+            return "Kommentar lagret";
+        }
+    
+
+        public async Task<string> UpdateComment(CommentViewmodel comment)
+        {
+            if (comment.Comment.IsNullOrEmpty()) { return "No comment"; }
+            if (IsValidISO(comment.Comment) == false) { return "Kommentar inneholder ukjente tegn"; }
+
+            CommentEntity commentEntity = new CommentEntity(comment);
+            await _DBR.UpdateComment(commentEntity);
+            
+            return "Kommentar oppdatert";
+        }
+    
+
+        public async Task<(List<CommentViewmodel>, string)> GetComments(string sugId)
+        {
+            List<CommentViewmodel> comments = new();
+            
+            if (sugId == string.Empty) { return (comments, "No sugId"); }
+            List<CommentEntity> entities = await _DBR.GetCommentsOfSuggestion(sugId);
+            foreach (CommentEntity e in entities)
+            {
+                CommentViewmodel comment = new(e);
+                comments.Add(comment);
+            }
+            return (comments, "Success");
+        }
+
+        public async Task<(List<CommentViewmodel>, string)> GetAllCommentsFromUser(string empId)
+        {
+            List<CommentViewmodel> comments = new();
+
+            if (empId == string.Empty) { return (comments, "No empId"); }
+            List<CommentEntity> entities = await _DBR.GetCommentsOfUser(empId);
+            foreach (CommentEntity e in entities)
+            {
+                CommentViewmodel comment = new(e);
+                comments.Add(comment);
+            }
+            return (comments, "Success");
         }
     }
 }

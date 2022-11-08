@@ -56,5 +56,19 @@ namespace BlazorTipz.Models.DbRelay
         //update a suggestion entry
         Task updateSuggestion(SuggestionEntity sug);
 
+        //Save a comment to database
+        Task SaveComment(CommentEntity comment);
+
+        //Update a comment
+        Task UpdateComment(CommentEntity comment);
+        
+        //Get a list of comments bound to suggestion id
+        Task<List<CommentEntity>> GetCommentsOfSuggestion(string sugId);
+        
+        //For Admin to see all suggestions from a user
+        Task<List<CommentEntity>> GetCommentsOfUser(string empId);
+
+
+
     }
 }
