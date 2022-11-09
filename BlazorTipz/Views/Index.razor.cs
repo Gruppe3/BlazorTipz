@@ -21,7 +21,7 @@ namespace BlazorTipz.Views
 
 
         //CSS fields
-        string SuggCardHiddenState = "active";
+        string SuggCardHiddenState = "";
         string Mainpage = "";
 
         //Everytime page loads this runs
