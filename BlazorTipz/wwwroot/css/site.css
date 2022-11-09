@@ -1,6 +1,7 @@
 /*=============== GOOGLE FONTS ===============*/
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
 
+/*=============== VARIABLES CSS ===============*/
 :root {
     /*========== Colors ==========*/
     /*Color mode HSL(hue, saturation, lightness)*/
@@ -10,7 +11,7 @@
     --body-color: hsl(236, 28%, 19%);
     --container-color: #fff;
     --primary-color: hsl(264, 0%, 17%);
-    --secondary-color: hsl(264, 0%, 17%);
+    --secondary-color: hsl(264, 0%, 27%);
     --third-color: hsl(228, 12%, 15%);
     /*========== Font and typography ==========*/
     /*.5rem = 8px | 1rem = 16px ...*/
@@ -30,77 +31,128 @@ html, body {
     height: 96vh;
     width: 100%;
 }
+
 #loggInnCard {
     position: absolute;
     padding: 1.5rem;
     border-radius: 0.5rem;
     height: 510px;
-    width: 320px;
-    max-width: 310px;
+    width: 90%;
+    max-width: 400px;
     background-color: var(--primary-color);
 }
-    /*#loggInnCard .h1 {
-        color: hsl(235, 50%, 10%) !important;
-        font-weight: 500 !important;
-        margin-bottom: 0.5rem !important;
-    }*/
+.line {
+    border-bottom: solid grey 1px;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+.error-card {
+    opacity: 0;
+    transform: translateY(5px);
+    transition: opacity 200ms ease-in-out, transform 200ms ease-in-out;
+}
+    .error-card.active {
+        opacity: 1;
+        transform: translateY(0);
+    }
 
-/*.mainpage {
-    
-}*/
 
 /*==========SuggView==========*/
-.ClosableSuggestionCard {
-    background-color: var(--body-color);
-    position: absolute;
-    justify-content: center;
+
+.closable-sugg-wrapper {
+    /*background-color: red;*/
+    position: fixed;
     z-index: 1;
-    top: 0px;
-    left: 0px;
+    padding-top: 6rem;
+    opacity: 0;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    padding: 6.5rem 0.5rem;
-}
-.is_hidden {
-    display: none;
     pointer-events: none;
-    overflow: hidden;
+    /*transform: translateY(25px);*/
+    transition: opacity 200ms ease-in-out; /*transform 200ms ease-in-out;*/
 }
-.SuggestionTopcard {
+    .closable-sugg-wrapper.active {
+        opacity: 1;
+        /*transform: translateY(0);*/
+        pointer-events: auto;
+    }
+
+.closable-sugg {
     background-color: var(--primary-color);
+    max-width: 600px;
+    opacity: 0;
+    margin: 0 auto;
+    padding: 0.5rem;
     border-radius: 0.5rem;
-    border: solid var(--third-color) 5px;
-    margin-bottom: 0.5rem;
+    transform: translateY(25px);
+    transition: opacity 200ms ease-in-out, transform 200ms ease-in-out;
 }
+    .closable-sugg.active {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .sugg-topcard {
+        border-bottom: 2px solid grey;
+    }
+
 .suggestion {
     background-color: var(--primary-color);
     border-radius: 0.5rem;
-    border: solid var(--third-color) 5px;
     padding: 0.5rem;
 }
-/*.Comments {
+.sugg-details {
+    color: gray;
+}
 
-}*/
-.Comment_Editor {
-    padding: 0.5rem;
-}
-.Comment_Card {
+.comment_editor {
     background-color: var(--secondary-color);
     border-radius: 0.5rem;
     padding: 0.5rem;
-    margin-bottom: 0.5rem;
-    height: 100%;
-    border: solid var(--third-color) 5px;
 }
 
-.Comment_Details {
-    border: solid var(--third-color) 1px;
+.float-right {
+    float: right;
+}
+/*==========comments==========*/
+.comment-container {
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
+
+.comment-card {
+    background-color: var(--primary-color);
+    padding: 1rem;
+    margin-bottom: 0.1rem;
+}
+
+.comment_author {
+    margin-right: 1rem;
+    font-size: 20px;
+}
+
+.comment_date {
+    float: right;
+    color: gray;
+}
+
+.comment-text {
+    font-size: 15px;
 }
 
 
-/*.Clickable {
+
+
+@media screen and (min-width: 768px) {
+}
+
+@media screen and (max-width: 768px) {
     
-}*/
+}
+
+
 
 
 a.navbar-brand {
@@ -114,7 +166,7 @@ a.navbar-brand {
     text-align: center;
     bottom: 0px;
     width: 100%;
-}  
+}
 
 h1:focus {
     outline: none;
@@ -129,7 +181,7 @@ h1 {
     background-color: transparent;
 }
 
-.rz-paginator-element{
+.rz-paginator-element {
     height: 2rem;
     width: 2rem;
     font-size: 1rem;
@@ -154,7 +206,6 @@ a, .btn-link {
     color: var(--text-color);
     font-weight: 500;
     transition: .3s;
-    
 }
 
 .grid-container {
@@ -178,10 +229,11 @@ a, .btn-link {
     animation: spin 700ms linear infinite;
 }
 
-@keyframes spin{
-    0%{
+@keyframes spin {
+    0% {
         transform: rotate(0deg)
     }
+
     100% {
         transform: rotate(360deg)
     }
@@ -200,13 +252,13 @@ a, .btn-link {
     align-items: center;
     padding-top: 1rem;
     /*
-        margin-right: 0.5rem;
-    */
+    margin-right: 0.5rem;
+*/
 }
 
-.center p {
-    padding-top: 0rem;
-}
+    .center p {
+        padding-top: 0rem;
+    }
 
 .content {
     padding-top: 1.1rem;
@@ -276,11 +328,17 @@ a, .btn-link {
     cursor: pointer;
 }
 
-    table td, table th {
-        padding: 8px;
-    }
+table td, table th {
+    padding: 8px;
+}
 
-    table th {
-        padding-top: 12px;
-        padding-bottom: 12px;
-    }
+table th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+/*==========rz-override==========*/
+.rz-textbox,
+.rz-textarea {
+    background-color: var(--secondary-color);
+}

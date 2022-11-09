@@ -21,8 +21,7 @@ namespace BlazorTipz.Views
 
 
         //CSS fields
-        //bool IsHidden = true;
-        string IsHidden = "is_hidden";
+        string SuggCardHiddenState = "active";
         string Mainpage = "";
 
         //Everytime page loads this runs
@@ -61,19 +60,15 @@ namespace BlazorTipz.Views
             isLoaded = true;
         }
 
-        private async Task ShowCloseableWindow(SuggViewmodel sugg)
+        private async Task ShowSuggWindow(SuggViewmodel sugg)
         {
             CurrentSugg = sugg;
             if (sugg.Id != null) { await UpdateComments(sugg.Id); }
-            //IsHidden = false;
-            IsHidden = "";
-            Mainpage = "is-hidden";
+            SuggCardHiddenState = "active";
         }
-        private async Task CloseCloseableWindow()
+        private async Task CloseSuggWindow()
         {
-            //IsHidden = true;
-            IsHidden = "is_hidden";
-            Mainpage = "";
+            SuggCardHiddenState = "";
         }
 
         private async Task UpdateComments(string suggId)

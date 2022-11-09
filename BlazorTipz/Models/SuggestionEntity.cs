@@ -12,7 +12,7 @@ namespace BlazorTipz.Models
         public string? assignedId { get; set; }
         public string? completerId { get; set; }
         public SuggStatus sugStatus { get; set; }
-        public string? sugProgression { get; set; }
+        public int sugProgression { get; set; }
         public string sugTitle { get; set; }
         public string sugDesc { get; set; }
         public string createdAt { get; set; }
@@ -41,6 +41,7 @@ namespace BlazorTipz.Models
             this.justDoIt = sugg.JustDoIt;
             this.creatorId = sugg.Creator;
             this.sugStatus = sugg.Status;
+            this.sugProgression = sugg.Progression;
             this.createdAt = sugg.StartDate;
             this.lastChanged = sugg.UpdatedDate;
             this.afterImage = sugg.AfterImage;

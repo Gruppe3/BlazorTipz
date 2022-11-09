@@ -1,4 +1,5 @@
 ﻿/*=============== VARIABLES CSS ===============*/
+
 :root {
     /*========== Colors ==========*/
     /*Color mode HSL(hue, saturation, lightness)*/
@@ -8,7 +9,7 @@
     --body-color: hsl(236, 28%, 19%);
     --container-color: #fff;
     --primary-color: hsl(264, 0%, 17%);
-    --secondary-color: hsl(264, 0%, 17%);
+    --secondary-color: hsl(264, 0%, 27%);
     --third-color: hsl(228, 12%, 15%);
     /*========== Font and typography ==========*/
     /*.5rem = 8px | 1rem = 16px ...*/

@@ -10,11 +10,12 @@ namespace BlazorTipz.Views
     {
         bool popup; 
         public string Checker { get; set; } = string.Empty;
+        string ErrorCardState = "";
 
         //Brukes denne til noe?
         public string Link { get; set; } = string.Empty; 
 
-        UserViewmodel userDto = new UserViewmodel();
+        UserViewmodel userDto = new();
         //If Submit is pressed this runs, it takes in request from the form
         //Async means it will wait for things to load in with await.
         public async Task<ActionResult<string>> LoginUs(UserViewmodel request)
@@ -34,12 +35,14 @@ namespace BlazorTipz.Views
             else if (token == null)
             {
                 Checker = err;
+                ErrorCardState = "active";
                 return err;
             }
             //If something else happens
             else
             {
                 Checker = "something went horribly wrong";
+                ErrorCardState = "active";
                 return "Fatal";
             }
         }

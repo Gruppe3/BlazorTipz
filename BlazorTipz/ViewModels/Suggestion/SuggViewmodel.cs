@@ -15,6 +15,7 @@ namespace BlazorTipz.ViewModels.Suggestion
         public string OwnerTeam { get; set; }
         public string Creator { get; set; }
         public SuggStatus Status { get; set; } = SuggStatus.Waiting;
+        public int Progression { get; set; } = 0;
         public string StartDate { get; set; }
         public string UpdatedDate { get; set; } = string.Empty;
         public string? Ansvarlig { get; set; }
@@ -43,6 +44,7 @@ namespace BlazorTipz.ViewModels.Suggestion
             this.OwnerTeam = Suggestion.ownerId;
             this.Creator = Suggestion.creatorId;
             this.Status = Suggestion.sugStatus;
+            this.Progression = Suggestion.sugProgression;
             this.StartDate = Suggestion.createdAt;
             this.UpdatedDate = Suggestion.lastChanged;
             this.Ansvarlig = Suggestion.assignedId;
@@ -50,7 +52,7 @@ namespace BlazorTipz.ViewModels.Suggestion
             this.BeforeImage = Suggestion.beforeImage;
             this.AfterImage = Suggestion.afterImage;
             this.Id = Suggestion.sugId;
-
+            
             this.Category = new Category(Suggestion.CategoryEntity);
             //SetFristToFristTid();
         }
