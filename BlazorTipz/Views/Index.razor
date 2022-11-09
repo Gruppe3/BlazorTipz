@@ -20,9 +20,11 @@
     <Authorized>
         <h1 class="center">Dashboard</h1>
         <p class="d-flex justify-content-center">Velkommen til Tipz!</p>
-		
-        <div class="closable-sugg-wrapper @SuggCardHiddenState" @onclick="@(() => CloseSuggWindow())"> 
 
+        <div class="closable-sugg-wrapper fullpage-wrapper @SuggCardHiddenState">
+            <div class="closable-sugg-background-button fullpage-wrapper @SuggCardHiddenState" @onclick="@(() => CloseSuggWindow())">
+				
+            </div>
             <div class="closable-sugg @SuggCardHiddenState">
 				<RadzenButton Text="X" Class="float-right" Click="@(() => CloseSuggWindow())" />
                 <div class="sugg-topcard">
@@ -31,10 +33,18 @@
                             @CurrentSugg.Title
                             <RadzenBadge BadgeStyle="BadgeStyle.Warning" Shade="Shade.Lighter" IsPill="@true" Text="@CurrentSugg.Status.ToString()" Class="ml-2" />
                         </h3>
-                        <div class="sugg-details mb-3">
-                            <span>Sist endret: @CurrentSugg.UpdatedDate</span><br />
-                            <span>Frist: @CurrentSugg.Frist.ToShortDateString()</span><br />
-                            <span>Progresjonsnivå: @CurrentSugg.Progression</span>
+                        <div class="sugg-details mb-3 row">
+                            <div class="col-9">
+                                <span>Sist endret: @DateTime.Parse(CurrentSugg.UpdatedDate).ToString("dd/MM/yyyy HH:mm")</span><br />
+                                <span>Frist: @CurrentSugg.Frist.ToShortDateString()</span><br />
+								<span>Tilordnet: @CurrentSugg.AnsvarligName</span><br />
+                                <span>Progresjonsnivå: @CurrentSugg.Progression</span>
+                            </div>
+                            <div class="progress-display col-3">
+								<div class="progress-wheel">
+									*Sirkel*
+                                </div>
+                            </div>
                         </div>
                         <p>@CurrentSugg.Description</p>
 	                </div>
@@ -74,6 +84,7 @@
                     }
                 </div>
             </div>
+            
         </div>
 		
         <div class="@Mainpage container-fluid">

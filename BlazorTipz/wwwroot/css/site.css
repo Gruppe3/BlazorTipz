@@ -23,6 +23,8 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     overflow-y: auto;
 }
+
+/*==========Login==========*/
 #loggInnWrapper {
     display: flex;
     flex-direction: column;
@@ -58,25 +60,35 @@ html, body {
 
 
 /*==========SuggView==========*/
-
-.closable-sugg-wrapper {
-    /*background-color: red;*/
+.fullpage-wrapper {
     position: fixed;
-    z-index: 1;
-    padding-top: 6rem;
-    opacity: 0;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+}
+
+.closable-sugg-wrapper {
     pointer-events: none;
-    /*transform: translateY(25px);*/
-    transition: opacity 200ms ease-in-out; /*transform 200ms ease-in-out;*/
+    z-index: 1;
+    opacity: 0;
+    padding-top: 6rem;
+    transition: opacity 200ms ease-in-out;
 }
     .closable-sugg-wrapper.active {
         opacity: 1;
-        /*transform: translateY(0);*/
         pointer-events: auto;
+    }
+
+/*For closing the popup window by clicking the background*/
+.closable-sugg-background-button {
+    pointer-events: none;
+    z-index: 0;
+    display: none;
+}
+    .closable-sugg-background-button.active {
+        pointer-events: auto;
+        display: block;
     }
 
 .closable-sugg {
