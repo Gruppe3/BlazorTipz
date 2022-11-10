@@ -24,45 +24,46 @@
 <!--Authorized view, not visable for someone not logged in-->
 <AuthorizeView>
     <Authorized>
-        <h1 class="center">Dashboard</h1>
-        <p class="d-flex justify-content-center">Velkommen til Tipz!</p>
-
-        <div class="closable-sugg-wrapper fullpage-wrapper @SuggCardHiddenState">
-            <div class="closable-sugg-background-button fullpage-wrapper @SuggCardHiddenState" @onclick="@(() => CloseSuggWindow())">
-				
-            </div>
+        <!--Popups-->
+        <div class="closable-sugg-wrapper fixed-content @SuggCardHiddenState">
+            <div class="closable-sugg-background-button fullpage-wrapper @SuggCardHiddenState" @onclick="@(() => CloseSuggWindow())"></div>
             <div class="closable-sugg @SuggCardHiddenState">
 				<RadzenButton Text="X" Class="float-right" Click="@(() => CloseSuggWindow())" />
                 <div class="sugg-topcard">
 				    <div class="suggestion mb-2">
                         <h3>
                             @CurrentSugg.Title
-                            <RadzenBadge BadgeStyle="BadgeStyle.Warning" Shade="Shade.Lighter" IsPill="@true" Text="@CurrentSugg.Status.ToString()" Class="ml-2" />
-                        </h3>
+						</h3>
+						<RadzenBadge BadgeStyle="BadgeStyle.Warning" Shade="Shade.Lighter" IsPill="@true" Text="@CurrentSugg.Status.ToString()" Class="mb-2" />
                         <div class="sugg-details-wrapper mb-3">
-                            <div class="sugg-details">
-                                <span>Sist endret: @if (CurrentSugg.UpdatedDate != "") { @DateTime.Parse(CurrentSugg.UpdatedDate).ToString("dd/MM/yyyy HH:mm") }</span><br />
-                                <span>
-                                    Frist: @if (CurrentSugg.Frist != DateTime.MinValue) 
-                                    { @CurrentSugg.Frist.ToShortDateString() } 
-                                    else { <span>Ikke satt</span> }
-                                </span><br />
-								<span>Tilordnet: @CurrentSugg.AnsvarligName</span><br />
-                                <span>Progresjonsnivå: @CurrentSugg.Progression</span>
-                            </div>
-                            <div class="progress-display">
-								<div class="progress-wheel-wrapper">
-                                    <div class="progress-wheel">
-                                        <div class="progress-mask progress-full">
-											<div class="progress-fill"></div>
-                                        </div>
-                                        <div class="progress-mask progress-halv">
-                                            <div class="progress-fill"></div>
+                            <div class="sugg-show-moreless @SuggShowMore">    
+                                <div class="sugg-details">
+                                    <span>Sist endret: @if (CurrentSugg.UpdatedDate != "") { @DateTime.Parse(CurrentSugg.UpdatedDate).ToString("dd/MM/yyyy HH:mm") }</span><br />
+                                    <span>
+                                        Frist: @if (CurrentSugg.Frist != DateTime.MinValue) 
+                                        { @CurrentSugg.Frist.ToShortDateString() } 
+                                        else { <span>Ikke satt</span> }
+                                    </span><br />
+								    <span>Tilordnet: @CurrentSugg.AnsvarligName</span><br />
+                                    <span>Progresjonsnivå: @CurrentSugg.Progression</span>
+                                </div>
+							    <div class="progress-display">
+								    <div class="circular-progress" style="background: conic-gradient(#2c3cf2 @((CurrentSugg.Progression * 20) * 3.6)deg, 
+                                                                                                      #cadcff @((CurrentSugg.Progression * 20) * 3.6)deg)">
+									    <div class="value-container">
+                                            @if (@SuggShowMore == "show-more")
+                                            { @(CurrentSugg.Progression * 20)<span>%</span> }
                                         </div>
                                     </div>
                                 </div>
+							</div>
+						    <div class="button-show-more" @onclick="@(() => ShowMoreToggle())">
+                                @if (@SuggShowMore == "show-more")
+                                { <span>Show less</span> } 
+                                else
+                                { <span>Show more</span> }
                             </div>
-                        </div>
+						</div>
                         <p>@CurrentSugg.Description</p>
 	                </div>
                 </div>
@@ -105,10 +106,14 @@
                     }
                 </div>
             </div>
-            
         </div>
 		
-        <div class="@Mainpage container-fluid">
+
+		
+		<!--Main content on page-->
+		<h1 class="center">Dashboard</h1>
+        <p class="d-flex justify-content-center">Velkommen til Tipz!</p>
+        <div class="container-fluid">
             <div class="row">
                 <div class="col">
                     <RadzenCard Class="suggColor">
@@ -116,7 +121,7 @@
                         {
                             <h1 class="d-flex justify-content-center">Forslag du er tilordnet</h1>
                             <p class="d-flex justify-content-center">Sortert fra gammel til ny</p>
-                            <RadzenDataList WrapItems="true" AllowPaging="true" Data="@Assignedsugg" TItem="SuggViewmodel" PageSize="3"
+                            <RadzenDataList WrapItems="true" AllowPaging="true" Data="@Assignedsugg" TItem="SuggViewmodel" PageSize="2"
                                         PagerHorizontalAlign="HorizontalAlign.Center" PagerPosition="PagerPosition.Top">
                                 <Template Context="suggestions">
                                     <RadzenCard Style="width: 100%; padding: 0; overflow: hidden;">
@@ -129,7 +134,17 @@
                                                             <RadzenBadge BadgeStyle="BadgeStyle.Warning" Shade="Shade.Lighter" IsPill="@true" Text="@suggestions.Status.ToString()" Class="ml-2" />
                                                         </h2>
 														<p>Last Edited; @(suggestions.UpdatedDate)</p>
-
+                                                    </div>
+													<div class="suggestion-cards-progress">
+														<div class="circular-progress" style="background: conic-gradient(#2c3cf2 @((suggestions.Progression * 20) * 3.6)deg, 
+                                                                                                      #cadcff @((suggestions.Progression * 20) * 3.6)deg)">
+									                        <div class="value-container">
+                                                                @if (@SuggShowMore == "show-more")
+                                                                {
+                                                                    @(CurrentSugg.Progression * 20)<span>%</span>
+											                    }
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -192,6 +207,8 @@
         <h1 class="center">Redirecting..</h1>
     </NotAuthorized>
 </AuthorizeView>
+
+
 @code{
     async Task ShowSuggestion(SuggViewmodel sugg)
     {
@@ -206,8 +223,8 @@
                                         <!--Title on suggestion-->
                                     @if (suggUpdate.Status == SuggStatus.Waiting)
                                     {
-                                    <div class="row mb-5">
-                                        <div class="col-md-4" style="align-self: center;">
+                                    <div class="row mb-3">
+                                        <div class="col-md-2" style="align-self: center;">
                                             <RadzenLabel Text="Tittel" />
                                         </div>
                                         <div class="col">
@@ -216,8 +233,8 @@
                                         </div>
                                     </div>
                                     <!--Just do it checkbox-->
-                                    <div class="row mb-5">
-                                        <div class="col-md-4" style="align-self: center;">
+                                    <div class="row mb-3">
+                                        <div class="col-md-2" style="align-self: center;">
                                             <RadzenLabel Text="Just Do It" />
                                         </div>
                                         <div class="col">
@@ -231,8 +248,8 @@
                                             }</RadzenText>
                                             </div>
                                         </div>
-                                    <div class="row mb-5">
-                                        <div class="col-md-4" style="align-self: center;">
+                                    <div class="row mb-3">
+                                        <div class="col-md-2" style="align-self: center;">
                                             <RadzenLabel Text="Frist" />
                                         </div>
                                         <div class="col">
@@ -243,7 +260,7 @@
                                     }
                                     else
                                     {
-                                    <div class="row mb-5">
+                                    <div class="row mb-3">
                                         <div class="col-md-4" style="align-self: center;">
                                             <RadzenLabel Text="Tittel" />
                                         </div>
@@ -253,7 +270,7 @@
                                         </div>
                                     </div>
                                     <!--Just do it checkbox-->
-                                    <div class="row mb-5">
+                                    <div class="row mb-3">
                                         <div class="col-md-4" style="align-self: center;">
                                             <RadzenLabel Text="Just Do It" />
                                         </div>
@@ -270,7 +287,7 @@
                                             </RadzenText>
                                         </div>
                                     </div>
-                                    <div class="row mb-5">
+                                    <div class="row mb-3">
                                         <div class="col-md-4" style="align-self: center;">
                                             <RadzenLabel Text="Frist" />
                                         </div>
@@ -280,7 +297,7 @@
                                     </div>
                                     }
                                     <!--Team dropdown-->
-                                    <div class="row mb-5">
+                                    <div class="row mb-3">
                                         <div class="col-md-4" style="align-self: center;">
                                             <RadzenLabel Text="Team Name" />
                                         </div>
@@ -296,7 +313,7 @@
                                         </div>
                                     </div>
                                     <!--Ansvarlig-->
-                                    <div class="row mb-5">
+                                    <div class="row mb-3">
                                         <div class="col-md-4" style="align-self: center;">
                                             <RadzenLabel Text="Ansvarlig" />
                                         </div>
@@ -312,7 +329,7 @@
                                         </div>
                                     </div>
                                     <!--Status-->
-                                    <div class="row mb-5">
+                                    <div class="row mb-3">
                                         <div class="col-md-4" style="align-self: center;">
                                             <RadzenLabel Text="Status" />
                                         </div>
@@ -327,7 +344,7 @@
                                         </div>
                                     </div>
                                     <!--Category-->
-                                    <div class="row mb-5">
+                                    <div class="row mb-3">
                                         <div class="col-md-4" style="align-self: center;">
                                             <RadzenLabel Text="Kategori" />
                                         </div>
@@ -341,7 +358,7 @@
                                         </div>
                                     </div>
                                     <!--Description-->
-                                    <div class="row mb-5">
+                                    <div class="row mb-3">
                                         <div class="col-md-4" style="align-self: center;">
                                             <RadzenLabel Text="Description" />
                                         </div>

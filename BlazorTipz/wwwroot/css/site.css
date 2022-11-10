@@ -13,10 +13,27 @@
     --primary-color: hsl(264, 0%, 17%);
     --secondary-color: hsl(264, 0%, 27%);
     --third-color: hsl(228, 12%, 15%);
+    --detail-color: hsl(235, 93%, 64%);
     /*========== Font and typography ==========*/
     /*.5rem = 8px | 1rem = 16px ...*/
     --body-font: 'Poppins', sans-serif;
     --normal-font-size: .938rem;
+}
+
+/*=============== BASE ===============*/
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    position: relative;
+    font-family: var(--body-font);
+    font-size: var(--normal-font-size);
+    background-color: var(--body-color);
+    color: var(--text-color);
+    height: fit-content;
 }
 
 html, body {
@@ -24,7 +41,16 @@ html, body {
     overflow-y: auto;
 }
 
-/*==========Login==========*/
+h1 {
+    color: var(--text-color);
+}
+
+a {
+    font-size: 17px;
+    text-decoration: none;
+}
+
+/*=============== Login ===============*/
 #loggInnWrapper {
     display: flex;
     flex-direction: column;
@@ -59,13 +85,23 @@ html, body {
     }
 
 
-/*==========SuggView==========*/
+/*=============== SuggView ===============*/
 .fullpage-wrapper {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
+}
+.fixed-content {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .closable-sugg-wrapper {
@@ -73,6 +109,7 @@ html, body {
     z-index: 1;
     opacity: 0;
     padding-top: 6rem;
+    padding-bottom: 14rem;
     transition: opacity 200ms ease-in-out;
 }
     .closable-sugg-wrapper.active {
@@ -106,19 +143,40 @@ html, body {
         transform: translateY(0);
     }
 
-    .sugg-topcard {
-        border-bottom: 2px solid grey;
-    }
+.sugg-topcard {
+    border-bottom: 2px solid grey;
+}
 
 .suggestion {
     background-color: var(--primary-color);
     border-radius: 0.5rem;
     padding: 0.5rem;
 }
+
 .sugg-details-wrapper {
     display: inline-block;
     width: 100%;
 }
+.sugg-show-moreless {
+    overflow: hidden;
+    height: 45px;
+    margin-bottom: 0.2rem;
+}
+    .sugg-show-moreless.show-more {
+        height: 90px;
+    }
+    .sugg-show-moreless.show-less {
+        height: 45px;
+    }
+
+.button-show-more {
+    display: ;
+    font-size: 12px;
+    cursor: pointer;
+}
+    .button-show-more:active {
+        color: gray;
+    }
 
 .sugg-details {
     color: gray;
@@ -127,6 +185,7 @@ html, body {
 }
 
 .progress-display {
+    height: 100%;
     width: 25%;
     float: left;
 }
@@ -137,36 +196,37 @@ html, body {
     padding: 0.5rem;
 }
 
-/*==========progres-wheel==========*/
-.progress-wheel-wrapper {
-    margin: 0 auto;
-    background-color: lightgray;
-    height: 90px;
-    width: 90px;
-    padding-bottom: 0%;
+
+/*=============== progress-wheel ===============*/
+.circular-progress {
+    background-color: hsl(220, 100%, 90%);
     border-radius: 50%;
+    position: relative;
+    max-height: 90px;
+    max-width: 90px;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    margin: 0 auto;
+    display: grid;
+    place-items: center;
 }
 
-    .progress-wheel-wrapper .progress-wheel .progress-mask,
-    .progress-wheel-wrapper .progress-wheel .progress-fill {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        border-radius: 50%;
-    }
-    .progress-wheel-wrapper .progress-wheel .progress-mask {
-        clip: rect(0px, 15px, 150px, 75px);
-    }
+.circular-progress:before {
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    position: absolute;
+    content: "";
+    height: 75%;
+    width: 75%;
+}
 
-.progress-mask progress-fill {
-    clip: rect(0px, 75px, 150px, 0px);
-
+.value-container {
+    position: relative;
+    font-size: 18px;
 }
 
 
-
-
-/*==========comments==========*/
+/*=============== comments ===============*/
 .comment-container {
     margin-top: 1rem;
     margin-bottom: 2rem;
@@ -190,7 +250,7 @@ html, body {
 
 .comment-text {
     white-space: pre-line;
-    font-size: 15px;
+    font-size: 12px;
 }
 
 
@@ -203,6 +263,12 @@ html, body {
     
 }
 
+
+
+/*=============== main-page ===============*/
+.suggestion-cards-progress {
+    
+}
 
 
 
@@ -388,7 +454,7 @@ table th {
     padding-bottom: 12px;
 }
 
-/*==========rz-override==========*/
+/*=============== rz-override ===============*/
 .rz-textbox,
 .rz-textarea {
     background-color: var(--secondary-color);

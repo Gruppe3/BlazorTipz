@@ -27,9 +27,11 @@ namespace BlazorTipz.Views
         private List<SuggStatus> statuses = new List<SuggStatus>();
 
         //CSS fields
-        string SuggCardHiddenState = "";
-        string Mainpage = "";
-        private string Feedback { get; set; }
+        private string SuggCardHiddenState { get; set; } = "";
+        private string SuggProgress { get; set; } = "0deg";
+        private string MainpageLock { get; set; } = "";
+        private string Feedback { get; set; } 
+        private string SuggShowMore = "show-less";
 
         //Everytime page loads this runs
         protected override async Task OnInitializedAsync()
@@ -78,11 +80,31 @@ namespace BlazorTipz.Views
         {
             CurrentSugg = sugg;
             if (sugg.Id != null) { await UpdateComments(sugg.Id); }
+
+            //SuggProgress = ConvertProgres(sugg.Progression);
+            MainpageLock = "active";
             SuggCardHiddenState = "active";
         }
-        private async Task CloseSuggWindow()
+        private void CloseSuggWindow()
         {
+            MainpageLock = "";
             SuggCardHiddenState = "";
+            SuggShowMore = "show-less";
+        }
+        private void ShowMoreToggle()
+        {
+            if (SuggShowMore == "show-more")
+            {
+                SuggShowMore = "show-less";
+            }
+            else
+            {
+                SuggShowMore = "show-more";
+            }
+        }
+
+        private string ConvertProgres(int x) {
+            return x + "0deg";
         }
 
         private async Task UpdateComments(string suggId)
