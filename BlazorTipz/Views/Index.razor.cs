@@ -3,6 +3,8 @@ using BlazorTipz.ViewModels.User;
 using BlazorTipz.ViewModels.Suggestion;
 using BlazorTipz.ViewModels.Team;
 using Microsoft.IdentityModel.Tokens;
+using BlazorTipz.Data;
+using Category = BlazorTipz.ViewModels.Category;
 
 namespace BlazorTipz.Views
 {
@@ -13,16 +15,21 @@ namespace BlazorTipz.Views
         List<SuggViewmodel> UserSug = new();
         List<SuggViewmodel> Assignedsugg = new();
         List<CommentViewmodel> Comments = new();
-        
+        private List<UserViewmodel> users = new List<UserViewmodel>();
+        private List<TeamViewmodel> teams = new List<TeamViewmodel>();
+        public List<Category>? Categories;
+
         UserViewmodel currentUser = new();
         TeamViewmodel currentTeam = new();
         SuggViewmodel CurrentSugg = new();
         CommentViewmodel CommentDto = new();
-
+        public SuggViewmodel suggUpdate = new SuggViewmodel();
+        private List<SuggStatus> statuses = new List<SuggStatus>();
 
         //CSS fields
         string SuggCardHiddenState = "";
         string Mainpage = "";
+        private string Feedback { get; set; }
 
         //Everytime page loads this runs
         protected override async Task OnInitializedAsync()
@@ -54,10 +61,17 @@ namespace BlazorTipz.Views
                 //Sets currentUser to user
                 currentUser = user;
             }
+            statuses.AddRange(new List<SuggStatus>() { SuggStatus.Plan, SuggStatus.Do, SuggStatus.Study, SuggStatus.Act, SuggStatus.Complete, SuggStatus.Rejected });
+            //get active teams
+            teams = await _teamManager.updateTeamsList();
             //Get team suggestions
             UserSug = await _suggestionManager.GetSuggestionsOfUser(currentUser.employmentId);
             Assignedsugg = await _suggestionManager.GetPreFilteredAssignedSuggestions();
             isLoaded = true;
+        }
+        void OnChange(object value, string name)
+        {
+            var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
         }
 
         private async Task ShowSuggWindow(SuggViewmodel sugg)
@@ -94,6 +108,28 @@ namespace BlazorTipz.Views
                 await UpdateComments(SugId);
                 CommentDto = new();
             }
+        }
+        public async Task updateSugg()
+        {
+            if (suggUpdate.Id != null)
+            {
+                string? err;
+                //suggUpdate.SetFristTidToFrist();
+                err = await _suggestionManager.UpdateSuggestion(suggUpdate, currentUser);
+                if (err != null)
+                {
+                    Feedback = err;
+                }
+                else
+                {
+                    Feedback = "Suggestion updated";
+                }
+            }
+            else
+            {
+                Feedback = "Suggestion not found";
+            }
+            
         }
     }
 }
