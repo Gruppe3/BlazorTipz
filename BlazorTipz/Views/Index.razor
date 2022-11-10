@@ -33,16 +33,27 @@
                             @CurrentSugg.Title
                             <RadzenBadge BadgeStyle="BadgeStyle.Warning" Shade="Shade.Lighter" IsPill="@true" Text="@CurrentSugg.Status.ToString()" Class="ml-2" />
                         </h3>
-                        <div class="sugg-details mb-3 row">
-                            <div class="col-9">
-                                <span>Sist endret: @DateTime.Parse(CurrentSugg.UpdatedDate).ToString("dd/MM/yyyy HH:mm")</span><br />
-                                <span>Frist: @CurrentSugg.Frist.ToShortDateString()</span><br />
+                        <div class="sugg-details-wrapper mb-3">
+                            <div class="sugg-details">
+                                <span>Sist endret: @if (CurrentSugg.UpdatedDate != "") { @DateTime.Parse(CurrentSugg.UpdatedDate).ToString("dd/MM/yyyy HH:mm") }</span><br />
+                                <span>
+                                    Frist: @if (CurrentSugg.Frist != DateTime.MinValue) 
+                                    { @CurrentSugg.Frist.ToShortDateString() } 
+                                    else { <span>Ikke satt</span> }
+                                </span><br />
 								<span>Tilordnet: @CurrentSugg.AnsvarligName</span><br />
                                 <span>Progresjonsnivå: @CurrentSugg.Progression</span>
                             </div>
-                            <div class="progress-display col-3">
-								<div class="progress-wheel">
-									*Sirkel*
+                            <div class="progress-display">
+								<div class="progress-wheel-wrapper">
+                                    <div class="progress-wheel">
+                                        <div class="progress-mask progress-full">
+											<div class="progress-fill"></div>
+                                        </div>
+                                        <div class="progress-mask progress-halv">
+                                            <div class="progress-fill"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -115,8 +115,20 @@ html, body {
     border-radius: 0.5rem;
     padding: 0.5rem;
 }
+.sugg-details-wrapper {
+    display: inline-block;
+    width: 100%;
+}
+
 .sugg-details {
     color: gray;
+    width: 75%;
+    float: left;
+}
+
+.progress-display {
+    width: 25%;
+    float: left;
 }
 
 .comment_editor {
@@ -125,9 +137,35 @@ html, body {
     padding: 0.5rem;
 }
 
-.float-right {
-    float: right;
+/*==========progres-wheel==========*/
+.progress-wheel-wrapper {
+    margin: 0 auto;
+    background-color: lightgray;
+    height: 90px;
+    width: 90px;
+    padding-bottom: 0%;
+    border-radius: 50%;
 }
+
+    .progress-wheel-wrapper .progress-wheel .progress-mask,
+    .progress-wheel-wrapper .progress-wheel .progress-fill {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        border-radius: 50%;
+    }
+    .progress-wheel-wrapper .progress-wheel .progress-mask {
+        clip: rect(0px, 15px, 150px, 75px);
+    }
+
+.progress-mask progress-fill {
+    clip: rect(0px, 75px, 150px, 0px);
+
+}
+
+
+
+
 /*==========comments==========*/
 .comment-container {
     margin-top: 1rem;
@@ -151,6 +189,7 @@ html, body {
 }
 
 .comment-text {
+    white-space: pre-line;
     font-size: 15px;
 }
 
