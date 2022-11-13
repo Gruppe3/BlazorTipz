@@ -303,7 +303,7 @@ namespace BlazorTipz.Models.DbRelay
                     SugStatus = suggestion.sugStatus.ToString(),
                     CategoryId = suggestion.categoryId,
                     JustDoIt = suggestion.justDoIt,
-                    AassignedId = suggestion.assignedId
+                    AssignedId = suggestion.assignedId
                 },
                 _config.GetConnectionString(ConnectionString));
             }
