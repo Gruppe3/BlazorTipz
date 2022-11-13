@@ -16,8 +16,8 @@ namespace BlazorTipz.ViewModels.Suggestion
         public string Creator { get; set; }
         public SuggStatus Status { get; set; } = SuggStatus.Waiting;
         public int Progression { get; set; } = 0;
-        public string StartDate { get; set; }
-        public string UpdatedDate { get; set; } = string.Empty;
+        public DateTime StartDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
         public string? Ansvarlig { get; set; }
         public DateTime Frist { get; set; }
         //picture
@@ -100,23 +100,6 @@ namespace BlazorTipz.ViewModels.Suggestion
         public async Task SetOwnerTeamName(ITeamManager _teamManager)
         {
             await GetOwnerTeamName(_teamManager);
-        }
-
-        //public void SetFristTidToFrist()
-        //{
-        //    if (FristTid == null) { return; }
-
-        //    string? temp = FristTid.ToString();
-        //    Frist = temp;
-        //}
-        ////from string to datetime
-        //public void SetFristToFristTid()
-        //{
-        //    if (Frist == string.Empty || Frist == null) { return; }
-
-        //    DateTime temp = DateTime.Parse(Frist);
-        //    FristTid = temp;
-        //}
+        }   
     }
-    
 }

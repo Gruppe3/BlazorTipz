@@ -15,8 +15,8 @@ namespace BlazorTipz.Models
         public int sugProgression { get; set; }
         public string sugTitle { get; set; }
         public string sugDesc { get; set; }
-        public string createdAt { get; set; }
-        public string lastChanged { get; set; }
+        public DateTime createdAt { get; set; }
+        public DateTime lastChanged { get; set; }
         public DateTime dueDate { get; set; }
         public string categoryId { get; set; }
         public bool justDoIt { get; set; }

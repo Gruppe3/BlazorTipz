@@ -159,13 +159,13 @@ namespace BlazorTipz.ViewModels.Suggestion
 
         public string? validateSuggestion(SuggViewmodel sugg)
         {
-            string err = null;
+            string? err = null;
             if (sugg == null) { err = "No supplied suggestion"; return err; }
             if (sugg.Title == null || sugg.Title == "") { err = "No supplied title"; return err; }
             if (sugg.Description == null || sugg.Description == "") { err = "No supplied description"; return err; }
             if (sugg.OwnerTeam == null || sugg.OwnerTeam == "") { err = "No supplied owner"; return err; }
             if (sugg.Creator == null || sugg.Creator == "") { err = "No supplied creator"; return err; }
-            if (sugg.StartDate == null || sugg.StartDate == "") { err = "No supplied start date"; return err; }
+            if (sugg.StartDate == DateTime.MinValue) { err = "No supplied start date"; return err; }
 
             return err;
         }
@@ -185,7 +185,7 @@ namespace BlazorTipz.ViewModels.Suggestion
         }
         private async Task<string?> ApproveAndUpdateSuggestion(SuggViewmodel sugg)
         {
-            string? err = null;
+            string? err;
             SuggViewmodel suggOld = await GetSuggestion(sugg.Id);
             if (suggOld == null) { err = "No suggestion found"; return err; }
 
@@ -206,7 +206,7 @@ namespace BlazorTipz.ViewModels.Suggestion
         public async Task<string?> UpdateSuggestion(SuggViewmodel sugg, UserViewmodel currentUser)
         {
             
-            string? err = null;
+            string? err;
             SuggViewmodel suggOld = await GetSuggestion(sugg.Id);
             if (suggOld == null) { err = "No suggestion found"; return err; }
             if (suggOld.Ansvarlig == null || suggOld.Ansvarlig == "") {

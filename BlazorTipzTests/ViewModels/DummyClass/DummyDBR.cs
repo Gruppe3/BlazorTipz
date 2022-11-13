@@ -76,7 +76,7 @@ namespace BlazorTipzTests.ViewModels.DummyClass
                 }
                 sugg.sugTitle = "TestTitle" + i.ToString();
                 sugg.sugDesc = "DescribingTest" + i.ToString();
-                sugg.createdAt = DateTime.Now.ToString();
+                sugg.createdAt = DateTime.Now.ToLocalTime();
                 sugg.justDoIt = false;
                 _Suggestions.Add(sugg);
             }

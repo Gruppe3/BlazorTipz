@@ -57,7 +57,7 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
             testSugg.Creator = Creator;
             testSugg.Category = cat;
 
-            if (testCase == 6) { } else { testSugg.StartDate = DateTime.Now.ToLocalTime().ToString("yyyyMMddHHmmss"); }
+            if (testCase == 6) { } else { testSugg.StartDate = DateTime.Now.ToLocalTime(); }
 
             string? testResult;
 
@@ -214,7 +214,7 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
                 Description = "Test",
                 OwnerTeam = "1",
                 Creator = "1",
-                StartDate = DateTime.Now.ToLocalTime().ToString("yyyyMMddHHmmss")
+                StartDate = DateTime.Now.ToLocalTime()
             };
             Category cat = new Category();
             cat.Name = "HMS";

@@ -37,16 +37,7 @@ namespace BlazorTipz.Shared
             NavigationManager.NavigateTo("/login", true);
             _userManager.logout();
         }
-
-        private void Home()
-        {
-            NavigationManager.NavigateTo("/");
-        }
-
-        private void Settings()
-        {
-            NavigationManager.NavigateTo("/userSettings");
-        }
+        
 
         //Get team from user
         protected override async Task OnInitializedAsync()
@@ -132,7 +123,7 @@ namespace BlazorTipz.Shared
             suggToSave.Creator = _userManager.getCurrentUser().employmentId;
             suggToSave.JustDoIt = request.JustDoIt;
             suggToSave.Category = request.Category;
-            suggToSave.StartDate = DateTime.Now.ToLocalTime().ToString("yyyyMMddHHmmss");
+            suggToSave.StartDate = DateTime.Now.ToLocalTime();
             suggToSave.Ansvarlig = request.Ansvarlig;
             if (suggToSave.JustDoIt == true)
             {
