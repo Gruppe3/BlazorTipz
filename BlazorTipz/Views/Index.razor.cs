@@ -28,8 +28,6 @@ namespace BlazorTipz.Views
 
         //CSS fields
         private string SuggCardHiddenState { get; set; } = "";
-        private string SuggProgress { get; set; } = "0deg";
-        private string MainpageLock { get; set; } = "";
         private string Feedback { get; set; } 
         private string SuggShowMore = "show-less";
 
@@ -82,16 +80,14 @@ namespace BlazorTipz.Views
             if (sugg.Id != null) { await UpdateComments(sugg.Id); }
 
             //SuggProgress = ConvertProgres(sugg.Progression);
-            MainpageLock = "active";
             SuggCardHiddenState = "active";
         }
         private void CloseSuggWindow()
         {
-            MainpageLock = "";
             SuggCardHiddenState = "";
             SuggShowMore = "show-less";
         }
-        private void ShowMoreToggle()
+		private void ShowMoreToggle()
         {
             if (SuggShowMore == "show-more")
             {
@@ -102,11 +98,7 @@ namespace BlazorTipz.Views
                 SuggShowMore = "show-more";
             }
         }
-
-        private string ConvertProgres(int x) {
-            return x + "0deg";
-        }
-
+        
         private async Task UpdateComments(string suggId)
         {
             string respons = string.Empty;

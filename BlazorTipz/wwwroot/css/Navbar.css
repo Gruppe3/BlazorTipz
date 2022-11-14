@@ -29,11 +29,11 @@
 
 .nav__list {
     position: fixed;
-    bottom: 2rem;
+    bottom: 0;
     background-color: var(--primary-color);
     box-shadow: 0 8px 24px hsla(228, 81%, 24%, .15);
-    width: 90%;
-    padding: 30px 40px;
+    width: 95%;
+    padding: 10px 20px;
     border-radius: 1rem;
     left: 0;
     right: 0;

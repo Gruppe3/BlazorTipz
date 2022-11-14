@@ -5,6 +5,17 @@
 :root {
     /*========== Colors ==========*/
     /*Color mode HSL(hue, saturation, lightness)*/
+
+    /*--first-color: hsl(228, 81%, 49%);
+    --title-color: hsl(228, 12%, 15%);
+    --text-color: hsl(0, 0%, 100%);
+    --body-color: hsl(236, 28%, 19%);
+    --container-color: #fff;
+    --primary-color: hsl(264, 0%, 17%);
+    --secondary-color: hsl(264, 0%, 27%);
+    --third-color: hsl(228, 12%, 15%);
+    --detail-color: hsl(235, 93%, 64%);*/
+
     --first-color: hsl(228, 81%, 49%);
     --title-color: hsl(228, 12%, 15%);
     --text-color: hsl(0, 0%, 100%);
@@ -19,7 +30,6 @@
     --body-font: 'Poppins', sans-serif;
     --normal-font-size: .938rem;
 }
-
 /*=============== BASE ===============*/
 * {
     box-sizing: border-box;
@@ -85,7 +95,7 @@ a {
     }
 
 
-/*=============== SuggView ===============*/
+/*=============== Popup ===============*/
 .fullpage-wrapper {
     position: fixed;
     top: 0;
@@ -104,6 +114,7 @@ a {
     overflow-x: hidden;
 }
 
+/*=============== SuggView ===============*/
 .closable-sugg-wrapper {
     pointer-events: none;
     z-index: 1;
@@ -116,6 +127,7 @@ a {
         opacity: 1;
         pointer-events: auto;
     }
+
 
 /*For closing the popup window by clicking the background*/
 .closable-sugg-background-button {
@@ -170,7 +182,6 @@ a {
     }
 
 .button-show-more {
-    display: ;
     font-size: 12px;
     cursor: pointer;
 }
@@ -255,10 +266,17 @@ a {
 
 
 
-
-@media screen and (min-width: 768px) {
+/*==== Big screen ====*/
+@media screen and (min-width: 1120px) {
 }
 
+@media screen and (min-width: 768px) {
+    .content {
+        
+    }
+}
+
+/*==== Small screen ====*/
 @media screen and (max-width: 768px) {
     
 }
@@ -266,9 +284,24 @@ a {
 
 
 /*=============== main-page ===============*/
-.suggestion-cards-progress {
-    
+.suggcard-wrapper {
+    transition: 0.2s;
 }
+    .suggcard-wrapper:hover {
+        background-color: hsl(236, 28%, 19%);
+    }
+    .suggcard-wrapper:active {
+        background-color: hsl(0, 0%, 30%);
+    }
+
+
+.suggestion-cards-progress {
+}
+
+.content {
+    margin-bottom: 9rem;
+}
+
 
 
 
@@ -377,9 +410,6 @@ a, .btn-link {
         padding-top: 0rem;
     }
 
-.content {
-    padding-top: 1.1rem;
-}
 
 .valid.modified:not([type=checkbox]) {
     outline: 1px solid #26b050;
@@ -455,7 +485,21 @@ table th {
 }
 
 /*=============== rz-override ===============*/
-.rz-textbox,
-.rz-textarea {
+.rz-dialog {
+    background-color: var(--primary-color)
+}
+.rz-dialog-titlebar {
+    background-color: var(--primary-color);
+    border-bottom: solid grey 1px;
+}
+.rz-colorpicker,
+.rz-lookup-search input,
+.rz-spinner,
+.rz-calendar .rz-inputtext,
+.rz-multiselect,
+.rz-dropdown,
+.mask,
+.rz-textarea,
+.rz-textbox {
     background-color: var(--secondary-color);
 }

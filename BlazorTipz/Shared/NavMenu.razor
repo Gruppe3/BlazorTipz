@@ -19,14 +19,15 @@
 
 <AuthorizeView Roles="User">
     <Authorized>
-        <h1 style="opacity:0; text-decoration: none;">:)</h1>
         <!--=============== NAV ===============-->
         <div class="nav">
             <nav class="nav__content">
-
                 <div class="nav__list">
                     <a href="/" class="nav__link active-link">
-                        <i class='bx bx-grid-alt'></i>
+                        <i class='bx bx-home-alt'></i>
+                    </a>
+                    <a href="/teamView" class="nav__link">
+                        <i class='bx bx-food-menu'></i>
                     </a>
                     <div>
                         <a href="javascript:void(0);" class="nav__add active-link" @onclick="@(() => ShowSuggestion())">
@@ -36,7 +37,9 @@
                     <a href="/" class="nav__link active-link">
                         <i class='bx bx-bar-chart-alt-2'></i>
                     </a>
-
+                    <a href="javascript:void(0);" class="nav__link" @onclick="@ShowUserP">
+                        <i class='bx bx-user'></i>
+                    </a>
                 </div>
             </nav>
         </div>
@@ -68,10 +71,10 @@
                 </div>
                 <div class="nav__panel" style="display: @ShowTeam">
 
-                    <a>View Team</a>
+                    <a>Se Team</a>
                     <a href="/teamView" class="nav__link">
                         <i class='bx bx-food-menu'></i>
-                        <span class="nav__name">View Team</span>
+                        <span class="nav__name">Se Team</span>
                     </a>
                 </div>
             </nav>
@@ -221,7 +224,7 @@
 @code{
     async Task ShowSuggestion()
     {
-        await DialogService.OpenAsync($"Enter a suggestion", ds =>
+        await DialogService.OpenAsync($"Skriv et forslag", ds =>
     @<div>
                 <div class="justify-content-center" style="padding-top: 1rem;">
                     <div class="row">
