@@ -111,9 +111,8 @@ namespace BlazorTipz.ViewModels.Suggestion
             if (suggs == null) { return suggsViewmodel; }
             foreach (SuggestionEntity s in suggs)
             {
-                s.CategoryEntity = SearchForCategoryEntity(s.categoryId);
+                s.CatEntity = SearchForCategoryEntity(s.categoryId);
                 SuggViewmodel sugg = new SuggViewmodel(s);
-                await fillNameFieldsInSugg(sugg);
                 suggsViewmodel.Add(sugg);
             }
             return suggsViewmodel;
@@ -127,9 +126,8 @@ namespace BlazorTipz.ViewModels.Suggestion
             if (suggs == null) { return suggsViewmodel; }
             foreach (SuggestionEntity s in suggs)
             {
-                s.CategoryEntity = SearchForCategoryEntity(s.categoryId);
+                s.CatEntity = SearchForCategoryEntity(s.categoryId);
                 SuggViewmodel sugg = new SuggViewmodel(s);
-                await fillNameFieldsInSugg(sugg);
                 suggsViewmodel.Add(sugg);
             }
             return suggsViewmodel;
@@ -139,21 +137,10 @@ namespace BlazorTipz.ViewModels.Suggestion
         {
             SuggestionEntity? sugg = await _DBR.GetSuggestion(sugId);
             if (sugg == null) { return null; }
-            sugg.CategoryEntity = SearchForCategoryEntity(sugg.categoryId);
+            sugg.CatEntity = SearchForCategoryEntity(sugg.categoryId);
             SuggViewmodel suggViewmodel = new SuggViewmodel(sugg);
             await fillNameFieldsInSugg(suggViewmodel);
             return suggViewmodel;
-        }
-
-        private async Task fillNameFieldsInSugg(SuggViewmodel sugg)
-        {
-            UserViewmodel? UsCreSearch = await _UM.SearchActiveUsers(sugg.Creator);
-            UserViewmodel? UsAnsSearch = await _UM.SearchActiveUsers(sugg.Ansvarlig);
-            TeamViewmodel? TeamOwnerSearch = await _TM.SearchTeams(sugg.OwnerTeam);
-            if (UsCreSearch == null) {await sugg.GetCreatorName(_UM); } else { sugg.CreatorName = UsCreSearch.name; }
-            if (UsAnsSearch == null) { await sugg.GetAnsvarligName(_UM); } else { sugg.AnsvarligName = UsAnsSearch.name; }
-            if (TeamOwnerSearch == null) { await sugg.GetOwnerTeamName(_TM); } else { sugg.OwnerTeamName = TeamOwnerSearch.name; }
-
         }
 
 
@@ -243,9 +230,8 @@ namespace BlazorTipz.ViewModels.Suggestion
             if (entities == null) { return suggViewmodels; }
             foreach (SuggestionEntity e in entities)
             {
-                e.CategoryEntity = SearchForCategoryEntity(e.categoryId);
+                e.CatEntity = SearchForCategoryEntity(e.categoryId);
                 SuggViewmodel sugg = new(e);
-                await fillNameFieldsInSugg(sugg);
                 suggViewmodels.Add(sugg);
             }
             return suggViewmodels;
@@ -258,10 +244,9 @@ namespace BlazorTipz.ViewModels.Suggestion
 
             foreach (SuggViewmodel sView in suggViewmodels)
             {
-                if (sView.Status == SuggStatus.Plan || 
-                    sView.Status == SuggStatus.Do || 
-                    sView.Status == SuggStatus.Study || 
-                    sView.Status == SuggStatus.Act)
+                if (sView.Status != SuggStatus.Waiting ||
+                    sView.Status != SuggStatus.Complete ||
+                    sView.Status != SuggStatus.Rejected)
                 { 
                     filteredSuggestions.Add(sView); 
                 }

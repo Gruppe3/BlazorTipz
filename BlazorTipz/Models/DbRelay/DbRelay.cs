@@ -325,7 +325,7 @@ namespace BlazorTipz.Models.DbRelay
         {
             try
             {
-                var sql = "SELECT * FROM Suggestions WHERE sugId = @SugId;";
+                var sql = "SELECT s.sugId, s.ownerId, s.creatorId, s.assignedId, s.completerId, s.sugStatus, s.sugProgression, s.sugTitle, s.sugDesc, s.createdAt, s.lastChanged, s.dueDate, s.justDoIt, s.beforeImage, s.afterImage, c.catName, t.teamName, u1.userName AS creatorName, u2.userName AS assignedName FROM Suggestions s LEFT JOIN Categories c ON s.categoryId = c.catId LEFT JOIN Teams t ON s.ownerId = t.teamId LEFT JOIN Users u1 ON s.creatorId = u1.employmentId LEFT JOIN Users u2 ON s.assignedId = u2.employmentId WHERE s.sugId = @SugId;";
                 SuggestionEntity sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { SugId = sugId }, _config.GetConnectionString(ConnectionString), true);
                 return sug;
             }
@@ -338,7 +338,7 @@ namespace BlazorTipz.Models.DbRelay
         {
             try
             {
-                var sql = "SELECT * FROM Suggestions WHERE creatorId = @CreatorId;";
+                var sql = "SELECT s.sugId, s.ownerId, s.creatorId, s.assignedId, s.completerId, s.sugStatus, s.sugProgression, s.sugTitle, s.sugDesc, s.createdAt, s.lastChanged, s.dueDate, s.justDoIt, s.beforeImage, s.afterImage, c.catName, t.teamName, u1.userName AS creatorName, u2.userName AS assignedName FROM Suggestions s LEFT JOIN Categories c ON s.categoryId = c.catId LEFT JOIN Teams t ON s.ownerId = t.teamId LEFT JOIN Users u1 ON s.creatorId = u1.employmentId LEFT JOIN Users u2 ON s.assignedId = u2.employmentId WHERE s.creatorId = @CreatorId;";
                 List<SuggestionEntity> sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { CreatorId = empId }, _config.GetConnectionString(ConnectionString));
                 return sug;
             }
@@ -349,7 +349,7 @@ namespace BlazorTipz.Models.DbRelay
         {
             try
             {
-                var sql = "SELECT * FROM Suggestions WHERE assignedId = @EmpId;";
+                var sql = "SELECT s.sugId, s.ownerId, s.creatorId, s.assignedId, s.completerId, s.sugStatus, s.sugProgression, s.sugTitle, s.sugDesc, s.createdAt, s.lastChanged, s.dueDate, s.justDoIt, s.beforeImage, s.afterImage, c.catName, t.teamName, u1.userName AS creatorName, u2.userName AS assignedName FROM Suggestions s LEFT JOIN Categories c ON s.categoryId = c.catId LEFT JOIN Teams t ON s.ownerId = t.teamId LEFT JOIN Users u1 ON s.creatorId = u1.employmentId LEFT JOIN Users u2 ON s.assignedId = u2.employmentId WHERE s.assignedId = @EmpId;";
                 List<SuggestionEntity> sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { EmpId = empId }, _config.GetConnectionString(ConnectionString));
                 return sug;
             }
@@ -362,7 +362,7 @@ namespace BlazorTipz.Models.DbRelay
         {
             try
             {
-                var sql = "SELECT * FROM Suggestions WHERE ownerId = @OwnerId;";
+                var sql = "SELECT s.sugId, s.ownerId, s.creatorId, s.assignedId, s.completerId, s.sugStatus, s.sugProgression, s.sugTitle, s.sugDesc, s.createdAt, s.lastChanged, s.dueDate, s.justDoIt, s.beforeImage, s.afterImage, c.catName, t.teamName, u1.userName AS creatorName, u2.userName AS assignedName FROM Suggestions s LEFT JOIN Categories c ON s.categoryId = c.catId LEFT JOIN Teams t ON s.ownerId = t.teamId LEFT JOIN Users u1 ON s.creatorId = u1.employmentId LEFT JOIN Users u2 ON s.assignedId = u2.employmentId WHERE s.ownerId = @OwnerId;";
                 List<SuggestionEntity> sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { OwnerId = teamId }, _config.GetConnectionString(ConnectionString));
                 return sug;
             }
@@ -376,7 +376,7 @@ namespace BlazorTipz.Models.DbRelay
         {
             try
             {
-                var sql = "SELECT * FROM Suggestions WHERE sugStatus = @SugStatus;";
+                var sql = "SELECT s.sugId, s.ownerId, s.creatorId, s.assignedId, s.completerId, s.sugStatus, s.sugProgression, s.sugTitle, s.sugDesc, s.createdAt, s.lastChanged, s.dueDate, s.justDoIt, s.beforeImage, s.afterImage, c.catName, t.teamName, u1.userName AS creatorName, u2.userName AS assignedName FROM Suggestions s LEFT JOIN Categories c ON s.categoryId = c.catId LEFT JOIN Teams t ON s.ownerId = t.teamId LEFT JOIN Users u1 ON s.creatorId = u1.employmentId LEFT JOIN Users u2 ON s.assignedId = u2.employmentId WHERE s.sugStatus = @SugStatus;";
                 List<SuggestionEntity> sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { SugStatus = status.ToString() }, _config.GetConnectionString(ConnectionString));
                 return sug;
             }

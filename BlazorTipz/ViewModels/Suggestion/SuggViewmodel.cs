@@ -1,24 +1,22 @@
 ﻿using BlazorTipz.Data;
 using BlazorTipz.Models;
-using BlazorTipz.ViewModels.Team;
-using BlazorTipz.ViewModels.User;
 
 namespace BlazorTipz.ViewModels.Suggestion
 {
     public class SuggViewmodel
     {
-        public string? Id { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
+        public string? Id { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
         public bool JustDoIt { get; set; } = false;
-        public Category Category { get; set; } 
-        public string OwnerTeam { get; set; }
-        public string Creator { get; set; }
+        public Category Category { get; set; }
+        public string OwnerTeam { get; set; } = string.Empty;
+        public string Creator { get; set; } = string.Empty;
         public SuggStatus Status { get; set; } = SuggStatus.Waiting;
         public int Progression { get; set; } = 0;
         public DateTime StartDate { get; set; }
         public DateTime UpdatedDate { get; set; }
-        public string? Ansvarlig { get; set; }
+        public string? Ansvarlig { get; set; } = string.Empty;
         public DateTime Frist { get; set; }
         //picture
         public string? BeforeImage { get; set; }
@@ -53,53 +51,12 @@ namespace BlazorTipz.ViewModels.Suggestion
             this.AfterImage = Suggestion.afterImage;
             this.Id = Suggestion.sugId;
             
-            this.Category = new Category(Suggestion.CategoryEntity);
+            this.Category = new Category(Suggestion.CatEntity);
+            this.OwnerTeamName = Suggestion.teamName;
+            this.CreatorName = Suggestion.creatorName;
+            this.AnsvarligName = Suggestion.assignedName;
             //SetFristToFristTid();
         }
 
-        public async Task<string> GetCreatorName(IUserManager _userManager)
-        {
-            if (_userManager == null) { return "Error"; }
-            if(CreatorName == string.Empty)
-            {
-                UserViewmodel user = await _userManager.getUser(Creator);
-                if (user != null) { CreatorName = user.name; }
-            }
-            return CreatorName;
-        }
-        public async Task SetCreatorName(IUserManager _userManager)
-        {
-            await GetCreatorName(_userManager);
-        }
-        public async Task<string> GetAnsvarligName(IUserManager _userManager)
-        {
-            if (_userManager == null) { return "Ikke Satt"; }
-            if (CreatorName == string.Empty)
-            {
-                UserViewmodel user = await _userManager.getUser(Ansvarlig);
-                if (user != null) { AnsvarligName = user.name; }
-            }
-            return AnsvarligName;
-        }
-        public async Task SetAnsvarligName(IUserManager _userManager)
-        {
-            await GetAnsvarligName(_userManager);
-        }
-
-        public async Task<string> GetOwnerTeamName(ITeamManager _teamManager)
-        {
-            if (_teamManager == null) { return "Error"; }
-            if (OwnerTeamName == string.Empty)
-            {
-                TeamViewmodel team = await _teamManager.getTeam(OwnerTeam);
-                if (team != null) { OwnerTeamName = team.name; }
-            }
-            return OwnerTeamName;
-        }
-
-        public async Task SetOwnerTeamName(ITeamManager _teamManager)
-        {
-            await GetOwnerTeamName(_teamManager);
-        }   
     }
 }
