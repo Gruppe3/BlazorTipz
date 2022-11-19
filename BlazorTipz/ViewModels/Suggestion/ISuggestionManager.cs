@@ -1,4 +1,5 @@
-﻿using BlazorTipz.ViewModels.User;
+﻿using BlazorTipz.Data;
+using BlazorTipz.ViewModels.User;
 
 namespace BlazorTipz.ViewModels.Suggestion
 {
@@ -23,10 +24,12 @@ namespace BlazorTipz.ViewModels.Suggestion
         Task<string?> UpdateSuggestion(SuggViewmodel sugg, UserViewmodel currentUser);
 
         //returns a list of all suggestions assigned to current user 
-        Task<List<SuggViewmodel>> GetAllAssignedSuggestions();
+        Task<List<SuggViewmodel>> GetAllAssignedSuggestions(string empId);
         
         //returns a list of current-user-assigned suggestions filtered on status to Plan, Do, Study, Act 
-        Task<List<SuggViewmodel>> GetPreFilteredAssignedSuggestions();
+        Task<List<SuggViewmodel>> GetPreFilteredAssignedSuggestions(string empId);
+        Task<List<SuggViewmodel>> GetFilteredSuggestions(int caseInt, string inputId, SuggStatus status);
+        Task<List<SuggViewmodel>> GetFilteredSuggestions(int caseInt, string inputId);
 
         //Save comments 
         Task<string> SaveComment(CommentViewmodel comment);

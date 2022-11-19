@@ -1,9 +1,9 @@
-using Microsoft.AspNetCore.Components;
-using BlazorTipz.ViewModels.User;
+using BlazorTipz.Data;
 using BlazorTipz.ViewModels.Suggestion;
 using BlazorTipz.ViewModels.Team;
+using BlazorTipz.ViewModels.User;
+using Microsoft.AspNetCore.Components;
 using Microsoft.IdentityModel.Tokens;
-using BlazorTipz.Data;
 using Category = BlazorTipz.ViewModels.Category;
 
 namespace BlazorTipz.Views
@@ -12,24 +12,35 @@ namespace BlazorTipz.Views
     {
         bool isLoaded;
         
-        List<SuggViewmodel> UserSug = new();
-        List<SuggViewmodel> Assignedsugg = new();
-        List<CommentViewmodel> Comments = new();
-        private List<UserViewmodel> users = new List<UserViewmodel>();
-        private List<TeamViewmodel> teams = new List<TeamViewmodel>();
-        public List<Category>? Categories;
+        private UserViewmodel CurrentUser { get; set; } = new();
+        private List<SuggViewmodel> UserSugg { get; set; } = new();
+        private List<SuggViewmodel> Assignedsugg { get; set; } = new();
+        private List<SuggViewmodel> SuggList { get; set; } = new();
 
-        UserViewmodel currentUser = new();
-        TeamViewmodel currentTeam = new();
-        SuggViewmodel CurrentSugg = new();
-        CommentViewmodel CommentDto = new();
-        public SuggViewmodel suggUpdate = new SuggViewmodel();
-        private List<SuggStatus> statuses = new List<SuggStatus>();
+        //For suggestion
+        private SuggViewmodel CurrentSugg { get; set; } = new();
+        public SuggViewmodel SuggUpdate { get; set; } = new();
+        private List<TeamViewmodel> Teams { get; set; } = new();
+        public List<Category>? Categories { get; set; }
+        private List<SuggStatus> StatusList { get; set; } = new();
+        private List<UserViewmodel> ActiveUsers { get; set; } = new();
 
+        //Comments
+        private List<CommentViewmodel> Comments { get; set; } = new();
+        private CommentViewmodel CommentDto { get; set; } = new();
+
+        //Filter fields
+        private int FilterVisning = 0;
+        private int FilterState = 7; //Between 0-7 with 7 being these(plan, do, study, act)
+
+        
         //CSS fields
         private string SuggCardHiddenState { get; set; } = "";
-        private string Feedback { get; set; } 
-        private string SuggShowMore = "show-less";
+        private string Feedback { get; set; } = string.Empty;
+        private string SuggShowMore { get; set; } = "show-less";
+        private string SuggDisplayState { get; set; } = "loading";
+        private string ErrString { get; set; } = string.Empty;
+
 
         //Everytime page loads this runs
         protected override async Task OnInitializedAsync()
@@ -59,16 +70,86 @@ namespace BlazorTipz.Views
                 }
 
                 //Sets currentUser to user
-                currentUser = user;
+                CurrentUser = user;
             }
-            statuses.AddRange(new List<SuggStatus>() { SuggStatus.Plan, SuggStatus.Do, SuggStatus.Study, SuggStatus.Act, SuggStatus.Complete, SuggStatus.Rejected });
+            StatusList.AddRange(new List<SuggStatus>() { SuggStatus.Plan, SuggStatus.Do, SuggStatus.Study, SuggStatus.Act, SuggStatus.Complete, SuggStatus.Rejected });
             //get active teams
-            teams = await _teamManager.updateTeamsList();
+            Teams = await _teamManager.updateTeamsList();
             //Get team suggestions
-            UserSug = await _suggestionManager.GetSuggestionsOfUser(currentUser.employmentId);
-            Assignedsugg = await _suggestionManager.GetPreFilteredAssignedSuggestions();
+            //UserSugg = await _suggestionManager.GetSuggestionsOfUser(CurrentUser.employmentId);
+            //Assignedsugg = await _suggestionManager.GetPreFilteredAssignedSuggestions(CurrentUser.employmentId);
+
+            //SuggList = await _suggestionManager.GetPreFilteredAssignedSuggestions(CurrentUser.employmentId);
+            SuggList = await _suggestionManager.GetFilteredSuggestions(FilterVisning, CurrentUser.employmentId);
+
+            SuggDisplayState = ""; //removes loading
             isLoaded = true;
         }
+
+        private async Task ApplyFilterToSuggList() 
+        {
+            ErrString = "";
+            SuggDisplayState = "loading";
+            string empId = CurrentUser.employmentId;
+            string teamId = CurrentUser.teamId;
+
+            if (FilterVisning == 2) //Team suggestions
+            { 
+                if (FilterState == 7) //No chosen state to filter by
+                {
+                    SuggList = await _suggestionManager.GetFilteredSuggestions(FilterVisning, teamId);
+                }
+                else //One chosen state to filter by
+                {
+                    SuggStatus stat = (SuggStatus)FilterState;
+                    SuggList = await _suggestionManager.GetFilteredSuggestions(FilterVisning, teamId, stat);
+                }
+            }
+            else //Assigned suggestions, or User's own suggestions
+            {
+                if (FilterState == 7) //No chosen state to filter by
+                {
+                    SuggList = await _suggestionManager.GetFilteredSuggestions(FilterVisning, empId);
+                }
+                else //One chosen state to filter by
+                {
+                    SuggStatus stat = (SuggStatus)FilterState;
+                    SuggList = await _suggestionManager.GetFilteredSuggestions(FilterVisning, empId, stat);
+                }
+            }
+
+            if (SuggList.Count <= 0)
+            {
+                //No suggestions found
+                ErrString = "Ingen forslag funnet.";
+            }
+            SuggDisplayState = "";
+        }
+
+        private async Task UpdateVisning(ChangeEventArgs value)
+        {
+            if (value != null && value.Value != null)
+            {
+                string val = (string)value.Value;
+                //int x = Int32.Parse(val);
+                FilterVisning = Int32.Parse(val);
+            }
+            await ApplyFilterToSuggList();
+        }
+
+        private async Task UpdateStatus(ChangeEventArgs value)
+        {
+            if (value != null && value.Value != null)
+            {
+                string val = (string)value.Value;
+                FilterState = Int32.Parse(val);
+            }
+            await ApplyFilterToSuggList();
+        }
+
+        
+
+
         void OnChange(object value, string name)
         {
             var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
@@ -101,8 +182,8 @@ namespace BlazorTipz.Views
         
         private async Task UpdateComments(string suggId)
         {
-            string respons = string.Empty;
-            List<CommentViewmodel> comments = new();
+            string respons;
+            List<CommentViewmodel> comments;
             
             (comments, respons) = await _suggestionManager.GetComments(suggId);
             if (respons.Equals("Success"))
@@ -115,7 +196,7 @@ namespace BlazorTipz.Views
             if (comment.Comment.IsNullOrEmpty()) { return; }
 
             comment.SugId = SugId;
-            comment.EmpId = currentUser.employmentId;
+            comment.EmpId = CurrentUser.employmentId;
             string respons = await _suggestionManager.SaveComment(comment);
             if (respons.Equals("Kommentar lagret"))
             {
@@ -123,13 +204,13 @@ namespace BlazorTipz.Views
                 CommentDto = new();
             }
         }
-        public async Task updateSugg()
+        public async Task UpdateSugg()
         {
-            if (suggUpdate.Id != null)
+            if (SuggUpdate.Id != null)
             {
                 string? err;
                 //suggUpdate.SetFristTidToFrist();
-                err = await _suggestionManager.UpdateSuggestion(suggUpdate, currentUser);
+                err = await _suggestionManager.UpdateSuggestion(SuggUpdate, CurrentUser);
                 if (err != null)
                 {
                     Feedback = err;

@@ -113,11 +113,80 @@
 		
 		
 		<!--Main content on page-->
-		<h1 class="center">Dashboard</h1>
-        <p class="d-flex justify-content-center">Velkommen til Tipz!</p>
+		<div class="main-page-content">
+			<h1 class="center d-text">Dashboard</h1>
         <div class="container-lg">
-            <div class="">
-                <RadzenCard Class="suggColor">
+                <div class="filterbar" runat="Server">
+                    <div class="filer d-text">
+                        <span title="Velg hvilke forslag å vise">Visning:</span>
+                        <select id="visningSelectOpt" @onchange="@(args => UpdateVisning(args))">
+                            <option value="0" selected>Tilordnet meg</option>
+                            <option value="1">Mine forslag</option>
+                            <option value="2">Mitt Team</option>
+					        <!--<option value="3">Alle Team</option>-->
+                        </select>
+                    </div>
+                    <div class="filer d-text">
+                        <span title="Velg status å filtrere etter">Status:</span>
+                        <select id="statusSelectOpt" @onchange="@(args => UpdateStatus(args))">
+                            <option title="Utelukker forslag som venter, er ferdige, eller avvist" value="7" selected>Under Arbeid</option>
+                            <option value="0">Waiting</option>
+                            <option value="1">Plan</option>
+                            <option value="2">Do</option>
+                            <option value="3">Study</option>
+                            <option value="4">Act</option>
+                            <option value="5">Completed</option>
+							@if (FilterVisning == 2)
+                            {
+                                <!--Trenger ikke vise avviste forslag-->
+                                <option value="6" disabled>Rejected</option>
+                            }
+                            else
+                            {
+                                <option value="6">Rejected</option>
+                            }
+                            
+                        </select>
+                    </div>
+                </div>
+			    <div class="suggestion-list-container">
+                    <div class="d-text">
+						@ErrString
+                    </div>
+					<div class="list-display">
+						@foreach (SuggViewmodel sugg in SuggList) 
+                        {
+                            <div class="suggcard-wrapper mb-2" @onclick="@(() => ShowSuggWindow(sugg))">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-lg p-3 product-title">
+                                            <h2>
+                                                @(sugg.Title)
+                                                <RadzenBadge BadgeStyle="BadgeStyle.Warning" Shade="Shade.Lighter" IsPill="@true" Text="@sugg.Status.ToString()" Class="ml-2" />
+                                            </h2>
+									        @if (sugg.UpdatedDate != sugg.StartDate)
+                                            {
+                                                <p>Sist endret: @(sugg.UpdatedDate.ToString("dd/MM/yyyy kl HH/mm"))</p>
+                                            }
+                                        </div>
+								        <div class="suggestion-cards-progress">
+									        <div class="circular-progress" style="background: conic-gradient(#2c3cf2 @((sugg.Progression * 25) * 3.6)deg, 
+                                                                                                            #cadcff @((sugg.Progression * 25) * 3.6)deg)">
+									            <div class="value-container">
+                                                    @(sugg.Progression * 20)<span>%</span>
+										        </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            
+            
+                @*<div class="">
+                    <RadzenCard Class="suggColor mb-3">
                     @if (isLoaded == true)
                     {
                         <h1 class="d-flex justify-content-center">Forslag du er tilordnet</h1>
@@ -161,16 +230,16 @@
                         </div>
                     }
                 </RadzenCard>
-                <RadzenCard Class="suggColor">
+                    <RadzenCard Class="suggColor mb-3">
                     @if (isLoaded == true)
                     {
                         <h1 class="d-flex justify-content-center">Dine forslag</h1>
                         <p class="d-flex justify-content-center">Sortert fra gammel til ny</p>
-                        <RadzenDataList WrapItems="true" AllowPaging="true" Data="@UserSug" TItem="SuggViewmodel" PageSize="3"
+                            <RadzenDataList WrapItems="true" AllowPaging="true" Data="@UserSugg" TItem="SuggViewmodel" PageSize="3"
                                     PagerHorizontalAlign="HorizontalAlign.Center" PagerPosition="PagerPosition.Top">
                             <Template Context="suggestions">
                                 <RadzenCard Style="width: 100%; padding: 0; overflow: hidden;">
-                                    <div class="suggcard-wrapper card bg-dark" @onclick="@(() => ShowSuggWindow(suggestions))">
+                                        <div class="suggcard-wrapper card" @onclick="@(() => ShowSuggWindow(suggestions))">
                                         <div class="card-body row">
 											<div class="col-sm-9">
 												<div class="mb-2">
@@ -204,8 +273,10 @@
                         </div>
                     }
                 </RadzenCard>
+                </div>*@
             </div>
         </div>
+		
     </Authorized>
     <NotAuthorized>
         <h1 class="center">Redirecting..</h1>
@@ -216,22 +287,22 @@
 @code{
     async Task ShowSuggestion(SuggViewmodel sugg)
     {
-        suggUpdate = sugg;
+        SuggUpdate = sugg;
         await DialogService.OpenAsync($"Oppdater Forslag", ds =>
         @<div>
             <div class="justify-content-center" style="padding-top: 1rem;">
                 <div class="">
                     <div class="">
                         <!--Wants type SuggViewmodel, field object is suggUpdate-->
-                    <RadzenTemplateForm TItem="SuggViewmodel" Data=@suggUpdate Submit=updateSugg>
+                    <RadzenTemplateForm TItem="SuggViewmodel" Data=@SuggUpdate Submit=UpdateSugg>
                         <!--Title on suggestion-->
-                        @if (suggUpdate.Status == SuggStatus.Waiting)
+                        @if (SuggUpdate.Status == SuggStatus.Waiting)
                         {
 							<div class="">
                                 <div class="mb-2" style="align-self: center;">
                                     <RadzenLabel Text="Tittel" />
                                     <!--Binder til userDto.emplymentId-->
-                                    <RadzenTextBox @bind-Value=@suggUpdate.Title Name="title" Class="w-100" />
+                                    <RadzenTextBox @bind-Value=@SuggUpdate.Title Name="title" Class="w-100" />
                                 </div>
                             </div>
 							<div class="row">	
@@ -239,7 +310,7 @@
                                 <div class="col-6 mb-2" style="align-self: center;">
                                     <RadzenLabel Text="Just Do It" />
                                     <RadzenText> 
-                                    @if (@suggUpdate.JustDoIt)
+                                    @if (SuggUpdate.JustDoIt)
                                     {
                                         <p>Ja</p>;
                                     }
@@ -251,7 +322,7 @@
                                 </div>
                                 <div class="col-6 mb-2" style="align-self: center;">
                                     <RadzenLabel Text="Frist" />
-                                    <RadzenDatePicker Min="DateTime.Today.AddDays(1)" @bind-Value=@suggUpdate.Frist TValue="DateTime" ShowTime="false" DateFormat="d" Class="w-100" />
+                                    <RadzenDatePicker Min="DateTime.Today.AddDays(1)" @bind-Value=@SuggUpdate.Frist TValue="DateTime" ShowTime="false" DateFormat="d" Class="w-100" />
                                 </div>
                             </div>
                         }
@@ -261,7 +332,7 @@
                                 <div class="mb-2" style="align-self: center;">
                                     <RadzenLabel Text="Tittel" />
                                     <!--Binder til userDto.emplymentId-->
-                                    <RadzenText>@suggUpdate.Title</RadzenText>
+                                    <RadzenText>@SuggUpdate.Title</RadzenText>
                                 </div>
                             </div>
                             <!--Just do it checkbox-->
@@ -269,7 +340,7 @@
                                 <div class="col-6 md-2" style="align-self: center;">
                                     <RadzenLabel Text="Just Do It" />
                                     <RadzenText>
-                                    @if (@suggUpdate.JustDoIt)
+                                    @if (SuggUpdate.JustDoIt)
                                     {
                                         <p>Ja</p>;
                                     }
@@ -281,7 +352,7 @@
                                 </div>
                                 <div class="col-6 mb-2" style="align-self: center;">
                                     <RadzenLabel Text="Frist" />
-                                    <RadzenText>@suggUpdate.Frist</RadzenText>
+                                    <RadzenText>@SuggUpdate.Frist</RadzenText>
                                 </div>
                             </div>
                         }
@@ -290,8 +361,8 @@
 						    <!--Team dropdown-->
                             <div class="col-6 mb-2" style="align-self: center;">
                                 <RadzenLabel Text="Team Name" />
-                                <RadzenDropDownDataGrid @bind-Value=@suggUpdate.OwnerTeam FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
-                                    AllowFiltering="true" AllowClear="true" Data=@teams TextProperty="name" Placeholder="Team" ValueProperty="id" Class="w-100">
+                                <RadzenDropDownDataGrid @bind-Value=@SuggUpdate.OwnerTeam FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
+                                    AllowFiltering="true" AllowClear="true" Data=@Teams TextProperty="name" Placeholder="Team" ValueProperty="id" Class="w-100">
                                     <Columns>
                                         <RadzenDropDownDataGridColumn Property="id" Title="Team ID" />
                                         <RadzenDropDownDataGridColumn Property="name" Title="Team Name" />
@@ -301,8 +372,8 @@
                             <!--Ansvarlig-->
                             <div class="col-6 mb-2" style="align-self: center;">
                                 <RadzenLabel Text="Ansvarlig" />
-                                <RadzenDropDownDataGrid @bind-Value=@suggUpdate.Ansvarlig FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
-                                    AllowFiltering="true" AllowClear="true" Data=@users TextProperty="name" Placeholder="Ansvarlig" ValueProperty="employmentId" Class="w-100">
+                                <RadzenDropDownDataGrid @bind-Value=@SuggUpdate.Ansvarlig FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
+                                    AllowFiltering="true" AllowClear="true" Data=@ActiveUsers TextProperty="name" Placeholder="Ansvarlig" ValueProperty="employmentId" Class="w-100">
                                     <Columns>
                                         <RadzenDropDownDataGridColumn Property="name" Title="Navn" />
                                         <RadzenDropDownDataGridColumn Property="TeamName" Title="Team Name" />
@@ -314,8 +385,8 @@
                             <!--Status-->
                             <div class="col-6 mb-2" style="align-self: center;">
                                 <RadzenLabel Text="Status" />
-                                <RadzenDropDownDataGrid @bind-Value=@suggUpdate.Status FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
-                                    AllowFiltering="true" AllowClear="true" Data=@statuses TextProperty="name" Placeholder="Ansvarlig" ValueProperty= Class="w-100">
+                                <RadzenDropDownDataGrid @bind-Value=@SuggUpdate.Status FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
+                                    AllowFiltering="true" AllowClear="true" Data=@StatusList TextProperty="name" Placeholder="Ansvarlig" ValueProperty= Class="w-100">
                                     <Columns>
                                         <RadzenDropDownDataGridColumn Property=@this.ToString() Title="Status Type" />
                                     </Columns>
@@ -324,7 +395,7 @@
                             <!--Category-->
                             <div class="col-6 mb-2" style="align-self: center;">
                                 <RadzenLabel Text="Kategori" />
-                                <RadzenDropDownDataGrid @bind-Value=@suggUpdate.Category FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
+                                <RadzenDropDownDataGrid @bind-Value=@SuggUpdate.Category FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
                                     AllowFiltering="true" AllowClear="true" Data=@Categories TextProperty="Name" Placeholder="Kategori" Class="w-100">
                                     <Columns>
                                         <RadzenDropDownDataGridColumn Property="Name" Title="Kategori" />
@@ -336,7 +407,7 @@
                         <!--Description-->
                         <div class="mb-3" style="align-self: center;">
                             <RadzenLabel Text="Description" />
-                            <RadzenTextArea Style="min-height:10rem" @bind-Value=@suggUpdate.Description Change=@(args => OnChange(args, "TextArea")) Class="w-100" />
+                            <RadzenTextArea Style="min-height:10rem" @bind-Value=@SuggUpdate.Description Change=@(args => OnChange(args, "TextArea")) Class="w-100" />
                         </div>
                         <div class="center">
                             <p>@Feedback</p>

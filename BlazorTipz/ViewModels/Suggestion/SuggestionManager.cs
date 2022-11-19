@@ -4,6 +4,7 @@ using BlazorTipz.Models.AppStorage;
 using BlazorTipz.Models.DbRelay;
 using BlazorTipz.ViewModels.Team;
 using BlazorTipz.ViewModels.User;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -139,7 +140,6 @@ namespace BlazorTipz.ViewModels.Suggestion
             if (sugg == null) { return null; }
             sugg.CatEntity = SearchForCategoryEntity(sugg.categoryId);
             SuggViewmodel suggViewmodel = new SuggViewmodel(sugg);
-            await fillNameFieldsInSugg(suggViewmodel);
             return suggViewmodel;
         }
 
@@ -223,10 +223,10 @@ namespace BlazorTipz.ViewModels.Suggestion
             return err;
         }
 
-        public async Task<List<SuggViewmodel>> GetAllAssignedSuggestions()
+        public async Task<List<SuggViewmodel>> GetAllAssignedSuggestions(string empId)
         {
             List<SuggViewmodel> suggViewmodels = new();
-            List<SuggestionEntity>? entities = await _DBR.GetAssignedSuggestions(_UM.getCurrentUser().employmentId);
+            List<SuggestionEntity>? entities = await _DBR.GetAssignedSuggestions(empId);
             if (entities == null) { return suggViewmodels; }
             foreach (SuggestionEntity e in entities)
             {
@@ -237,9 +237,9 @@ namespace BlazorTipz.ViewModels.Suggestion
             return suggViewmodels;
         }
 
-        public async Task<List<SuggViewmodel>> GetPreFilteredAssignedSuggestions()
+        public async Task<List<SuggViewmodel>> GetPreFilteredAssignedSuggestions(string empId)
         {
-            List<SuggViewmodel> suggViewmodels = await GetAllAssignedSuggestions();
+            List<SuggViewmodel> suggViewmodels = await GetAllAssignedSuggestions(empId);
             List<SuggViewmodel> filteredSuggestions = new();
 
             foreach (SuggViewmodel sView in suggViewmodels)
@@ -253,6 +253,71 @@ namespace BlazorTipz.ViewModels.Suggestion
             }
             return filteredSuggestions;
         }
+
+        //Get suggestions based on what list to get and filter-input
+        public async Task<List<SuggViewmodel>> GetFilteredSuggestions(int caseInt, string inputId, SuggStatus status)
+        {
+            List<SuggViewmodel> suggViewmodels = new();
+            List<SuggestionEntity>? respList = new();
+
+            if (caseInt == 0)
+            {
+                respList = await _DBR.GetAssignedSuggestions(inputId, status);
+            }
+            else if (caseInt == 1)
+            {
+                respList = await _DBR.GetSuggestionsOfCreator(inputId, status);
+            }
+            else if (caseInt == 2)
+            {
+                respList = await _DBR.GetSuggestionOfTeam(inputId, status);
+            }
+            if (respList == null) { return suggViewmodels; }
+
+            foreach (SuggestionEntity e in respList)
+            {
+                e.CatEntity = SearchForCategoryEntity(e.categoryId);
+                SuggViewmodel sugg = new(e);
+                suggViewmodels.Add(sugg);
+            }
+            return suggViewmodels;
+        }
+
+        //Get suggestions based on just what list to get
+        public async Task<List<SuggViewmodel>> GetFilteredSuggestions(int caseInt, string inputId)
+        {
+            List<SuggViewmodel> suggViewmodels = new();
+            List<SuggestionEntity>? respList = new();
+
+            if (caseInt == 0)
+            {
+                respList = await _DBR.GetAssignedSuggestions(inputId);
+            }
+            else if (caseInt == 1)
+            {
+                respList = await _DBR.GetSuggestionsOfCreator(inputId);
+            }
+            else if (caseInt == 2)
+            {
+                respList = await _DBR.GetSuggestionOfTeam(inputId);
+            }
+            if (respList == null) { return suggViewmodels; }
+
+            foreach (SuggestionEntity e in respList)
+            {
+                if (e.sugStatus != SuggStatus.Waiting ||
+                    e.sugStatus != SuggStatus.Complete ||
+                    e.sugStatus != SuggStatus.Rejected)
+                {
+                    e.CatEntity = SearchForCategoryEntity(e.categoryId);
+                    SuggViewmodel sugg = new(e);
+                    suggViewmodels.Add(sugg);
+                }
+            }
+            return suggViewmodels;
+        }
+
+
 
         //Sjekker om input string faller inn under karaktersettet latin1.
         private bool IsValidISO(string input)
