@@ -1,13 +1,9 @@
-using Microsoft.AspNetCore.Components;
 using BlazorTipz.Data;
 using BlazorTipz.ViewModels;
-using BlazorTipz.ViewModels.User;
 using BlazorTipz.ViewModels.Suggestion;
 using BlazorTipz.ViewModels.Team;
+using BlazorTipz.ViewModels.User;
 using Microsoft.AspNetCore.Mvc;
-using Radzen;
-using System;
-using Microsoft.AspNetCore.Components.Forms;
 using Radzen.Blazor;
 
 namespace BlazorTipz.Shared
@@ -16,28 +12,28 @@ namespace BlazorTipz.Shared
     {
         RadzenUpload upload;
         
-        public UserViewmodel currentUser = new UserViewmodel();
-        public TeamViewmodel currentTeam = new TeamViewmodel();
-        UserViewmodel CUser;
-        TeamViewmodel Cteam;
-        SuggViewmodel suggDto = new SuggViewmodel();
-        List<SuggViewmodel> team = new List<SuggViewmodel>();
-        List<TeamViewmodel> teams = new List<TeamViewmodel>();
-        List<Category> Categories;
-        List<UserViewmodel> Users = new List<UserViewmodel>();
-        public string TeamCheck { get; set; }
-        public string teamU { get; set; }
+        private UserViewmodel CurrentUser { get; set; } = new();
+        private TeamViewmodel CurrentTeam { get; set; } = new();
+        private SuggViewmodel SuggDto { get; set; } = new();
+        private List<UserViewmodel> ActiveUsers { get; set; } = new();
+        private List<TeamViewmodel> ActiveTeams { get; set; } = new();
+        private List<Category> Categories { get; set; } = new();
+       
+
+
+        //public string teamU { get; set; }
+        private string NavMenuState { get; set; } = "";
         private string ShowUser { get; set; } = "none";
         private string ShowTeam { get; set; } = "none";
-        private string Feedback { get; set; }
+        private string Feedback { get; set; } = "";
 
         public async Task Logout()
         {
             await _localStorage.RemoveItemAsync("token");
-            NavigationManager.NavigateTo("/login", true);
-            _userManager.logout();
+            _navigationManager.NavigateTo("/login", true);
+            _userManager.Logout();
         }
-        
+
 
         //Get team from user
         protected override async Task OnInitializedAsync()
@@ -45,42 +41,60 @@ namespace BlazorTipz.Shared
             var token = await _localStorage.GetItemAsync<string>("token");
             if (token != null)
             {
-                (UserViewmodel user, string err) = await _userManager.getCurrentUser(token);
-                TeamViewmodel team = await _teamManager.getTeam(user.teamId);
+                // If a token is found
+                (UserViewmodel user, string err) = await _userManager.GetCurrentUser(token);
+                TeamViewmodel team = await _teamManager.GetTeamById(user.TeamId);
                 if (err != null)
                 {
+                    //If error, send to login
+                    _navigationManager.NavigateTo("/login", true);
                     return;
                 }
 
-                currentUser = user;
-                currentTeam = team;
-            }
-
-            var CurrentUser = _userManager.getCurrentUser();
-            teams = await _teamManager.updateTeamsList();
-            if (CurrentUser != null)
-            {
-                CUser = CurrentUser;
-                Cteam = await _teamManager.getTeam(CUser.teamId);
-                teamU = Cteam.name;
+                CurrentUser = user;
+                CurrentTeam = team;
             }
             else
             {
-                NavigationManager.NavigateTo("/");
+                _navigationManager.NavigateTo("/login", true);
+                return;
             }
 
-            Categories = _suggestionManager.GetCategories();
-            suggDto.OwnerTeam = Cteam.id;
+            //If all is sucessfull:
 
-            var users = await _userManager.GetUsers();
+            ActiveTeams = await _teamManager.UpdateTeamsList();
+            //teamU = CurrentTeam.name;
+            SuggDto.OwnerTeam = CurrentTeam.TeamId;
+            (Categories, string? err2) = await _suggestionManager.GetCategories();
+            if (err2 != string.Empty ) { Feedback = err2; }
+
+            var users = await _userManager.GetActiveUsers();
             foreach (UserViewmodel u in users)
             {
                 await u.GetTeamName(_teamManager);
             }
-            Users = users;
+            ActiveUsers = users;
 
         }
+         
+        private void ToggleNavMenu()
+        {
+            if (NavMenuState.Equals("active"))
+            {
+                NavMenuState = "";
+            }
+            else
+            {
+                NavMenuState = "active";
+            }
+        }
 
+        private void CloseNavMenu()
+        {
+            NavMenuState = "";
+        }
+            
+            
         private void ShowTeamP()
         {
             if (ShowTeam != "none")
@@ -113,18 +127,20 @@ namespace BlazorTipz.Shared
         {
             var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
         }
-
-        public async Task<ActionResult<string>> submit(SuggViewmodel request)
+        
+        public async Task<ActionResult<string>> Submit(SuggViewmodel request)
         {
-            SuggViewmodel suggToSave = new SuggViewmodel();
-            suggToSave.Title = request.Title;
-            suggToSave.Description = request.Description;
-            suggToSave.OwnerTeam = request.OwnerTeam;
-            suggToSave.Creator = _userManager.getCurrentUser().employmentId;
-            suggToSave.JustDoIt = request.JustDoIt;
-            suggToSave.Category = request.Category;
-            suggToSave.StartDate = DateTime.Now.ToLocalTime();
-            suggToSave.Ansvarlig = request.Ansvarlig;
+            SuggViewmodel suggToSave = new()
+            {
+                Title = request.Title,
+                Description = request.Description,
+                OwnerTeam = request.OwnerTeam,
+                Creator = _userManager.GetCurrentUser().EmploymentId,
+                JustDoIt = request.JustDoIt,
+                Category = request.Category,
+                StartDate = DateTime.Now.ToLocalTime(),
+                Ansvarlig = request.Ansvarlig
+            };
             if (suggToSave.JustDoIt == true)
             {
                 suggToSave.Status = SuggStatus.Plan;
@@ -134,7 +150,7 @@ namespace BlazorTipz.Shared
                 suggToSave.Status = SuggStatus.Waiting;
             }
 
-            string? err = await _suggestionManager.saveSuggestion(suggToSave);
+            string? err = await _suggestionManager.SaveNewSuggestion(suggToSave);
             if (err != null)
             {
                 Feedback = err;
@@ -146,13 +162,14 @@ namespace BlazorTipz.Shared
                 return "Success";
             }
         }
+        
         //uplodeded image to byte[]
-        public async Task OnUploadBeforeImage(InputFileChangeEventArgs e)
-        {
-            //var image = await e.File.RequestImageFileAsync("image/png", 500, 500);
-            //var buffer = new byte[image.Size];
-            //await image.OpenReadStream().ReadAsync(buffer);
-            //suggDto.BeforeImage = buffer;
-        }
+        //public async Task OnUploadBeforeImage(InputFileChangeEventArgs e)
+        //{
+        //    //var image = await e.File.RequestImageFileAsync("image/png", 500, 500);
+        //    //var buffer = new byte[image.Size];
+        //    //await image.OpenReadStream().ReadAsync(buffer);
+        //    //suggDto.BeforeImage = buffer;
+        //}
     }
 }

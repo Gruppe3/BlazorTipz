@@ -6,10 +6,14 @@ namespace BlazorTipz.Models
     public class SuggestionEntity
     {
         //db colums
+        //In lowercase to match the db column-variables
         public string? sugId { get; set; } = string.Empty;
         public string ownerId { get; set; } = string.Empty;
+        public string teamName { get; set; } = string.Empty;
         public string creatorId { get; set; } = string.Empty;
+        public string creatorName { get; set; } = string.Empty;
         public string? assignedId { get; set; } = string.Empty;
+        public string assignedName { get; set; } = string.Empty;
         public string? completerId { get; set; } = string.Empty;
         public SuggStatus sugStatus { get; set; }
         public int sugProgression { get; set; }
@@ -19,23 +23,19 @@ namespace BlazorTipz.Models
         public DateTime lastChanged { get; set; }
         public DateTime dueDate { get; set; }
         public string categoryId { get; set; } = string.Empty;
+        public string catName { get; set; } = string.Empty;
         public bool justDoIt { get; set; } = false;
         public string? beforeImage { get; set; }
         public string? afterImage { get; set; }
 
 
         //ekstra fields
-        public CategoriEntity CatEntity { get; set; }
-        public string teamName { get; set; } = string.Empty;
-        public string creatorName { get; set; } = string.Empty;
-        public string assignedName { get; set; } = string.Empty;
-        public string catName { get; set; } = string.Empty;
-
-
+        public CategoryEntity CatEntity { get; set; }
+        
 
         public SuggestionEntity()
         {
-            
+            CatEntity = new();
         }
 
         public SuggestionEntity(SuggViewmodel sugg)
@@ -55,7 +55,12 @@ namespace BlazorTipz.Models
             this.assignedId = sugg.Ansvarlig;
             this.dueDate = sugg.Frist;
             
-            this.CatEntity = new CategoriEntity(sugg.Category);
+            this.CatEntity = new CategoryEntity(sugg.Category);
+        }
+        public void FillCatEntity()
+        {
+            CatEntity.catId = this.categoryId;
+            CatEntity.catName = this.catName;
         }
     }
 }

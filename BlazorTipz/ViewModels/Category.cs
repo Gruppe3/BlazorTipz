@@ -4,11 +4,15 @@ namespace BlazorTipz.ViewModels
 {
     public class Category
     {
-        public string Name { get; set; }
+        public string Id { get; set; } = "0";
+        public string Name { get; set; } = string.Empty;
 
-        public Category() { }
-        public Category(CategoriEntity cat)
+        public Category() 
+        { 
+        }
+        public Category(CategoryEntity cat)
         {
+            this.Id = cat.catId;
             this.Name = cat.catName;
         }
         //Override ToString

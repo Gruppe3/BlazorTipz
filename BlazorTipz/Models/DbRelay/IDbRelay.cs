@@ -10,54 +10,55 @@ namespace BlazorTipz.Models.DbRelay
         //methodes for getting, setting and updating the database
 
         //User/Users
-        Task<UserEntity> getLoginUser(string empId);
-        Task<UserEntity> lookUpUser(string empId);
-        Task addUserEntries(List<UserEntity> toSaveUsers);
-        Task updateUserEntry(UserEntity toSaveUser);
-        Task<List<UserEntity>> getActiveUsers();
-        Task<List<UserEntity>> getInactiveUsers();
-        Task changeUserStateTo(string empid, bool state);
-        Task changeUsersStateTo(List<UserEntity> users, bool state);
+        Task<UserEntity> GetLoginUser(string empId);
+        Task<UserEntity> LookUpUser(string empId);
+        Task AddUserEntries(List<UserEntity> toSaveUsers);
+        Task UpdateUserEntry(UserEntity toSaveUser);
+        Task<List<UserEntity>> GetActiveUsers();
+        Task<List<UserEntity>> GetInactiveUsers();
+        Task ChangeUserStateTo(string empid, bool state);
+        Task ChangeUsersStateTo(List<UserEntity> users, bool state);
 
         //team/teams
 
-        Task<TeamEntity> getSingleTeamDbFromDb(string teamId);
-        Task addTeamEntry(TeamEntity team);
-        Task updateTeamEntry(TeamEntity team);
-        Task<List<TeamEntity>> getActiveTeams();
-        Task<List<TeamEntity>> getInactiveTeams();
+        Task<TeamEntity> GetSingleTeamFromDb(string teamId);
+        Task AddTeamEntry(TeamEntity team);
+        Task UpdateTeamEntry(TeamEntity team);
+        Task<List<TeamEntity>> GetActiveTeams();
+        Task<List<TeamEntity>> GetInactiveTeams();
 
-        Task changeTeamStateTo(string teamid, bool state);
-        Task changeTeamsStateTo(List<TeamEntity> teams, bool state);
+        Task ChangeTeamStateTo(string teamid, bool state);
+        Task ChangeTeamsStateTo(List<TeamEntity> teams, bool state);
 
         // Suggestions
-        Task saveSuggestion(SuggestionEntity suggestion);
-        Task saveSuggestionList(List<SuggestionEntity> suggestions);
+        Task SaveSuggestion(SuggestionEntity suggestion);
+        Task SaveSuggestionList(List<SuggestionEntity> suggestions);
         
         //get all coulums of a suggestion from database with suggestion id
         //if return = null error
-        Task<SuggestionEntity?> GetSuggestion(string sugId);
+        Task<SuggestionEntity> GetSuggestion(string sugId);
 
         //get a list of suggestion from database bound to creator id
-        //if return = null error
-        Task<List<SuggestionEntity>?> GetSuggestionsOfCreator(string empId);
-        Task<List<SuggestionEntity>?> GetSuggestionsOfCreator(string empId, SuggStatus status);
+        Task<List<SuggestionEntity>> GetSuggestionsOfCreator(string empId);
+        Task<List<SuggestionEntity>> GetSuggestionsOfCreator(string empId, SuggStatus status);
 
         //get a list of suggestions from database bound to assigned id 
-        Task<List<SuggestionEntity>?> GetAssignedSuggestions(string empId);
-        Task<List<SuggestionEntity>?> GetAssignedSuggestions(string empId, SuggStatus status);
+        Task<List<SuggestionEntity>> GetAssignedSuggestions(string empId);
+        Task<List<SuggestionEntity>> GetAssignedSuggestions(string empId, SuggStatus status);
 
         //get a list of suggestion from database bound to team id
-        //if return = null error
-        Task<List<SuggestionEntity>?> GetSuggestionOfTeam(string teamId);
-        Task<List<SuggestionEntity>?> GetSuggestionOfTeam(string teamId, SuggStatus status);
+        Task<List<SuggestionEntity>> GetSuggestionOfTeam(string teamId);
+        Task<List<SuggestionEntity>> GetSuggestionOfTeam(string teamId, SuggStatus status);
 
         //get a list suggestion from database bound to status
         //@param status = a type of SuggStatus (enum class)
-        //if return null = error
-        Task<List<SuggestionEntity>?> GetSuggestionsByStatus(SuggStatus status);
+        Task<List<SuggestionEntity>> GetSuggestionsByStatus(SuggStatus status);
         //update a suggestion entry
-        Task updateSuggestion(SuggestionEntity sug);
+        Task UpdateSuggestion(SuggestionEntity sug);
+
+        Task<List<CategoryEntity>> GetCategoryEntities();
+        Task UpdateCategories(List<CategoryEntity> catList);
+
 
         //Save a comment to database
         Task SaveComment(CommentEntity comment);
@@ -70,8 +71,5 @@ namespace BlazorTipz.Models.DbRelay
         
         //For Admin to see all suggestions from a user
         Task<List<CommentEntity>> GetCommentsOfUser(string empId);
-
-
-
     }
 }

@@ -17,8 +17,8 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
         public void SuggestionManagerTest()
         {
             // arrange and act
-            DummyDBR dDBR = new DummyDBR();
-            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
+            DummyDBR dDBR = new();
+            SuggestionManager _UnitUnderTest = new(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
 
             // assert
             Assert.IsNotNull(_UnitUnderTest);
@@ -36,8 +36,8 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
         public async Task SaveSuggestionTest(string Title, string Description, string OwnerTeam, string Creator, int testCase)
         {
             // arrange
-            DummyDBR dDBR = new DummyDBR();
-            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
+            DummyDBR dDBR = new();
+            SuggestionManager _UnitUnderTest = new(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
 
             string error1 = "No supplied suggestion";
             string error2 = "No supplied title";
@@ -47,9 +47,8 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
             string error6 = "No supplied start date";
             string error7 = "Program failure";
 
-            SuggViewmodel testSugg = new SuggViewmodel();
-            Category cat = new Category();
-            cat.Name = "HMS";
+            SuggViewmodel testSugg = new();
+            Category cat = new() { Name = "HMS", Id = "1" };
 
             testSugg.Title = Title;
             testSugg.Description = Description;
@@ -63,7 +62,7 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
 
             // act
             if (testCase == 1) { testSugg = null; }
-            testResult = await _UnitUnderTest.saveSuggestion(testSugg);
+            testResult = await _UnitUnderTest.SaveNewSuggestion(testSugg);
 
             // assert
             if (testCase == 1)
@@ -98,20 +97,26 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
         }
 
         [TestMethod()]
-        public void GetCategoriesTest()
+        public async Task GetCategoriesTest()
         {
             // arrange
-            DummyDBR dDBR = new DummyDBR();
-            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
+            DummyDBR dDBR = new();
+            SuggestionManager _UnitUnderTest = new(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
+            List<Category> testResult;
+            string err;
 
             // act
-            List<Category> testResult = _UnitUnderTest.GetCategories();
+            (testResult, err) = await _UnitUnderTest.GetCategories();
 
             // assert
             Assert.IsNotNull(testResult);
-            if (testResult.Count <= 0)
+            if (testResult.Count <= 0 && err != string.Empty)
             {
                 Assert.Fail("No categories found");
+            }
+            else
+            {
+                Assert.AreNotEqual(0, testResult.Count);
             }
         }
 
@@ -125,8 +130,8 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
         public async Task GetSuggestionsOfTeamTest(string teamId, bool goodCase)
         {
             // arrange
-            DummyDBR dDBR = new DummyDBR();
-            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
+            DummyDBR dDBR = new();
+            SuggestionManager _UnitUnderTest = new(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
 
             // act
             List<SuggViewmodel> testResult = await _UnitUnderTest.GetSuggestionsOfTeam(teamId);
@@ -154,8 +159,8 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
         public async Task GetSuggestionsOfUserTest(string userId, bool goodCase)
         {
             // arrange
-            DummyDBR dDBR = new DummyDBR();
-            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
+            DummyDBR dDBR = new();
+            SuggestionManager _UnitUnderTest = new(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
 
             // act
             List<SuggViewmodel> testResult = await _UnitUnderTest.GetSuggestionsOfUser(userId);
@@ -181,11 +186,11 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
         public async Task GetSuggestionTest(string testId,bool goodCase)
         {
             // arrange
-            DummyDBR dDBR = new DummyDBR();
-            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
+            DummyDBR dDBR = new();
+            SuggestionManager _UnitUnderTest = new(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
             
             // act
-            SuggViewmodel testResult = await _UnitUnderTest.GetSuggestion(testId);
+            SuggViewmodel? testResult = await _UnitUnderTest.GetSuggestionById(testId);
 
             // assert
             if (goodCase)
@@ -204,8 +209,8 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
         public async Task UpdateSuggestionTest(string testID, bool goodcase)
         {
             // arrange
-            DummyDBR dDBR = new DummyDBR();
-            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
+            DummyDBR dDBR = new();
+            SuggestionManager _UnitUnderTest = new(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
             string? err = null;
             SuggViewmodel testSugg = new()
             {
@@ -216,12 +221,10 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
                 Creator = "1",
                 StartDate = DateTime.Now.ToLocalTime()
             };
-            Category cat = new Category();
-            cat.Name = "HMS";
+            Category cat = new() { Name = "HMS", Id = "1" };
             testSugg.Category = cat;
-            UserViewmodel user = new UserViewmodel();
-            user.employmentId = "1";
-            
+            UserViewmodel user = new() { EmploymentId = "1" };
+
             //act
             err = await _UnitUnderTest.UpdateSuggestion(testSugg,user);
             
@@ -243,8 +246,8 @@ namespace BlazorTipz.ViewModels.Suggestion.Tests
         public async Task SaveCommentTest(string empId, string sugId, string comment, bool goodcase)
         {
             // arrange
-            DummyDBR dDBR = new DummyDBR();
-            SuggestionManager _UnitUnderTest = new SuggestionManager(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
+            DummyDBR dDBR = new();
+            SuggestionManager _UnitUnderTest = new(dDBR, new Models.AppStorage.AppStorage(), _UM, _TM);
             string goodres = "Kommentar lagret";
             string badres = "Kommentar inneholder ukjente tegn";
             

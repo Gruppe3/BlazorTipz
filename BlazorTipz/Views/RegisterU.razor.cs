@@ -1,8 +1,7 @@
 using BlazorTipz.Data;
-using Microsoft.AspNetCore.Mvc;
 using BlazorTipz.ViewModels.User;
-using System.Data;
 using ClosedXML.Excel;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.JSInterop;
 
 namespace BlazorTipz.Views
@@ -13,54 +12,66 @@ namespace BlazorTipz.Views
         bool isLoading = false;
         public string Checker { get; set; }
         bool HasBeenRegisterd { get; set; }
-
-        bool passwordVisible = true;
-        UserViewmodel userDto = new UserViewmodel();
-        UserViewmodel userTemp = new UserViewmodel();
+        UserViewmodel CurrentUser { get; set; } = new();
+        UserViewmodel UserDto { get; set; } = new();
+        UserViewmodel UserTemp { get; set; } = new();
         //Lager en liste
-        List<RoleE> roles = new List<RoleE>{RoleE.User, RoleE.Admin};
-        List<UserViewmodel> UsersList;
+        List<RoleE> UserRoles { get; set; } = new() { RoleE.User, RoleE.Admin};
+        List<UserViewmodel> UsersList { get; set; } = new();
+        
         //checks if there is a current user
         protected override async Task OnInitializedAsync()
         {
-            //checks if currentUser is null
-            var CurrentUser = _userM.getCurrentUser();
-            if (CurrentUser == null)
+            var token = await _localStorage.GetItemAsync<string>("token");
+            if (token != null)
             {
-                _navigationManager.NavigateTo("/");
+                // If a token is found
+                (UserViewmodel user, string err) = await _userManager.GetCurrentUser(token);
+                if (err != null)
+                {
+                    //If error, send to login
+                    _navigationManager.NavigateTo("/");
+                    return;
+                }
+
+                CurrentUser = user;
             }
             else
             {
-                UsersList = _userM.getRegisterUserList();
+                _navigationManager.NavigateTo("/");
+                return;
             }
+            UsersList = _userManager.GetRegisterUserList();
         }
 
-        public void getUsersList()
+        public void GetUsersList()
         {
-            UsersList = _userM.getRegisterUserList();
+            UsersList = _userManager.GetRegisterUserList();
         }
-
-        public async Task<ActionResult<string?>> registerUser()
+        
+        public async Task<ActionResult<string?>> RegisterSingleUser()
         {
-            string genPass = _userM.generatePassword();
-            userDto.password = genPass;
-            UserViewmodel usToList = userDto;
+            await Task.Delay(0);
+            string genPass = _userManager.GenerateRandomPassword();
+            UserDto.Password = genPass;
+            UserViewmodel usToList = UserDto;
             if (HasBeenRegisterd) {
-                _userM.getRegisterUserList().Clear();
+                _userManager.GetRegisterUserList().Clear();
                 HasBeenRegisterd = false;
             }
-            string ret = _userM.stageToRegisterList(usToList);
+            string ret = _userManager.StageToRegisterList(usToList);
             Checker = ret;
-            userDto = new UserViewmodel();
+            UserDto = new();
             return ret;
         }
 
-        //Sender resuest til registerUserSingel
-        public async Task<ActionResult<string>> RegisterUsers()
+        //Sender request til registerUserSingel
+        public async Task<ActionResult<string?>> RegisterUsers()
         {
-            (string err, string suc) = await _userM.registerMultiple(null);
-            Checker = err;
-            UsersList = _userM.getRegisterUserList();
+            (string? err, string? suc) = await _userManager.RegisterMultiple(null);
+            if (err != null)
+                Checker = err;
+            UsersList = _userManager.GetRegisterUserList();
             if (suc != null)
             {
                 Checker = suc;
@@ -71,13 +82,14 @@ namespace BlazorTipz.Views
 
             return err;
         }
-
+        
         //Sender resuest til registerUserSingel og eksporter en excel fil
-        public async Task<ActionResult<string>> RegisterUsersWExcel()
+        public async Task<ActionResult<string?>> RegisterUsersWExcel()
         {
-            (string err, string suc) = await _userM.registerMultiple(null);
-            Checker = err;
-            UsersList = _userM.getRegisterUserList();
+            (string? err, string? suc) = await _userManager.RegisterMultiple(null);
+            if (err != null)
+                Checker = err;
+            UsersList = _userManager.GetRegisterUserList();
             if (suc != null)
             {
                 await DownloadExcelDocument();
@@ -92,9 +104,10 @@ namespace BlazorTipz.Views
         //Delete user from list
         public async Task<ActionResult<string>> DeleteUser(UserViewmodel request)
         {
-            userTemp = request;
-            _userM.deleteFromRegisterList(userTemp.employmentId);
-            UsersList = _userM.getRegisterUserList();
+            await Task.Delay(0);
+            UserTemp = request;
+            _userManager.DeleteFromRegisterList(UserTemp.EmploymentId);
+            UsersList = _userManager.GetRegisterUserList();
             //Break foreach loop
             return "User deleted";
         }
@@ -123,10 +136,10 @@ namespace BlazorTipz.Views
 
                 foreach (var item in UsersList)
                 {
-                    worksheet.Cell("A" + row).Value = item.listnum;
-                    worksheet.Cell("B" + row).Value = item.employmentId;
-                    worksheet.Cell("C" + row).Value = item.role.ToString();
-                    worksheet.Cell("D" + row).Value = item.password;
+                    worksheet.Cell("A" + row).Value = item.ListNum;
+                    worksheet.Cell("B" + row).Value = item.EmploymentId;
+                    worksheet.Cell("C" + row).Value = item.UserRole.ToString();
+                    worksheet.Cell("D" + row).Value = item.Password;
                     row++;
                 }
 

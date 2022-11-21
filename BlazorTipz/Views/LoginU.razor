@@ -8,7 +8,7 @@
 
 <!--Injects from program-->
 @inject ILocalStorageService _localStorage
-@inject NavigationManager NavigationManager
+@inject NavigationManager _navigationManager
 @inject IUserManager _userM
 
 <PageTitle>Login</PageTitle>
@@ -21,10 +21,10 @@
 		</div>
 		<div class="justify-content-center">
 			<!--Wants type UserViewmodel, field object is userDto-->
-			<RadzenTemplateForm TItem="UserViewmodel" Data=@userDto Submit=LoginUs>
+			<RadzenTemplateForm TItem="UserViewmodel" Data=@UserDto Submit=LoginUs>
 				<div class="mb-5">
 					<RadzenLabel Text="Bruker ID" />
-					<RadzenMask Mask="******" CharacterPattern="[0-9]" Placeholder="000000" Name="id" @bind-Value=@userDto.employmentId Class="w-100" />
+					<RadzenMask Mask="******" CharacterPattern="[0-9]" Placeholder="000000" Name="id" @bind-Value=@UserDto.EmploymentId Class="w-100" />
 					<div style="position:relative">
 						<RadzenLengthValidator Component="id" Min="6" Text="Må være 6 karakterer" Popup=@popup Style="position: absolute" />
 						<RadzenRequiredValidator Component="id" Text="Må fylles ut" Popup=@popup Style="position: absolute; top: 1rem" />
@@ -33,7 +33,7 @@
 				<div class="mb-4">
 					<!--Binder til userDto.password-->
 					<RadzenLabel Text="Passord" />
-					<RadzenPassword Name="password" Placeholder="Skriv inn passord" @bind-Value=@userDto.password Class="w-100 d-block" type="password" />
+					<RadzenPassword Name="password" Placeholder="Skriv inn passord" @bind-Value=@UserDto.Password Class="w-100 d-block" type="password" />
 					<RadzenRequiredValidator Component="password" Text="Passord må fylles ut" Popup=@popup Style="position: absolute" />
 				</div>
 				<div class="center mb-3">

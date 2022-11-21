@@ -1,5 +1,123 @@
 ﻿
-/*=============== NAV ===============*/
+/*=============== NAV-small ===============*/
+.navbar {
+    position: fixed;
+    overflow: auto;
+    z-index: 2;
+}
+    .navbar a {
+        display: block;
+        padding: 1rem 1rem;
+        padding-left: 2rem;
+        color: var(--text-color:);
+        text-decoration: none;
+        font-size: 20px;
+    }
+        .navbar a:hover {
+            background-color: var(--p-light-color);
+        }
+
+.nav-text, i {
+    vertical-align: middle;
+    color: #fff;
+}
+
+.navbar-topbar {
+    background-color: var(--p-dark-color);
+    position: fixed;
+    width: 100vw;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.navbar-button {
+    text-decoration: none;
+    background-color: var(--primary-color);
+    border: none;
+    padding: 0.5rem;
+}
+    .navbar-button:hover {
+        background-color: darkgray;
+    }
+    .navbar-button i {
+        font-size: 35px;
+    }
+
+/*==== nav-menu ====*/
+/*The menu-element that gets moved off-screan when not active*/
+.navbar-togglecard {
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    left: calc(-80vw - 10px);
+    width: 80vw;
+    max-width: 400px;
+    height: 100vh;
+    background-color: var(--primary-color);
+    transition: ease-in-out .2s;
+}
+    .navbar-togglecard.active {
+        left: 0;
+    }
+
+.close-nav {
+    float: right;
+    display: inline-block;
+    border: none;
+    margin: 0;
+    background: none;
+    text-decoration: none;
+    cursor: pointer;
+}
+    .close-nav:active i {
+        color: gray;
+    }
+    .close-nav i {
+        font-size: 40px;
+    }
+
+.navbar-userinfo {
+    background-color: var(--p-dark-color);
+    padding: 1rem 2rem;
+}
+    .navbar-username {
+        font-size: 25px;
+    }
+    .navbar-userid {
+        color: var(--secondary-color);
+    }
+
+.nav-pages {
+}
+/*==== Little pluss-button ====*/
+.suggestion-button-container {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin-right: .5rem;
+    margin-bottom: .5rem;
+    z-index: 1;
+    border-radius: 50%;
+    background-color: var(--secondary-color);
+}
+    .suggestion-button-container:active {
+        background-color: var(--s-dark-color);
+    }
+    .suggestion-button-container a {
+        display: block;
+        text-align: center;
+        color: white;
+        text-decoration: none;
+    }
+        .suggestion-button-container a i {
+            font-size: 60px;
+            padding: 0.5rem;
+        }
+
+/*=============== NAV-old ===============*/
+
+/* Mobile View*/
 .container {
     margin-left: 1rem;
     margin-right: 1rem;
@@ -27,6 +145,7 @@
     margin-left: 10px;
 }
 
+/* Main Bar Mobile */
 .nav__list {
     position: fixed;
     bottom: 0;
@@ -56,7 +175,7 @@
             color: var(--first-color);
         }
 
-
+/* Right Dropdown Menu Mobile */
 .nav__user {
     float: right;
     margin-right: 20px;
@@ -85,6 +204,7 @@
             color: var(--first-color);
         }
 
+/* Right Bar Mobile*/
 .nav__umenu {
     float: right;
     margin-right: 20px;
@@ -114,6 +234,7 @@
             color: var(--first-color);
         }
 
+/* Left Bar Mobile */
 .nav__tmenu {
     float: left;
     margin-left: auto;

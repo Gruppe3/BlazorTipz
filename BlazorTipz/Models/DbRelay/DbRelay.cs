@@ -20,7 +20,7 @@ namespace BlazorTipz.Models.DbRelay
         //methodes for getting, setting and updating the database
         
         //User/Users
-        public async Task<UserEntity> getLoginUser(string empId)
+        public async Task<UserEntity> GetLoginUser(string empId)
         {
             try
             {
@@ -28,10 +28,10 @@ namespace BlazorTipz.Models.DbRelay
                 UserEntity dbinfo = await _data.LoadData<UserEntity, dynamic>(sql, new { empid = empId }, _config.GetConnectionString(ConnectionString), true);
                 return dbinfo;
             }
-            catch (Exception ex) { return null; }
+            catch (Exception) { throw; }
         }
 
-        public async Task<UserEntity> lookUpUser(string empId)
+        public async Task<UserEntity> LookUpUser(string empId)
         {
             try
             {
@@ -39,10 +39,10 @@ namespace BlazorTipz.Models.DbRelay
                 UserEntity dbinfo = await _data.LoadData<UserEntity, dynamic>(sql, new { empid = empId }, _config.GetConnectionString(ConnectionString), true);
                 return dbinfo;
             }
-            catch (Exception ex) { return null; }
+            catch (Exception) { throw; }
         }
 
-        public async Task addUserEntries(List<UserEntity> toSaveUsers)
+        public async Task AddUserEntries(List<UserEntity> toSaveUsers)
         {
             try
             {
@@ -61,10 +61,10 @@ namespace BlazorTipz.Models.DbRelay
                         _config.GetConnectionString(ConnectionString));
                 }
             }
-            catch (Exception ex) { throw; }
+            catch (Exception) { throw; }
         }
         //update user
-        public async Task updateUserEntry(UserEntity toSaveUser)
+        public async Task UpdateUserEntry(UserEntity toSaveUser)
         {
             string Role = toSaveUser.userRole.ToString();
             try
@@ -115,10 +115,10 @@ namespace BlazorTipz.Models.DbRelay
                 }
 
             }
-            catch (Exception ex) { throw; }
+            catch (Exception) { throw; }
         }
 
-        public async Task<List<UserEntity>> getActiveUsers()
+        public async Task<List<UserEntity>> GetActiveUsers()
         {
             
             try
@@ -129,11 +129,11 @@ namespace BlazorTipz.Models.DbRelay
 
                 return dbinfo;
             }
-            catch (Exception ex) { return null; }
+            catch (Exception) { throw; }
             
         }
 
-        public async Task<List<UserEntity>> getInactiveUsers()
+        public async Task<List<UserEntity>> GetInactiveUsers()
         {
             try
             {
@@ -143,10 +143,10 @@ namespace BlazorTipz.Models.DbRelay
 
                 return dbinfo;
             }
-            catch (Exception ex) { return null; }
+            catch (Exception) { throw; }
         }
 
-        public async Task changeUserStateTo(string empId, bool state) {
+        public async Task ChangeUserStateTo(string empId, bool state) {
             try
             {
                 var sql = "UPDATE Users SET active = @State WHERE employmentId = @Empid;";
@@ -156,9 +156,9 @@ namespace BlazorTipz.Models.DbRelay
                     Empid = empId
                 },
                 _config.GetConnectionString(ConnectionString));
-            } catch (Exception ex) { throw; }
+            } catch (Exception) { throw; }
         }
-        public async Task changeUsersStateTo(List<UserEntity> users, bool state)
+        public async Task ChangeUsersStateTo(List<UserEntity> users, bool state)
         {
             try
             {
@@ -175,13 +175,14 @@ namespace BlazorTipz.Models.DbRelay
                 }
                
             }
-            catch (Exception ex) { throw; }
+            catch (Exception) { throw; }
         }
         
-        //team/teams
+        // ==================== Teams ====================
+        
 
         //get's a single team from database
-        public async Task<TeamEntity> getSingleTeamDbFromDb(string teamId)
+        public async Task<TeamEntity> GetSingleTeamFromDb(string teamId)
         {
             try
             {
@@ -190,11 +191,11 @@ namespace BlazorTipz.Models.DbRelay
                 TeamEntity team = await _data.LoadData<TeamEntity, dynamic>(sql, new { TeamId = teamId }, _config.GetConnectionString(ConnectionString), true);
                 return team;
             }
-            catch (Exception ex) { return null; }
+            catch (Exception) { throw; }
         }
         
         //add a single team to database
-        public async Task addTeamEntry(TeamEntity team)
+        public async Task AddTeamEntry(TeamEntity team)
         {
             try 
             {
@@ -203,13 +204,14 @@ namespace BlazorTipz.Models.DbRelay
                 {
                     TeamName = team.teamName,
                     TeamLeader = team.teamLeader
-                }, _config.GetConnectionString(ConnectionString));
+                }, 
+                _config.GetConnectionString(ConnectionString));
             } 
-            catch (Exception ex) { throw; }
+            catch (Exception) { throw; }
         }
 
         //update a single team in database
-        public async Task updateTeamEntry(TeamEntity team)
+        public async Task UpdateTeamEntry(TeamEntity team)
         {
             try
             {
@@ -219,13 +221,14 @@ namespace BlazorTipz.Models.DbRelay
                     TeamName = team.teamName,
                     TeamLeader = team.teamLeader,
                     TeamId = team.teamId
-                }, _config.GetConnectionString(ConnectionString));
+                }, 
+                _config.GetConnectionString(ConnectionString));
             }
-            catch (Exception ex) { throw; }
+            catch (Exception) { throw; }
         }
         
         //get all Active teams from database
-        public async Task<List<TeamEntity>> getActiveTeams()
+        public async Task<List<TeamEntity>> GetActiveTeams()
         {
             try
             {
@@ -235,10 +238,10 @@ namespace BlazorTipz.Models.DbRelay
 
                 return dbinfo;
             }
-            catch (Exception ex) { return null; }
+            catch (Exception) { throw; }
         }
         //get all Inactive teams from database
-        public async Task<List<TeamEntity>> getInactiveTeams()
+        public async Task<List<TeamEntity>> GetInactiveTeams()
         {
             try
             {
@@ -248,11 +251,11 @@ namespace BlazorTipz.Models.DbRelay
 
                 return dbinfo;
             }
-            catch (Exception ex) { return null; }
+            catch (Exception) { throw; }
         }
 
         //change a single teams state to active or inactive
-        public async Task changeTeamStateTo(string teamId, bool state)
+        public async Task ChangeTeamStateTo(string teamId, bool state)
         {
             try
             {
@@ -264,10 +267,10 @@ namespace BlazorTipz.Models.DbRelay
                 },
                 _config.GetConnectionString(ConnectionString));
             }
-            catch (Exception ex) { throw; }
+            catch (Exception) { throw; }
         }
         //change a list of teams state to active or inactive
-        public async Task changeTeamsStateTo(List<TeamEntity> teams, bool state)
+        public async Task ChangeTeamsStateTo(List<TeamEntity> teams, bool state)
         {
             try
             {
@@ -284,12 +287,16 @@ namespace BlazorTipz.Models.DbRelay
                 }
 
             }
-            catch (Exception ex) { throw; }
+            catch (Exception) { throw; }
         }
 
-        // Suggestions
+
+        // ==================================================
+        // ------------------ Suggestions -------------------
+        // ==================================================
+
         // Save a single suggestion to database
-        public async Task saveSuggestion(SuggestionEntity suggestion)
+        public async Task SaveSuggestion(SuggestionEntity suggestion)
         {
             try
             {
@@ -301,27 +308,27 @@ namespace BlazorTipz.Models.DbRelay
                     SugTitle = suggestion.sugTitle,
                     SugDesc = suggestion.sugDesc,
                     SugStatus = suggestion.sugStatus.ToString(),
-                    CategoryId = suggestion.categoryId,
+                    CategoryId = suggestion.CatEntity.catId,
                     JustDoIt = suggestion.justDoIt,
                     AssignedId = suggestion.assignedId
                 },
                 _config.GetConnectionString(ConnectionString));
             }
-            catch (Exception ex) { throw; }
+            catch (Exception) { throw; }
         }
 
         // Saves a list of suggestions
-        public async Task saveSuggestionList(List<SuggestionEntity> suggestions)
+        public async Task SaveSuggestionList(List<SuggestionEntity> suggestions)
         {
            foreach (SuggestionEntity sug in suggestions)
             {
-                await saveSuggestion(sug);
+                await SaveSuggestion(sug);
             }
         }
 
         //get all coulums of a suggestion from database with suggestion id
         //if return = null error
-        public async Task<SuggestionEntity?> GetSuggestion(string sugId)
+        public async Task<SuggestionEntity> GetSuggestion(string sugId)
         {
             try
             {
@@ -329,11 +336,10 @@ namespace BlazorTipz.Models.DbRelay
                 SuggestionEntity sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { SugId = sugId }, _config.GetConnectionString(ConnectionString), true);
                 return sug;
             }
-            catch (Exception ex) { return null; }
+            catch (Exception) { throw; }
         }
         //Get a list of suggestion from database bound to creator id
-        //if return = null error
-        public async Task<List<SuggestionEntity>?> GetSuggestionsOfCreator(string empId)
+        public async Task<List<SuggestionEntity>> GetSuggestionsOfCreator(string empId)
         {
             try
             {
@@ -341,10 +347,10 @@ namespace BlazorTipz.Models.DbRelay
                 List<SuggestionEntity> sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { CreatorId = empId }, _config.GetConnectionString(ConnectionString));
                 return sug;
             }
-            catch (Exception ex) { return null; }   
+            catch (Exception) { throw; }   
         }
         //Get a list of suggestion from database bound to creator id filtered by status
-        public async Task<List<SuggestionEntity>?> GetSuggestionsOfCreator(string empId, SuggStatus status)
+        public async Task<List<SuggestionEntity>> GetSuggestionsOfCreator(string empId, SuggStatus status)
         {
             try
             {
@@ -352,11 +358,11 @@ namespace BlazorTipz.Models.DbRelay
                 List<SuggestionEntity> sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { CreatorId = empId, SugStatus = status.ToString() }, _config.GetConnectionString(ConnectionString));
                 return sug;
             }
-            catch (Exception ex) { return null; }
+            catch (Exception) { throw; }
         }
 
         //Get a list of suggestions from database bound to assigned id 
-        public async Task<List<SuggestionEntity>?> GetAssignedSuggestions(string empId)
+        public async Task<List<SuggestionEntity>> GetAssignedSuggestions(string empId)
         {
             try
             {
@@ -364,10 +370,10 @@ namespace BlazorTipz.Models.DbRelay
                 List<SuggestionEntity> sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { EmpId = empId }, _config.GetConnectionString(ConnectionString));
                 return sug;
             }
-            catch (Exception ex) { return null; }
+            catch (Exception) { throw; }
         }
         //Get a list of suggestions from database bound to assigned id filtered by status
-        public async Task<List<SuggestionEntity>?> GetAssignedSuggestions(string empId, SuggStatus status) 
+        public async Task<List<SuggestionEntity>> GetAssignedSuggestions(string empId, SuggStatus status) 
         {
             try
             {
@@ -375,12 +381,11 @@ namespace BlazorTipz.Models.DbRelay
                 List<SuggestionEntity> sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { EmpId = empId, Status = status.ToString() }, _config.GetConnectionString(ConnectionString));
                 return sug;
             }
-            catch (Exception ex) { return null; }
+            catch (Exception) { throw; }
         }
 
         //Get a list of suggestion from database bound to team id
-        //if return = null error
-        public async Task<List<SuggestionEntity>?> GetSuggestionOfTeam(string teamId)
+        public async Task<List<SuggestionEntity>> GetSuggestionOfTeam(string teamId)
         {
             try
             {
@@ -388,10 +393,10 @@ namespace BlazorTipz.Models.DbRelay
                 List<SuggestionEntity> sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { OwnerId = teamId }, _config.GetConnectionString(ConnectionString));
                 return sug;
             }
-            catch (Exception ex) { return null; }
+            catch (Exception) { throw; }
         }
         //Get a list of suggestion from database bound to team id filtered by status
-        public async Task<List<SuggestionEntity>?> GetSuggestionOfTeam(string teamId, SuggStatus status)
+        public async Task<List<SuggestionEntity>> GetSuggestionOfTeam(string teamId, SuggStatus status)
         {
             try
             {
@@ -399,13 +404,12 @@ namespace BlazorTipz.Models.DbRelay
                 List<SuggestionEntity> sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { OwnerId = teamId, Status = status.ToString() }, _config.GetConnectionString(ConnectionString));
                 return sug;
             }
-            catch (Exception ex) { return null; }
+            catch (Exception) { throw; }
         }
 
         //get a list suggestion from database bound to status
         //@param status = a type of SuggStatus (enum class)
-        //if return null = error
-        public async Task<List<SuggestionEntity>?> GetSuggestionsByStatus(SuggStatus status)
+        public async Task<List<SuggestionEntity>> GetSuggestionsByStatus(SuggStatus status)
         {
             try
             {
@@ -413,10 +417,10 @@ namespace BlazorTipz.Models.DbRelay
                 List<SuggestionEntity> sug = await _data.LoadData<SuggestionEntity, dynamic>(sql, new { SugStatus = status.ToString() }, _config.GetConnectionString(ConnectionString));
                 return sug;
             }
-            catch (Exception ex) { return null; }
+            catch (Exception) { throw; }
         }
         //update a suggestion entry
-        public async Task updateSuggestion(SuggestionEntity sug)
+        public async Task UpdateSuggestion(SuggestionEntity sug)
         {
             try
             {
@@ -427,22 +431,56 @@ namespace BlazorTipz.Models.DbRelay
                     SugTitle = sug.sugTitle,
                     SugDesc = sug.sugDesc,
                     SugStatus = sug.sugStatus.ToString(),
-                    CategoryId = sug.categoryId,
+                    CategoryId = sug.CatEntity.catId,
                     AssignedId = sug.assignedId,
                     DueDate = sug.dueDate,
                     SugId = sug.sugId
                 },
                 _config.GetConnectionString(ConnectionString));
             }
-            catch (Exception ex) { throw; }
+            catch (Exception) { throw; }
         }
 
-        public Task SaveComment(CommentEntity comment)
+        //Get a list of categories from db
+        public async Task<List<CategoryEntity>> GetCategoryEntities()
+        {
+            try
+            {
+                var sql = "SELECT catId, catName FROM Categories;";
+                return await _data.LoadData<CategoryEntity, dynamic>(sql, new { }, _config.GetConnectionString(ConnectionString));
+            }
+            catch (Exception) { throw; }
+        }
+        
+        //Insert new elements, or update category name on duplicate key
+        public async Task UpdateCategories(List<CategoryEntity> catList)
+        {
+            try
+            {
+                foreach (CategoryEntity catE in catList)
+                {
+                    var sql = "INSERT IGNORE INTO Categories (catId, catName) VALUES (@CatId, @CatName) ON DUPLICATE KEY UPDATE catName = @CatName;";
+                    await _data.SaveData(sql, new
+                    {
+                        CatId = catE.catId,
+                        CatName = catE.catName
+                    },
+                    _config.GetConnectionString(ConnectionString));
+                }
+            }
+            catch (Exception) { throw; }
+        }
+        
+        
+        // ==================================================
+        // -------------------- Comments --------------------
+        // ==================================================
+        public async Task SaveComment(CommentEntity comment)
         {
             try
             {
                 var sql = "INSERT INTO Comments (employmentId, sugId, content) values (@EmpId, @SugId, @Content);";
-                return _data.SaveData(sql, new
+                await _data.SaveData(sql, new
                 {
                     EmpId = comment.employmentId,
                     SugId = comment.sugId,
@@ -450,15 +488,15 @@ namespace BlazorTipz.Models.DbRelay
                 },
                 _config.GetConnectionString(ConnectionString));
             }
-            catch (Exception ex) { throw; }
+            catch (Exception) { throw; }
         }
 
-        public Task UpdateComment(CommentEntity comment)
+        public async Task UpdateComment(CommentEntity comment)
         {
             try
             {
                 var sql = "UPDATE Comments SET content = @Content, active = @Active WHERE employmentId = @EmpId AND sugId = @SugId AND createdAt = @CreatedAt;";
-                return _data.SaveData(sql, new
+                await _data.SaveData(sql, new
                 {
                     EmpId = comment.employmentId,
                     SugId = comment.sugId,
@@ -468,27 +506,27 @@ namespace BlazorTipz.Models.DbRelay
                 },
                 _config.GetConnectionString(ConnectionString));
             }
-            catch (Exception ex) { throw; }
+            catch (Exception) { throw; }
         }
 
-        public Task<List<CommentEntity>> GetCommentsOfSuggestion(string sugId)
+        public async Task<List<CommentEntity>> GetCommentsOfSuggestion(string sugId)
         {
             try
             {
                 var sql = "SELECT c.employmentId, c.sugId, c.createdAt, c.content, c.active, Users.userName FROM Comments c INNER JOIN Users ON c.employmentId = Users.employmentId WHERE c.sugId = @SugId ORDER BY createdAt DESC;";
-                return _data.LoadData<CommentEntity, dynamic>(sql, new { SugId = sugId }, _config.GetConnectionString(ConnectionString));
+                return await _data.LoadData<CommentEntity, dynamic>(sql, new { SugId = sugId }, _config.GetConnectionString(ConnectionString));
             }
-            catch (Exception ex) { throw; }
+            catch (Exception) { throw; }
         }
 
-        public Task<List<CommentEntity>> GetCommentsOfUser(string empId)
+        public async Task<List<CommentEntity>> GetCommentsOfUser(string empId)
         {
             try
             {
                 var sql = "SELECT c.employmentId, c.sugId, c.createdAt, c.content, c.active, Users.userName FROM Comments c INNER JOIN Users ON c.employmentId = Users.employmentId WHERE c.employmentId = @EmpId ORDER BY createdAt DESC;";
-                return _data.LoadData<CommentEntity, dynamic>(sql, new { EmpId = empId }, _config.GetConnectionString(ConnectionString));
+                return await _data.LoadData<CommentEntity, dynamic>(sql, new { EmpId = empId }, _config.GetConnectionString(ConnectionString));
             }
-            catch (Exception ex) { throw; }
+            catch (Exception) { throw; }
         }
     }
 }

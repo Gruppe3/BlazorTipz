@@ -9,6 +9,7 @@
 @using Radzen
 
 <!--Injects from program-->
+@inject ILocalStorageService _localStorage
 @inject NavigationManager _navigationManager
 @inject IUserManager _userManager
 @inject ITeamManager _teamManager
@@ -24,32 +25,34 @@
         <div class="justify-content-center">
             <div class="row">
                 <div class="col-lg-6 offset-lg-3">
-                    <RadzenTemplateForm TItem="TeamViewmodel" Data=@teamDto Submit=RegisterTeam>
+                    <RadzenTemplateForm TItem="TeamViewmodel" Data=@TeamDto Submit=RegisterTeam>
                         <div class="row mb-5">
-                            <div class="col-md-4" style="align-self: center;">
+                            <div class="col-3" style="align-self: center;">
                                 <RadzenLabel Text="Team Navn" />
                             </div>
-                            <div class="col">
-                                <RadzenTextBox style="display: block" Name="team" @bind-Value=@teamDto.name Class="w-100" Placeholder="Navn"/>
-                                <RadzenLengthValidator Component="team" Min="3" Text="Team name should be alteast 3 characters long" Popup=@popup Style="position: absolute"/>                            </div>
+                            <div class="col-9">
+                                <RadzenTextBox style="display: block" MaxLength="255" Name="team" @bind-Value=@TeamDto.TeamName Class="w-100" Placeholder="Navn"/>
+                                <RadzenLengthValidator Component="team" Min="3" Text="Team name should be alteast 3 characters long" Popup=@popup Style="position: absolute"/>
+                            </div>
                         </div>
                         <div class="row mb-5">
-                            <div class="col-md-4" style="align-self: center;">
+                            <div class="col-3" style="align-self: center;">
                                 <RadzenLabel Text="Velg Team Leder" />
                             </div>
-                            <div class="col">
-                                <RadzenDropDownDataGrid @bind-Value=@teamDto.leader FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
-                                                        AllowFiltering="false" AllowClear="true" Data=@people TextProperty="employmentId" Placeholder="ID" ValueProperty="employmentId" Class="w-100">
+                            <div class="col-9">
+                                <RadzenDropDownDataGrid @bind-Value=@TeamDto.TeamLeaderId FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
+                                                        AllowFiltering="false" AllowClear="true" Data=@ActiveUsers TextProperty="Navn" Placeholder="Navn" ValueProperty="EmploymentId" Class="w-100">
                                     <Columns>
-                                        <RadzenDropDownDataGridColumn Property="employmentId" Title="User ID" />
-                                        <RadzenDropDownDataGridColumn Property="name" Title="Firstname" />
+                                        <RadzenDropDownDataGridColumn Property="EmploymentId" Title="Bruker ID" />
+                                        <RadzenDropDownDataGridColumn Property="Name" Title="Navn" />
                                     </Columns>
 
                                 </RadzenDropDownDataGrid>
                             </div>
                         </div>
                         <div class="center">
-                            <RadzenButton ButtonType="ButtonType.Submit" Text="Send inn"></RadzenButton>
+                            <RadzenButton Text="Reset" ButtonType="ButtonType.Reset" ButtonStyle="ButtonStyle.Light" />
+                            <RadzenButton Text="Send inn" ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" />
                         </div>
                     </RadzenTemplateForm>
                 </div>
@@ -60,17 +63,17 @@
         <div class="justify-content-center">
             <div class="row">
                 <div class="col-lg-6 offset-lg-3">
-                    <RadzenTemplateForm TItem="UserViewmodel" Data=@userDto Submit=AddTeamMember>
+                    <RadzenTemplateForm TItem="UserViewmodel" Data=@UserDto Submit=AddTeamMember>
                         <div class="row mb-5">
-                            <div class="col-md-4" style="align-self: center;">
+                            <div class="col-3" style="align-self: center;">
                                 <RadzenLabel Text="Team Navn" />
                             </div>
-                            <div class="col">
-                                <RadzenDropDownDataGrid @bind-Value=@userDto.teamId FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
-                                                        AllowFiltering="true" AllowClear="true" Data=@teams TextProperty="name" Placeholder="Team" ValueProperty="id" Class="w-100">
+                            <div class="col-9">
+                                <RadzenDropDownDataGrid @bind-Value=@UserDto.TeamId FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
+                                                        AllowFiltering="true" AllowClear="true" Data=@ActiveTeams TextProperty="TeamName" Placeholder="Team" ValueProperty="TeamId" Class="w-100">
                                     <Columns>
-                                        <RadzenDropDownDataGridColumn Property="id" Title="Team ID" />
-                                        <RadzenDropDownDataGridColumn Property="name" Title="Team Name" />
+                                        <RadzenDropDownDataGridColumn Property="TeamId" Title="Team ID" />
+                                        <RadzenDropDownDataGridColumn Property="TeamName" Title="Team Navn" />
                                     </Columns>
 
                                 </RadzenDropDownDataGrid>
@@ -78,22 +81,23 @@
                         </div>
 
                         <div class="row mb-5">
-                            <div class="col-md-4" style="align-self: center;">
+                            <div class="col-3" style="align-self: center;">
                                 <RadzenLabel Text="Sett bruker ID" />
                             </div>
-                            <div class="col">
-                                <RadzenDropDownDataGrid @bind-Value=@userDto.employmentId FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
-                                                        AllowFiltering="false" AllowClear="true" Data=@people TextProperty="name" Placeholder="ID" ValueProperty="employmentId" Class="w-100">
+                            <div class="col-9">
+                                <RadzenDropDownDataGrid @bind-Value=@UserDto.EmploymentId FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
+                                                        AllowFiltering="false" AllowClear="true" Data=@ActiveUsers TextProperty="Name" Placeholder="Navn" ValueProperty="EmploymentId" Class="w-100">
                                     <Columns>
-                                        <RadzenDropDownDataGridColumn Property="employmentId" Title="User ID" />
-                                        <RadzenDropDownDataGridColumn Property="name" Title="Name" />
+                                        <RadzenDropDownDataGridColumn Property="EmploymentId" Title="Bruker ID" />
+                                        <RadzenDropDownDataGridColumn Property="Name" Title="Navn" />
                                     </Columns>
-
+									
                                 </RadzenDropDownDataGrid>
                             </div>
                         </div>
                         <div class="center">
-                            <RadzenButton ButtonType="ButtonType.Submit" Text="Send inn"></RadzenButton>
+                            <RadzenButton Text="Reset" ButtonType="ButtonType.Reset" ButtonStyle="ButtonStyle.Light" />
+                            <RadzenButton Text="Send inn" ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" />
                         </div>
                         <div class="center">
                             <h1>@Checker</h1>
@@ -102,36 +106,35 @@
                 </div>
             </div>
         </div>
-        <h1 style="opacity:0;">:)</h1>
-        <h1 style="opacity:0;">:)</h1>
     </Authorized>
 </AuthorizeView>
 <AuthorizeView Roles="TeamLeader" Context="someContext">
     <Authorized>
         <h1 class="center">Fyll inn skjema</h1>
-        <p class="d-flex justify-content-center">for å legge til nytt medlem i @team!</p>
+        <p class="d-flex justify-content-center">for å legge til nytt medlem i @CurrentTeam.TeamName!</p>
         <div class="container my-4">
             <div class="row">
                 <div class="col-lg-6 offset-lg-3">
-                    <RadzenTemplateForm TItem="UserViewmodel" Data=@userDto Submit=AddTeamMember>
+                    <RadzenTemplateForm TItem="UserViewmodel" Data=@UserDto Submit=AddTeamMember>
 
                         <div class="row mb-5">
-                            <div class="col-md-4" style="align-self: center;">
+                            <div class="col-3" style="align-self: center;">
                                 <RadzenLabel Text="Sett bruker ID" />
                             </div>
-                            <div class="col">
-                                <RadzenDropDownDataGrid @bind-Value=@userDto.employmentId FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
-                                                        AllowFiltering="false" AllowClear="true" Data=@people TextProperty="employmentId" Placeholder="ID" ValueProperty="employmentId" Class="w-100">
+                            <div class="col-9">
+                                <RadzenDropDownDataGrid @bind-Value=@UserDto.EmploymentId FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
+                                                        AllowFiltering="false" AllowClear="true" Data=@ActiveUsers TextProperty="Navn" Placeholder="Navn" ValueProperty="EmploymentId" Class="w-100">
                                     <Columns>
-                                        <RadzenDropDownDataGridColumn Property="employmentId" Title="User ID" />
-                                        <RadzenDropDownDataGridColumn Property="name" Title="Firstname" />
+                                        <RadzenDropDownDataGridColumn Property="EmploymentId" Title="Bruker ID" />
+                                        <RadzenDropDownDataGridColumn Property="Name" Title="Navn" />
                                     </Columns>
 
                                 </RadzenDropDownDataGrid>
                             </div>
                         </div>
                         <div class="center">
-                            <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
+							<RadzenButton Text="Reset" ButtonType="ButtonType.Reset" ButtonStyle="ButtonStyle.Light" />
+                            <RadzenButton Text="Submit" ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" />
                         </div>
                         <div class="center">
                             <h1>@Checker</h1>

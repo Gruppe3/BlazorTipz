@@ -11,20 +11,18 @@ namespace BlazorTipz.Views
     public partial class Index
     {
         bool isLoaded;
-        
+
         private UserViewmodel CurrentUser { get; set; } = new();
-        private List<SuggViewmodel> UserSugg { get; set; } = new();
-        private List<SuggViewmodel> Assignedsugg { get; set; } = new();
         private List<SuggViewmodel> SuggList { get; set; } = new();
 
         //For suggestion
         private SuggViewmodel CurrentSugg { get; set; } = new();
         public SuggViewmodel SuggUpdate { get; set; } = new();
-        private List<TeamViewmodel> Teams { get; set; } = new();
-        public List<Category>? Categories { get; set; }
+        private List<TeamViewmodel> ActiveTeams { get; set; } = new();
+        public List<Category> Categories { get; set; } = new();
         private List<SuggStatus> StatusList { get; set; } = new();
         private List<UserViewmodel> ActiveUsers { get; set; } = new();
-
+        
         //Comments
         private List<CommentViewmodel> Comments { get; set; } = new();
         private CommentViewmodel CommentDto { get; set; } = new();
@@ -38,8 +36,8 @@ namespace BlazorTipz.Views
         private string SuggCardHiddenState { get; set; } = "";
         private string Feedback { get; set; } = string.Empty;
         private string SuggShowMore { get; set; } = "show-less";
-        private string SuggDisplayState { get; set; } = "loading";
         private string ErrString { get; set; } = string.Empty;
+        private string ErrorCardState { get; set; } = "active";
 
 
         //Everytime page loads this runs
@@ -50,48 +48,58 @@ namespace BlazorTipz.Views
             //If you do not have a token it redirects you to /login
             if (token == null || token == "")
             {
-                NavigationManager.NavigateTo("/login", true);
+                _navigationManager.NavigateTo("/login", true);
                 return;
             }
             else
             //Returns UserViewmodel or an error
             {
-                (UserViewmodel user, string err) = await _userManager.getCurrentUser(token);
+                (UserViewmodel user, string err) = await _userManager.GetCurrentUser(token);
                 if (err != null || user == null)
                 {
-                    NavigationManager.NavigateTo("/login", true);
+                    _navigationManager.NavigateTo("/login", true);
                     return;
                 }
 
-                if (user.firstTimeLogin == true)
+                if (user.FirstTimeLogin == true)
                 {
-                    NavigationManager.NavigateTo("/userSettings");
+                    _navigationManager.NavigateTo("/userSettings");
                     return;
                 }
 
                 //Sets currentUser to user
                 CurrentUser = user;
             }
+            SuggList = await _suggestionManager.GetFilteredSuggestions(FilterVisning, CurrentUser.EmploymentId);
+            
+
+            // ==== Fill for the update-form ====
             StatusList.AddRange(new List<SuggStatus>() { SuggStatus.Plan, SuggStatus.Do, SuggStatus.Study, SuggStatus.Act, SuggStatus.Complete, SuggStatus.Rejected });
-            //get active teams
-            Teams = await _teamManager.updateTeamsList();
-            //Get team suggestions
-            //UserSugg = await _suggestionManager.GetSuggestionsOfUser(CurrentUser.employmentId);
-            //Assignedsugg = await _suggestionManager.GetPreFilteredAssignedSuggestions(CurrentUser.employmentId);
+            
+            //Get active teams
+            ActiveTeams = await _teamManager.UpdateTeamsList();
+            
+            //Fill inn active users along with corresponding teamname
+            var users = await _userManager.GetActiveUsers();
+            foreach (UserViewmodel u in users)
+            {
+                await u.GetTeamName(_teamManager);
+            }
+            ActiveUsers = users;
 
-            //SuggList = await _suggestionManager.GetPreFilteredAssignedSuggestions(CurrentUser.employmentId);
-            SuggList = await _suggestionManager.GetFilteredSuggestions(FilterVisning, CurrentUser.employmentId);
+            (Categories, string? err2) = await _suggestionManager.GetCategories();
+            if (err2 != string.Empty) { Feedback = err2; }
+            // ==== End of form-filling ====
 
-            SuggDisplayState = ""; //removes loading
+            //Removes loading
             isLoaded = true;
         }
 
         private async Task ApplyFilterToSuggList() 
         {
             ErrString = "";
-            SuggDisplayState = "loading";
-            string empId = CurrentUser.employmentId;
-            string teamId = CurrentUser.teamId;
+            string empId = CurrentUser.EmploymentId;
+            string teamId = CurrentUser.TeamId;
 
             if (FilterVisning == 2) //Team suggestions
             { 
@@ -123,7 +131,6 @@ namespace BlazorTipz.Views
                 //No suggestions found
                 ErrString = "Ingen forslag funnet.";
             }
-            SuggDisplayState = "";
         }
 
         private async Task UpdateVisning(ChangeEventArgs value)
@@ -131,7 +138,6 @@ namespace BlazorTipz.Views
             if (value != null && value.Value != null)
             {
                 string val = (string)value.Value;
-                //int x = Int32.Parse(val);
                 FilterVisning = Int32.Parse(val);
             }
             await ApplyFilterToSuggList();
@@ -196,7 +202,7 @@ namespace BlazorTipz.Views
             if (comment.Comment.IsNullOrEmpty()) { return; }
 
             comment.SugId = SugId;
-            comment.EmpId = CurrentUser.employmentId;
+            comment.EmpId = CurrentUser.EmploymentId;
             string respons = await _suggestionManager.SaveComment(comment);
             if (respons.Equals("Kommentar lagret"))
             {
@@ -208,23 +214,23 @@ namespace BlazorTipz.Views
         {
             if (SuggUpdate.Id != null)
             {
-                string? err;
-                //suggUpdate.SetFristTidToFrist();
-                err = await _suggestionManager.UpdateSuggestion(SuggUpdate, CurrentUser);
+                string? err = await _suggestionManager.UpdateSuggestion(SuggUpdate, CurrentUser);
                 if (err != null)
                 {
+                    ErrorCardState = "active";
                     Feedback = err;
                 }
                 else
                 {
-                    Feedback = "Suggestion updated";
+                    await ApplyFilterToSuggList();
+                    Feedback = "Forslag er oppdatert";
                 }
             }
             else
             {
-                Feedback = "Suggestion not found";
+                ErrorCardState = "active";
+                Feedback = "Noe er galt. Forslag kan ikke identifiseres.";
             }
-            
         }
     }
 }

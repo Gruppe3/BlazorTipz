@@ -11,8 +11,8 @@ namespace BlazorTipz.ViewModels.Team.Tests
         [TestMethod()]
         public void TeamManagerTest()
         {
-            DummyDBR dDBR = new DummyDBR();
-            TeamManager _UnitUnderTest = new TeamManager(dDBR, new UserManager(dDBR, new Components.AuthenticationComponent()));
+            DummyDBR dDBR = new();
+            TeamManager _UnitUnderTest = new(dDBR, new UserManager(dDBR, new Components.AuthenticationComponent()));
             Assert.IsNotNull(_UnitUnderTest);
         }
 
@@ -20,23 +20,23 @@ namespace BlazorTipz.ViewModels.Team.Tests
         public async Task GetTeamsTest()
         {
             //arrange
-            DummyDBR dDBR = new DummyDBR();
-            TeamManager _UnitUnderTest = new TeamManager(dDBR, new UserManager(dDBR, new Components.AuthenticationComponent()));
+            DummyDBR dDBR = new();
+            TeamManager _UnitUnderTest = new(dDBR, new UserManager(dDBR, new Components.AuthenticationComponent()));
             List<TeamViewmodel> teamList;
             List<TeamViewmodel>? teams;
 
             //act
-            teamList = await _UnitUnderTest.getTeams();
-            teams = _UnitUnderTest.Teams;
+            teamList = await _UnitUnderTest.GetActiveTeams();
+            teams = _UnitUnderTest.ActiveTeams;
 
             //assert
             Assert.AreEqual(teamList, teams);
             foreach (TeamViewmodel team in teamList)
             {
                 Assert.IsTrue(
-                    team.id != "" &&
-                    team.name != "" &&
-                    team.leader != ""
+                    team.TeamId != "" &&
+                    team.TeamName != "" &&
+                    team.TeamLeaderId != ""
                     );
             }
         }
@@ -45,23 +45,23 @@ namespace BlazorTipz.ViewModels.Team.Tests
         public async Task UpdateTeamsListTest()
         {
             //arrange
-            DummyDBR dDBR = new DummyDBR();
-            TeamManager _UnitUnderTest = new TeamManager(dDBR, new UserManager(dDBR, new Components.AuthenticationComponent()));
+            DummyDBR dDBR = new();
+            TeamManager _UnitUnderTest = new(dDBR, new UserManager(dDBR, new Components.AuthenticationComponent()));
             List<TeamViewmodel> teamList;
             List<TeamViewmodel>? teams;
 
             //act
-            teamList = await _UnitUnderTest.updateTeamsList();
-            teams = _UnitUnderTest.Teams;
+            teamList = await _UnitUnderTest.UpdateTeamsList();
+            teams = _UnitUnderTest.ActiveTeams;
 
             //assert
             Assert.AreEqual(teamList, teams);
             foreach (TeamViewmodel team in teamList)
             {
                 Assert.IsTrue(
-                    team.id != "" &&
-                    team.name != "" &&
-                    team.leader != ""
+                    team.TeamId != "" &&
+                    team.TeamName != "" &&
+                    team.TeamLeaderId != ""
                     );
             }
         }
@@ -75,21 +75,21 @@ namespace BlazorTipz.ViewModels.Team.Tests
         public async Task GetTeamTest(string teamId, bool good)
         {
             //arrange
-            DummyDBR dDBR = new DummyDBR();
-            TeamManager _UnitUnderTest = new TeamManager(dDBR, new UserManager(dDBR, new Components.AuthenticationComponent()));
+            DummyDBR dDBR = new();
+            TeamManager _UnitUnderTest = new(dDBR, new UserManager(dDBR, new Components.AuthenticationComponent()));
             TeamViewmodel result;
 
             //act
-            result = await _UnitUnderTest.getTeam(teamId);
+            result = await _UnitUnderTest.GetTeamById(teamId);
 
             //assert
             if (good)
             {
-                Assert.AreEqual(result.id, teamId);
+                Assert.AreEqual(result.TeamId, teamId);
             }
             else //if not good
             {
-                Assert.IsTrue(result.id == "");
+                Assert.IsTrue(result.TeamId == "");
             }
 
         }
@@ -98,14 +98,14 @@ namespace BlazorTipz.ViewModels.Team.Tests
         public async Task GetInactiveTeamsTest()
         {
             //arrange
-            DummyDBR dDBR = new DummyDBR();
-            TeamManager _UnitUnderTest = new TeamManager(dDBR, new UserManager(dDBR, new Components.AuthenticationComponent()));
+            DummyDBR dDBR = new();
+            TeamManager _UnitUnderTest = new(dDBR, new UserManager(dDBR, new Components.AuthenticationComponent()));
             List<TeamViewmodel> inactiveTeams;
             List<TeamViewmodel> activeTeams;
 
             //act
-            inactiveTeams = await _UnitUnderTest.getInactiveTeams();
-            activeTeams = await _UnitUnderTest.getTeams();
+            inactiveTeams = await _UnitUnderTest.GetInactiveTeams();
+            activeTeams = await _UnitUnderTest.GetActiveTeams();
 
             //assert
 
@@ -113,9 +113,9 @@ namespace BlazorTipz.ViewModels.Team.Tests
             foreach (TeamViewmodel team in inactiveTeams)
             {
                 Assert.IsTrue(
-                    team.id != "" &&
-                    team.name != "" &&
-                    team.leader != ""
+                    team.TeamId != "" &&
+                    team.TeamName != "" &&
+                    team.TeamLeaderId != ""
                     );
             }
         }
@@ -128,30 +128,30 @@ namespace BlazorTipz.ViewModels.Team.Tests
         public async Task UpdateTeamTest(string id, string name, string teamLeader, bool good)
         {
             //arrange
-            DummyDBR dDBR = new DummyDBR();
-            TeamManager _UnitUnderTest = new TeamManager(dDBR, new UserManager(dDBR, new Components.AuthenticationComponent()));
+            DummyDBR dDBR = new();
+            TeamManager _UnitUnderTest = new(dDBR, new UserManager(dDBR, new Components.AuthenticationComponent()));
             TeamViewmodel? teamFromList;
-            TeamViewmodel testTeam = new TeamViewmodel();
-            testTeam.id = id;
-            testTeam.name = name;
-            testTeam.leader = teamLeader;
+            TeamViewmodel testTeam = new();
+            testTeam.TeamId = id;
+            testTeam.TeamName = name;
+            testTeam.TeamLeaderId = teamLeader;
 
             //act
-            await _UnitUnderTest.updateTeam(testTeam);
-            teamFromList = _UnitUnderTest.Teams.Where(t => t.id == testTeam.id).FirstOrDefault();
+            await _UnitUnderTest.UpdateSingleTeam(testTeam);
+            teamFromList = _UnitUnderTest.ActiveTeams.Where(t => t.TeamId == testTeam.TeamId).FirstOrDefault();
 
             //assert
             if (good)
             {
-                Assert.AreEqual(testTeam.id, teamFromList?.id);
-                Assert.AreEqual(testTeam.name, teamFromList?.name);
-                Assert.AreEqual(testTeam.leader, teamFromList?.leader);
+                Assert.AreEqual(testTeam.TeamId, teamFromList?.TeamId);
+                Assert.AreEqual(testTeam.TeamName, teamFromList?.TeamName);
+                Assert.AreEqual(testTeam.TeamLeaderId, teamFromList?.TeamLeaderId);
             }
             else
             {
-                Assert.AreNotEqual(testTeam.id, teamFromList?.id);
-                Assert.AreNotEqual(testTeam.name, teamFromList?.name);
-                Assert.AreNotEqual(testTeam.leader, teamFromList?.leader);
+                Assert.AreNotEqual(testTeam.TeamId, teamFromList?.TeamId);
+                Assert.AreNotEqual(testTeam.TeamName, teamFromList?.TeamName);
+                Assert.AreNotEqual(testTeam.TeamLeaderId, teamFromList?.TeamLeaderId);
             }
         }
 
@@ -169,13 +169,15 @@ namespace BlazorTipz.ViewModels.Team.Tests
         public async Task CreateTeamTest(string name, string leader, int testCase)
         {
             //arrange
-            DummyDBR dDBR = new DummyDBR();
-            TeamManager _UnitUnderTest = new TeamManager(dDBR, new UserManager(dDBR, new Components.AuthenticationComponent()));
+            DummyDBR dDBR = new();
+            TeamManager _UnitUnderTest = new(dDBR, new UserManager(dDBR, new Components.AuthenticationComponent()));
 
             TeamViewmodel? testResult;
-            TeamViewmodel? testTeam = new TeamViewmodel();
-            testTeam.name = name;
-            testTeam.leader = leader;
+            TeamViewmodel? testTeam = new()
+            {
+                TeamName = name,
+                TeamLeaderId = leader
+            };
 
             string error1 = "Team is null";
             string error2 = "Team name is empty";
@@ -186,7 +188,7 @@ namespace BlazorTipz.ViewModels.Team.Tests
 
             //act
             if (testCase == 1) { testTeam = null; }
-            (testResult, err) = await _UnitUnderTest.createTeam(testTeam);
+            (testResult, err) = await _UnitUnderTest.CreateNewTeam(testTeam);
 
             //assert
             if (testCase == 1)
@@ -233,8 +235,8 @@ namespace BlazorTipz.ViewModels.Team.Tests
         public async Task SearchTeamsTest(string input,bool goodcase)
         {
             //arrange
-            DummyDBR dDBR = new DummyDBR();
-            TeamManager _UnitUnderTest = new TeamManager(dDBR, new UserManager(dDBR, new Components.AuthenticationComponent()));
+            DummyDBR dDBR = new();
+            TeamManager _UnitUnderTest = new(dDBR, new UserManager(dDBR, new Components.AuthenticationComponent()));
 
             //act
             TeamViewmodel result = await _UnitUnderTest.SearchTeams(input);

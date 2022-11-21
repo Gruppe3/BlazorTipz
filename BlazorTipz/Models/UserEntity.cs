@@ -1,13 +1,9 @@
-﻿using BlazorTipz.Components;
-using BlazorTipz.Data;
-using BlazorTipz.Components.DataAccess;
+﻿using BlazorTipz.Data;
+using BlazorTipz.ViewModels.User;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using static Org.BouncyCastle.Math.EC.ECCurve;
-using Microsoft.Extensions.Configuration;
 using System.Security.Cryptography;
-using BlazorTipz.ViewModels.User;
 
 namespace BlazorTipz.Models
 {
@@ -18,20 +14,20 @@ namespace BlazorTipz.Models
         
         //database
         public string userName { get; set; } = string.Empty;
-        public string employmentId { get; set; }
+        public string employmentId { get; set; } = string.Empty;
         public RoleE userRole { get; set; } = RoleE.User;
-        public string? teamId { get; set; }
-        public byte[] passwordHash { get; set; }
-        public byte[] passwordSalt { get; set; }
+        public string? teamId { get; set; } = null;
+        public byte[] passwordHash { get; set; } = new byte[64];
+        public byte[] passwordSalt { get; set; } = new byte[64];
         public bool active { get; set; } = true;
-        public bool firstTimeLogin { get; set; }
+        public bool firstTimeLogin { get; set; } = false;
         
         //local
-        public string AuthToken { get; private set; } 
-        public string password { get; set; }
+        public string AuthToken { get; private set; } = string.Empty; 
+        public string password { get; set; } = string.Empty;
 
-        public string passHash { get; set; }
-        public string passSalt { get; set; }
+        public string passHash { get; set; } = string.Empty;
+        public string passSalt { get; set; } = string.Empty;
         //inject _data
 
 
@@ -49,14 +45,14 @@ namespace BlazorTipz.Models
                  .AddJsonFile("appsettings.json", true, true)
                  .Build();
             
-            this.employmentId = user.employmentId;
-            this.teamId = user.teamId;
-            this.userName = user.name;
-            this.userRole = user.role;
-            this.firstTimeLogin = user.firstTimeLogin;
-            if (user.password != null)
+            this.employmentId = user.EmploymentId;
+            this.teamId = user.TeamId;
+            this.userName = user.Name;
+            this.userRole = user.UserRole;
+            this.firstTimeLogin = user.FirstTimeLogin;
+            if (user.Password != null)
             {
-                passwordHashing(user.password);
+                PasswordHashing(user.Password);
             }
             
         }
@@ -88,7 +84,7 @@ namespace BlazorTipz.Models
 
         }
 
-        public void passwordHashing(string pass)
+        public void PasswordHashing(string pass)
         {
             CreatePasswordHash(pass, out byte[] passHash, out byte[] passSalt);
             passwordHash = passHash;
@@ -97,13 +93,11 @@ namespace BlazorTipz.Models
             this.passHash = Convert.ToBase64String(passHash);
             this.passSalt = Convert.ToBase64String(passSalt);
         }
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
-            using (var hmac = new HMACSHA512())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
+            using var hmac = new HMACSHA512();
+            passwordSalt = hmac.Key;
+            passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
         }
     }
 }

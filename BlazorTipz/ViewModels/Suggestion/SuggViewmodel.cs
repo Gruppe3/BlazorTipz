@@ -5,7 +5,7 @@ namespace BlazorTipz.ViewModels.Suggestion
 {
     public class SuggViewmodel
     {
-        public string? Id { get; set; } = string.Empty;
+        public string? Id { get; set; } = null;
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public bool JustDoIt { get; set; } = false;
@@ -31,7 +31,9 @@ namespace BlazorTipz.ViewModels.Suggestion
 
 
         public SuggViewmodel()
-        { 
+        {
+            Category = new();
+            Frist = DateTime.Now;
         }
 
         public SuggViewmodel(SuggestionEntity Suggestion)
