@@ -22,28 +22,29 @@
 
 <AuthorizeView>
     <Authorized>
-        <h1 class="center">Team @CurrentTeam.TeamName</h1>
-        <!--Team Suggestions-->
-        <RadzenDataGrid AllowFiltering="true" AllowColumnResize="false" 
-        FilterMode="FilterMode.Simple" PageSize="5" AllowPaging="true" AllowSorting="true" Data="@TeamSuggestions" TItem="SuggViewmodel" ColumnWidth="300px"
-        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-        LogicalFilterOperator="LogicalFilterOperator.Or">
-        <Columns>
-                <RadzenDataGridColumn TItem="SuggViewmodel" Property="Title" Filterable="false" Title="Tittel" Width="70px" TextAlign="TextAlign.Center" />
+        <div class="main-page-content">
+			<h1 class="center">Team @CurrentTeam.TeamName</h1>
+            <!--Team Suggestions-->
+            <RadzenDataGrid AllowFiltering="true" AllowColumnResize="false" 
+            FilterMode="FilterMode.Simple" PageSize="5" AllowPaging="true" AllowSorting="true" Data="@TeamSuggestions" TItem="SuggViewmodel" ColumnWidth="300px"
+            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" LogicalFilterOperator="LogicalFilterOperator.Or">
+                <Columns>
+                    <RadzenDataGridColumn TItem="SuggViewmodel" Property="Title" Filterable="false" Title="Tittel" Width="70px" TextAlign="TextAlign.Center" />
                 
-                <RadzenDataGridColumn TItem="SuggViewmodel" Property="CreatorName" Title="Oppretter" Width="140px" TextAlign="TextAlign.Center"/>
-                <RadzenDataGridColumn TItem="SuggViewmodel" Property="StartDate" Title="Start Dato" Width="140px" TextAlign="TextAlign.Center"/>
-                <RadzenDataGridColumn TItem="SuggViewmodel" Property="Status" Title="Status" Width="140px" TextAlign="TextAlign.Center"/> 
-                <RadzenDataGridColumn TItem="SuggViewmodel" Property="AnsvarligName" Title="Ansvarlig" Width="140px" TextAlign="TextAlign.Center" />
-                <RadzenDataGridColumn Width="160px" TItem="SuggViewmodel" TextAlign="TextAlign.Center" Title="Mer">
-                    <Template Context="data">
-                        <RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" Class="m-1"
-                                      Text="Vis mer" Click=@(() => ShowCloseableFromOverlayDialog(data.Title, data.CreatorName, data.Description,data)) />
-                    </Template>
-                </RadzenDataGridColumn>
-        </Columns>
-    </RadzenDataGrid>
-     </Authorized>
+                    <RadzenDataGridColumn TItem="SuggViewmodel" Property="CreatorName" Title="Oppretter" Width="140px" TextAlign="TextAlign.Center"/>
+                    <RadzenDataGridColumn TItem="SuggViewmodel" Property="StartDate" Title="Start Dato" Width="140px" TextAlign="TextAlign.Center"/>
+                    <RadzenDataGridColumn TItem="SuggViewmodel" Property="Status" Title="Status" Width="140px" TextAlign="TextAlign.Center"/> 
+                    <RadzenDataGridColumn TItem="SuggViewmodel" Property="AnsvarligName" Title="Ansvarlig" Width="140px" TextAlign="TextAlign.Center" />
+                    <RadzenDataGridColumn Width="160px" TItem="SuggViewmodel" TextAlign="TextAlign.Center" Title="Mer">
+                        <Template Context="data">
+                            <RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" Class="m-1"
+                                            Text="Vis mer" Click=@(() => ShowCloseableFromOverlayDialog(data.Title, data.CreatorName, data.Description,data)) />
+                        </Template>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
+        </div>
+    </Authorized>
 </AuthorizeView>
 @code{
     async Task ShowCloseableFromOverlayDialog(string title, string creator, string description,SuggViewmodel sugg)

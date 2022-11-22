@@ -3,27 +3,10 @@
 .navbar {
     position: fixed;
     overflow: auto;
-    z-index: 2;
-}
-    .navbar a {
-        display: block;
-        padding: 1rem 1rem;
-        padding-left: 2rem;
-        color: var(--text-color:);
-        text-decoration: none;
-        font-size: 20px;
-    }
-        .navbar a:hover {
-            background-color: var(--p-light-color);
-        }
-
-.nav-text, i {
-    vertical-align: middle;
-    color: #fff;
+    z-index: 3;
 }
 
 .navbar-topbar {
-    background-color: var(--p-dark-color);
     position: fixed;
     width: 100vw;
     top: 0;
@@ -33,12 +16,14 @@
 
 .navbar-button {
     text-decoration: none;
-    background-color: var(--primary-color);
+    background-color: var(--secondary-color);
     border: none;
     padding: 0.5rem;
+    border-radius: 0 0.5rem 0.5rem 0;
+    box-shadow: 0px 1px 5px rgba(0,0,0,0.2);
 }
     .navbar-button:hover {
-        background-color: darkgray;
+        background-color: var(--secondary-hover-color);
     }
     .navbar-button i {
         font-size: 35px;
@@ -50,46 +35,68 @@
     position: fixed;
     z-index: 2;
     top: 0;
-    left: calc(-80vw - 10px);
+    left: calc(-80vw - 5px);
     width: 80vw;
     max-width: 400px;
     height: 100vh;
     background-color: var(--primary-color);
-    transition: ease-in-out .2s;
+    transition: ease-in-out .3s;
 }
     .navbar-togglecard.active {
         left: 0;
     }
 
 .close-nav {
-    float: right;
-    display: inline-block;
+    margin-top: 0.5rem;
+    margin-left: 0.5rem;
+    padding: 0.5rem;
     border: none;
+    float: left;
     margin: 0;
     background: none;
     text-decoration: none;
     cursor: pointer;
 }
     .close-nav:active i {
-        color: gray;
+        color: var(--light-hover-color);
     }
     .close-nav i {
         font-size: 40px;
     }
 
 .navbar-userinfo {
-    background-color: var(--p-dark-color);
-    padding: 1rem 2rem;
+    background-color: var(--secondary-color);
+    padding: 4rem 3rem 2rem 2rem;
 }
     .navbar-username {
+        font-weight: 500;
         font-size: 25px;
     }
     .navbar-userid {
-        color: var(--secondary-color);
+        /*color: var(--secondary-color);*/
     }
 
-.nav-pages {
+.nav-pages a {
+    display: block;
+    padding: 1rem 1rem;
+    padding-left: 2rem;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 20px;
 }
+    .nav-pages a:hover {
+        background-color: var(--primary-hover-color);
+    }
+
+    .nav-pages i {
+        padding-right: 1rem; 
+    }
+
+.nav-text, i {
+    vertical-align: middle;
+    color: #ffffff;
+}
+
 /*==== Little pluss-button ====*/
 .suggestion-button-container {
     position: fixed;
@@ -100,9 +107,11 @@
     z-index: 1;
     border-radius: 50%;
     background-color: var(--secondary-color);
+    box-shadow: 0px 1px 5px rgba(0,0,0,0.2);
 }
+    .suggestion-button-container:hover,
     .suggestion-button-container:active {
-        background-color: var(--s-dark-color);
+        background-color: var(--secondary-hover-color);
     }
     .suggestion-button-container a {
         display: block;
@@ -168,11 +177,11 @@
 
     .nav__list a {
         text-decoration: none;
-        color: var(--text-color);
+        color: var(--navbar-icon);
     }
 
         .nav__list a:hover {
-            color: var(--first-color);
+            color: var(--navbar-icon-hover);
         }
 
 /* Right Dropdown Menu Mobile */
@@ -182,7 +191,7 @@
     top: 6rem;
     right: 0.5rem;
     display: none;
-    background-color: var(--primary-color);
+    background-color: var(--navbar-background);
     box-shadow: 0 8px 24px hsla(228, 81%, 24%, .15);
     padding: 20px 20px;
     border-radius: 1rem;
@@ -197,11 +206,11 @@
     .nav__user a {
         margin-top: 1rem;
         text-decoration: none;
-        color: var(--text-color);
+        color: var(--navbar-icon);
     }
 
         .nav__user a:hover {
-            color: var(--first-color);
+            color: var(--navbar-icon-hover);
         }
 
 /* Right Bar Mobile*/
@@ -210,7 +219,7 @@
     margin-right: 20px;
     top: 1rem;
     right: 2rem;
-    background-color: var(--primary-color);
+    background-color: var(--navbar-background);
     box-shadow: 0 8px 24px hsla(228, 81%, 24%, .15);
     padding: 20px 20px;
     border-radius: 1rem;
@@ -227,11 +236,11 @@
     .nav__umenu a {
         margin: auto;
         text-decoration: none;
-        color: var(--text-color);
+        color: var(--navbar-icon);
     }
 
         .nav__umenu a:hover {
-            color: var(--first-color);
+            color: var(--navbar-icon-hover);
         }
 
 /* Left Bar Mobile */
@@ -239,7 +248,7 @@
     float: left;
     margin-left: auto;
     top: 1rem;
-    background-color: var(--primary-color);
+    background-color: var(--navbar-background);
     box-shadow: 0 8px 24px hsla(228, 81%, 24%, .15);
     padding: 20px 20px;
     border-radius: 1rem;
@@ -256,11 +265,11 @@
     .nav__tmenu a {
         margin: auto;
         text-decoration: none;
-        color: var(--text-color);
+        color: var(--navbar-icon);
     }
 
         .nav__tmenu a:hover {
-            color: var(--first-color);
+            color: var(--navbar-icon-hover);
         }
 
 .nav__panel {
@@ -269,7 +278,7 @@
     top: 6rem;
     left: 0.5rem;
     display: none;
-    background-color: var(--primary-color);
+    background-color: var(--navbar-background);
     box-shadow: 0 8px 24px hsla(228, 81%, 24%, .15);
     padding: 20px 20px;
     border-radius: 1rem;
@@ -284,18 +293,18 @@
     .nav__panel a {
         margin-top: 1rem;
         text-decoration: none;
-        color: var(--text-color);
+        color: var(--navbar-icon);
     }
 
 .nav__panell a:hover {
-    color: var(--first-color);
+    color: var(--navbar-icon-hover);
 }
 
 .nav__link {
     display: flex;
     margin: auto;
     cursor: pointer;
-    color: var(--text-color);
+    color: var(--navbar-icon);
     font-weight: 500;
     transition: .3s;
 }
@@ -305,12 +314,12 @@
     }
 
     .nav__link:hover {
-        color: var(--first-color);
+        color: var(--navbar-icon-hover);
     }
 
 .nav__add {
     display: flex;
-    color: var(--text-color);
+    color: var(--sugg-text-color);
     font-weight: 500;
     transition: .3s;
 }
@@ -320,12 +329,12 @@
     }
 
     .nav__add:hover {
-        color: var(--first-color);
+        color: var(--secondary-color);
     }
 
 /* Active link */
 .active-link {
-    color: var(--first-color);
+    color: var(--secondary-color);
 }
 
 /*Customise int this for desktop webrowser*/
@@ -341,13 +350,13 @@
 
     .nav__list {
         position: fixed;
-        top:  0;
+        top: 0;
         bottom: auto;
         display: flex;
         justify-content: center;
         align-items: start;
         column-gap: 36px;
-        background-color: var(--primary-color);
+        background-color: var(--navbar-background);
         width: auto;
         border-radius: 0;
         left: 0;
@@ -358,11 +367,11 @@
     }
 
         .nav__list a {
-            color: var(--text-color);
+            color: var(--navbar-icon);
         }
 
             .nav__list a:hover {
-                color: var(--first-color);
+                color: var(--navbar-icon-hover);
             }
 
     .nav__sugg {
@@ -388,7 +397,7 @@
         display: flex;
         margin: 1.25rem 0px 0px 0px;
         cursor: pointer;
-        color: var(--text-color);
+        color: var(--navbar-icon);
         font-weight: 500;
         transition: .3s;
     }
@@ -398,13 +407,13 @@
         }
 
         .nav__link:hover {
-            color: var(--first-color);
+            color: var(--navbar-icon-hover);
         }
 
     .nav__add {
         display: flex;
         margin: 0.5rem 0px 0px 0px;
-        color: var(--text-color);
+        color: var(--sugg-text-color);
         font-weight: 500;
         transition: .3s;
     }
@@ -413,12 +422,15 @@
             font-size: 3rem;
         }
 
+        /*.nav__add:hover {
+            color: var(--secondary-color);
+        }*/
         .nav__add:hover {
             color: var(--first-color);
         }
     /* Active link */
     .active-link {
-        color: var(--first-color);
+        color: var(--secondary-color);
     }
 }
 

@@ -15,50 +15,52 @@
 
 <AuthorizeView>
     <Authorized>
-        <h1 class="center">Endre innstillinger til bruker</h1>
-        <p class="d-flex justify-content-center">Endre fornavn og etternavn</p>
-        <div class="justify-content-center">
-            <div class="row">
-                <div class="col-lg-6 offset-lg-3">
-                    <RadzenTemplateForm Context="Settings" TItem="UserViewmodel" Data=UserDto Submit=PasswordCheck>
-                        <div class="row mb-5">
-                            <div class="col-3" style="align-self: center;">
-                                <RadzenLabel Text="Fullt navn" />
+		<div class="main-page-content">
+		    <h1 class="center">Endre innstillinger til bruker</h1>
+            <p class="d-flex justify-content-center">Endre fornavn og etternavn</p>
+            <div class="justify-content-center">
+                <div class="row">
+                    <div class="col-lg-6 offset-lg-3">
+                        <RadzenTemplateForm Context="Settings" TItem="UserViewmodel" Data=UserDto Submit=PasswordCheck>
+                            <div class="row mb-5">
+                                <div class="col-3" style="align-self: center;">
+                                    <RadzenLabel Text="Fullt navn" />
+                                </div>
+                                <div class="col-9">
+                                    <RadzenTextBox style="display: block" Name="NameField" @bind-Value=@UserDto.Name Class="w-100" />
+                                    <RadzenLengthValidator Component="NameField" Min="3" Text="Type a valid name" Popup=@popup Style="position: absolute" />
+                                </div>
                             </div>
-                            <div class="col-9">
-                                <RadzenTextBox style="display: block" Name="NameField" @bind-Value=@UserDto.Name Class="w-100" />
-                                <RadzenLengthValidator Component="NameField" Min="3" Text="Type a valid name" Popup=@popup Style="position: absolute" />
+                            <div class="row mb-5">
+                                <div class="col-3" style="align-self: center;">
+                                    <RadzenLabel Text="Passord" />
+                                </div>
+                                <div class="col-9">
+                                    <RadzenTextBox style="display: block" Name="PasswordField" @bind-Value=@UserDto.Password Class="w-100" type="password" />
+                                    <RadzenLengthValidator Component="PasswordField" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
+                                </div>
                             </div>
-                        </div>
-                        <div class="row mb-5">
-                            <div class="col-3" style="align-self: center;">
-                                <RadzenLabel Text="Passord" />
+                            <div class="row mb-5">
+                                <div class="col-3" style="align-self: center;">
+                                    <RadzenLabel Text="Gjenta passord" />
+                                </div>
+                                <div class="col-9">
+                                    <RadzenTextBox style="display: block" Name="RepeatPassword" @bind-Value=@UserDto.RepeatPassword Class="w-100" type="password" />
+                                    <RadzenLengthValidator Component="RepeatPassword" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
+                                    <RadzenCompareValidator Visible=@(!string.IsNullOrEmpty(UserDto.RepeatPassword)) Value=@UserDto.Password Component="RepeatPassword" Text="Passwords should be the same" Popup=@popup Style="position: absolute" />
+                                </div>
                             </div>
-                            <div class="col-9">
-                                <RadzenTextBox style="display: block" Name="PasswordField" @bind-Value=@UserDto.Password Class="w-100" type="password" />
-                                <RadzenLengthValidator Component="PasswordField" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
+                            <div class="center">
+                                <h1>@Checker</h1>
                             </div>
-                        </div>
-                        <div class="row mb-5">
-                            <div class="col-3" style="align-self: center;">
-                                <RadzenLabel Text="Gjenta passord" />
+						    <div class="center">
+                                <RadzenButton ButtonType="ButtonType.Submit" Text="Send inn"></RadzenButton>
                             </div>
-                            <div class="col-9">
-                                <RadzenTextBox style="display: block" Name="RepeatPassword" @bind-Value=@UserDto.RepeatPassword Class="w-100" type="password" />
-                                <RadzenLengthValidator Component="RepeatPassword" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
-                                <RadzenCompareValidator Visible=@(!string.IsNullOrEmpty(UserDto.RepeatPassword)) Value=@UserDto.Password Component="RepeatPassword" Text="Passwords should be the same" Popup=@popup Style="position: absolute" />
+                            <div class="center">
+                                <RadzenButton Click="NavigateBack" Text="Avbryt"></RadzenButton>
                             </div>
-                        </div>
-                        <div class="center">
-                            <h1>@Checker</h1>
-                        </div>
-						<div class="center">
-                            <RadzenButton ButtonType="ButtonType.Submit" Text="Send inn"></RadzenButton>
-                        </div>
-                        <div class="center">
-                            <RadzenButton Click="NavigateBack" Text="Avbryt"></RadzenButton>
-                        </div>
-                    </RadzenTemplateForm>
+                        </RadzenTemplateForm>
+                    </div>
                 </div>
             </div>
         </div>

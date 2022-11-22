@@ -23,13 +23,13 @@
         <div class="navbar">
             <div class="closable-div-background-button fullpage-wrapper @NavMenuState" @onclick="CloseNavMenu"></div>
 			<div class="navbar-topbar">
-                <button class="btn navbar-button" @onclick="ToggleNavMenu">
+                <button class="navbar-button" @onclick="ToggleNavMenu">
 				    <i class='bx bx-menu'></i>
                 </button>
             </div>
             <div class="navbar-togglecard container-md l-text @NavMenuState">
                 <button class="close-nav" @onclick="CloseNavMenu">
-					<i class='bx bx-x'></i>
+                    <i class='bx bx-chevron-left'></i>
                 </button>
                 <div class="navbar-userinfo">
                     <span class="navbar-username">@CurrentUser.Name</span><br />
@@ -37,16 +37,16 @@
                 </div>
 				<div class="nav-pages">
 					<!--Sider-->
-					<div class="mb-3">
-						<a href="/" class="">
+					<div>
+                        <a href="/" @onclick="CloseNavMenu">
 							<i class='bx bx-home-alt'></i>
 							<span class="nav-text">Home</span>
 						</a>
-						<a href="/teamView" class="">
+                        <a href="/teamView" @onclick="CloseNavMenu">
 							<i class='bx bx-food-menu'></i>
 							<span class="nav-text">Team</span>
 						</a>
-						<a href="/" class="">
+                        <a href="/" @onclick="CloseNavMenu">
 							<i class='bx bx-bar-chart-alt-2'></i>
 							<span class="nav-text">Statistikk</span>
 						</a>
@@ -55,17 +55,16 @@
 					<!--Admin-panel-->
 					
 					<!--Logout og settings-->
-					<div class="mb-3">
-						<a href="/userSettings" class="">
+					<div>
+                        <a href="/userSettings" @onclick="CloseNavMenu">
 							<i class='bx bx-cog'></i>
 							<span class="nav-text">Innstillinger</span>
 						</a>
-						<a href="/" @onclick="Logout" class="">
+                        <a href="/" @onclick="Logout">
 							<i class='bx bx-log-out'></i>
 							<span class="nav-text">Logg ut</span>
 						</a>
 					</div>
-                    <div class="line"></div>
                 </div>
 			</div>
         </div>
@@ -75,206 +74,145 @@
 				<i class='bx bx-pencil'></i>
             </a>
         </div>
-        
-        <!--
-        <div class="nav">
-            <nav class="nav__content">
-                <div class="nav__list">
-                    <a href="/" class="nav__link active-link">
-                        <i class='bx bx-home-alt'></i>
-                    </a>
-                    <a href="/teamView" class="nav__link">
-                        <i class='bx bx-food-menu'></i>
-                    </a>
-                    <div>
-                        <a href="javascript:void(0);" class="nav__add active-link" @onclick="@(() => ShowSuggestion())">
-                            <i class='bx bx-plus-circle'></i>
-                        </a>
-                    </div>
-                    <a href="/" class="nav__link active-link">
-                        <i class='bx bx-bar-chart-alt-2'></i>
-                    </a>
-                    <a href="javascript:void(0);" class="nav__link" @onclick="@ShowUserP">
-                        <i class='bx bx-user'></i>
-                    </a>
-                </div>
-            </nav>
-        </div>
-
-        <div class="nav" id="nav">
-            <nav class="nav__content">
-                <div class="nav__umenu">
-                    <a href="javascript:void(0);" class="nav__link" @onclick="@ShowUserP">
-                        <i class='bx bx-user'></i>
-                    </a>
-                </div>
-                <div class="nav__user" id="user" style="display: @ShowUser">
-                    <a>@currentUser.name</a>
-                    <br />
-                    <a href="/userSettings" class="nav__link">
-                        <i class='bx bx-cog'></i>
-                        <span class="nav__name">Settings</span>
-                    </a>
-                    <a href="/" @onclick="Logout" class="nav__link">
-                        <i class='bx bx-log-out'></i>
-                        <span class="nav__name">Logout</span>
-                    </a>
-                </div>
-
-                <div class="nav__tmenu">
-                    <a href="javascript:void(0);" class="nav__link" @onclick="@ShowTeamP">
-                        <i class='bx bx-dock-top'></i>
-                    </a>
-                </div>
-                <div class="nav__panel" style="display: @ShowTeam">
-
-                    <a>Se Team</a>
-                    <a href="/teamView" class="nav__link">
-                        <i class='bx bx-food-menu'></i>
-                        <span class="nav__name">Se Team</span>
-                    </a>
-                </div>
-            </nav>
-		</div>-->
-
-                
     </Authorized>
 </AuthorizeView>
 <AuthorizeView Roles="Admin">
     <Authorized>
-        <h1 style="opacity:0; text-decoration: none;">:)</h1> <!--Nooooo, Fy-->
         <!--=============== NAV ===============-->
-        <div class="nav">
-            <nav class="nav__content">
-
-                <div class="nav__list">
-                    <a href="/" class="nav__link active-link">
-                        <i class='bx bx-grid-alt'></i>
-                    </a>
+        <div class="navbar">
+            <div class="closable-div-background-button fullpage-wrapper @NavMenuState" @onclick="CloseNavMenu"></div>
+            <div class="navbar-topbar">
+                <button class="navbar-button" @onclick="ToggleNavMenu">
+                    <i class='bx bx-menu'></i>
+                </button>
+            </div>
+            <div class="navbar-togglecard container-md l-text @NavMenuState">
+                <button class="close-nav" @onclick="CloseNavMenu">
+                    <i class='bx bx-chevron-left'></i>
+                </button>
+                <div class="navbar-userinfo">
+                    <span class="navbar-username">@CurrentUser.Name</span><br />
+                    <span class="navbar-userid">Bruker-ID: @CurrentUser.EmploymentId</span>
+                </div>
+                <div class="nav-pages">
+                    <!--Sider-->
                     <div>
-                        <a href="javascript:void(0);" class="nav__add active-link" @onclick="@(() => ShowSuggestion())">
-                            <i class='bx bx-plus-circle'></i>
-                        </a>
-                    </div>
-                    <a href="/" class="nav__link active-link">
-                        <i class='bx bx-bar-chart-alt-2'></i>
+                        <a href="/" @onclick="CloseNavMenu">
+                        <i class='bx bx-home-alt'></i>
+                            <span class="nav-text">Home</span>
                     </a>
-                   
-                </div>
-            </nav>
-        </div>
-
-        <div class="nav" id="nav">
-            <nav class="nav__content">
-                <div class="nav__umenu">
-                    <a href="javascript:void(0);" class="nav__link" @onclick="@ShowUserP">
-                        <i class='bx bx-user'></i>
-                    </a>
-                </div>
-                <div class="nav__user" id="user" style="display: @ShowUser">
-                    <a>@CurrentUser.Name</a>
-                    <br />
-                    <a href="/userSettings" class="nav__link">
-                        <i class='bx bx-cog'></i>
-                        <span class="nav__name">Innstillinger</span>
-                    </a>
-                    <a href="/" @onclick="Logout" class="nav__link">
-                        <i class='bx bx-log-out'></i>
-                        <span class="nav__name">Logg ut</span>
-                    </a>
-                </div>
-
-                <div class="nav__tmenu">
-                    <a href="javascript:void(0);" class="nav__link" @onclick="@ShowTeamP">
-                        <i class='bx bx-dock-top'></i>
-                    </a>
-                </div>
-                <div class="nav__panel" style="display: @ShowTeam">
-                    
-                    <a>Admin Panel</a>
-                    <a href="/register" class="nav__link">
-                        <i class='bx bx-user-plus'></i>
-                        <span class="nav__name">Registrer Bruker</span>
-                    </a>
-
-                    <a href="/manageTeam" class="nav__link">
-                        <i class='bx bx-group'></i>
-                        <span class="nav__name">Registrer Team</span>
-                    </a>
-
-                    <a href="/teamView" class="nav__link">
+                        <a href="/teamView" @onclick="CloseNavMenu">
                         <i class='bx bx-food-menu'></i>
-                        <span class="nav__name">Se Team</span>
+                            <span class="nav-text">Team</span>
+                    </a>
+                        <a href="/" @onclick="CloseNavMenu">
+                        <i class='bx bx-bar-chart-alt-2'></i>
+                            <span class="nav-text">Statistikk</span>
                     </a>
                 </div>
-            </nav>
+                    <div class="line"></div>
+
+                    <!--Admin-panel-->
+                    <div>
+                        <a href="/register" @onclick="CloseNavMenu">
+							<i class='bx bx-user-plus'></i>
+							<span class="nav-text">Bruker-Terminal</span>
+                    </a>
+
+                        <a href="/manageTeam" @onclick="CloseNavMenu">
+							<i class='bx bx-group'></i>
+                            <span class="nav-text">Team-Terminal</span>
+                    </a>
+                </div>
+                    <div class="line"></div>
+
+                    <!--Logout og settings-->
+                    <div>
+                        <a href="/userSettings" @onclick="CloseNavMenu">
+                        <i class='bx bx-cog'></i>
+                            <span class="nav-text">Innstillinger</span>
+                    </a>
+                        <a href="/" @onclick="Logout">
+                        <i class='bx bx-log-out'></i>
+                            <span class="nav-text">Logg ut</span>
+                    </a>
+                </div>
+                </div>
+                </div>
+        </div>
+        <div class="suggestion-button-container">
+            <a href="javascript:void(0);" class="" @onclick="ShowSuggestion">
+				<!--<i class='bx bx-plus'></i>-->
+                <i class='bx bx-pencil'></i>
+            </a>
         </div>
     </Authorized>
 </AuthorizeView>
 <AuthorizeView Roles="TeamLeader">
     <Authorized>
-        <h1 style="opacity:0;">:)</h1> <!--Nooooo, Fy-->
         <!--=============== NAV ===============-->
-        <div class="nav">
-            <nav class="nav__content">
-                <div class="nav__list">
-                    <a href="/" class="nav__link active-link">
-                        <i class='bx bx-grid-alt'></i>
-                    </a>
+        <div class="navbar">
+            <div class="closable-div-background-button fullpage-wrapper @NavMenuState" @onclick="CloseNavMenu"></div>
+            <div class="navbar-topbar">
+                <button class="navbar-button" @onclick="ToggleNavMenu">
+                    <i class='bx bx-menu'></i>
+                </button>
+            </div>
+            <div class="navbar-togglecard container-md l-text @NavMenuState">
+                <button class="close-nav" @onclick="CloseNavMenu">
+                    <i class='bx bx-chevron-left'></i>
+                </button>
+                <div class="navbar-userinfo">
+                    <span class="navbar-username">@CurrentUser.Name</span><br />
+                    <span class="navbar-userid">Bruker-ID: @CurrentUser.EmploymentId</span>
+                </div>
+                <div class="nav-pages">
+                    <!--Sider-->
                     <div>
-                        <a href="javascript:void(0);" class="nav__add active-link" @onclick="@(() => ShowSuggestion())">
-                            <i class='bx bx-plus-circle'></i>
+                        <a href="/" @onclick="CloseNavMenu">
+                            <i class='bx bx-home-alt'></i>
+                            <span class="nav-text">Hjem</span>
                         </a>
-                    </div>
-                    <a href="/" class="nav__link active-link">
+                        <a href="/teamView" @onclick="CloseNavMenu">
+                            <i class='bx bx-food-menu'></i>
+                            <span class="nav-text">Team</span>
+                        </a>
+                        <a href="/" @onclick="CloseNavMenu">
                         <i class='bx bx-bar-chart-alt-2'></i>
-                    </a>
-
-                </div>
-            </nav>
-        </div>
-
-        <div class="nav" id="nav">
-            <nav class="nav__content">
-                <div class="nav__umenu">
-                    <a href="javascript:void(0);" class="nav__link" @onclick="@ShowUserP">
-                        <i class='bx bx-user'></i>
+                            <span class="nav-text">Statistikk</span>
                     </a>
                 </div>
-                <div class="nav__user" id="user" style="display: @ShowUser">
-                    <a>@CurrentUser.Name</a>
-                    <br />
-                    <a href="/userSettings" class="nav__link">
+                    <div class="line"></div>
+
+                    <!--Admin-panel-->
+                    <div>
+                        <a href="/manageTeam" @onclick="CloseNavMenu">
+                            <i class='bx bx-group'></i>
+                            <span class="nav-text">Team-Terminal</span>
+                    </a>
+                </div>
+                    <div class="line"></div>
+
+                    <!--Logout og settings-->
+                    <div>
+                        <a href="/userSettings" @onclick="CloseNavMenu">
                         <i class='bx bx-cog'></i>
-                        <span class="nav__name">Innstillinger</span>
+                            <span class="nav-text">Innstillinger</span>
                     </a>
-                    <a href="/" @onclick="Logout" class="nav__link">
+                        <a href="/" @onclick="Logout">
                         <i class='bx bx-log-out'></i>
-                        <span class="nav__name">Logg ut</span>
+                            <span class="nav-text">Logg ut</span>
                     </a>
                 </div>
-
-                <div class="nav__tmenu">
-                    <a href="javascript:void(0);" class="nav__link" @onclick="@ShowTeamP">
-                        <i class='bx bx-dock-top'></i>
+                </div>
+            </div>
+                </div>
+        <div class="suggestion-button-container">
+            <a href="javascript:void(0);" class="" @onclick="ShowSuggestion">
+				<!--<i class='bx bx-plus'></i>-->
+                <i class='bx bx-pencil'></i>
                     </a>
                 </div>
-                <div class="nav__panel" style="display: @ShowTeam">
-
-                    <a>Team Panel</a>
-
-                    <a href="/manageTeam" class="nav__link">
-                        <i class='bx bx-group'></i>
-                        <span class="nav__name">Registrer Team</span>
-                    </a>
-
-                    <a href="/teamView" class="nav__link">
-                        <i class='bx bx-food-menu'></i>
-                        <span class="nav__name">Se Team</span>
-                    </a>
-                </div>
-            </nav>
-        </div>
     </Authorized>
 </AuthorizeView>
 
