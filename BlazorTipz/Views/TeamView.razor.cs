@@ -2,86 +2,86 @@
 using BlazorTipz.ViewModels.Suggestion;
 using BlazorTipz.ViewModels.Team;
 using BlazorTipz.ViewModels.User;
-using DocumentFormat.OpenXml.Wordprocessing;
-using Radzen;
-using System.Collections.Generic;
 using Category = BlazorTipz.ViewModels.Category;
 
 namespace BlazorTipz.Views
 {
     public partial class TeamView
     {
-        public UserViewmodel currentUser = new UserViewmodel();
-        public TeamViewmodel currentTeam = new TeamViewmodel();
-        UserViewmodel CUser;
-        TeamViewmodel Cteam;
-        public SuggViewmodel suggUpdate = new SuggViewmodel();
-        public List<Category>? Categories;
-       
-        private List<UserViewmodel> users = new List<UserViewmodel>();
-        private List<TeamViewmodel> teams = new List<TeamViewmodel>();
-        private List<SuggStatus> statuses = new List<SuggStatus>(); 
+        private UserViewmodel CurrentUser { get; set; } = new();
+        private TeamViewmodel CurrentTeam { get; set; } = new();
+        private SuggViewmodel SuggUpdate { get; set; } = new();
+        private List<Category> Categories { get; set; } = new();
 
-        List<SuggViewmodel> teamSug = new List<SuggViewmodel>();
+        private List<UserViewmodel> ActiveUsers = new();
+        private List<TeamViewmodel> ActiveTeams = new();
+        private List<SuggStatus> StatusList = new(); 
 
-        public string TeamCheck { get; set; }
-        public string teamU { get; set; }
+        List<SuggViewmodel> TeamSuggestions = new();
+
+        //public string TeamCheck { get; set; }
+        //public string teamU { get; set; }
         public string Feedback { get; set; }
 
 
         //Get team from user
         protected override async Task OnInitializedAsync()
         {
-
             var token = await _localStorage.GetItemAsync<string>("token");
             if (token != null)
             {
-                (UserViewmodel user, string err) = await _userManager.getCurrentUser(token);
-                TeamViewmodel team = await _teamManager.getTeam(user.teamId);
+                // If a token is found
+                (UserViewmodel user, string err) = await _userManager.GetCurrentUser(token);
+                TeamViewmodel team = await _teamManager.GetTeamById(user.TeamId);
                 if (err != null)
                 {
+                    //If error, send to login
+                    _navigationManager.NavigateTo("/login", true);
                     return;
                 }
 
-                currentUser = user;
-                currentTeam = team;
-            }
-
-            var CurrentUser = _userManager.getCurrentUser();
-            teams = await _teamManager.updateTeamsList();
-            if (CurrentUser != null)
-            {
-                CUser = CurrentUser;
-                Cteam = await _teamManager.getTeam(CUser.teamId);
-                teamU = Cteam.name;
+                CurrentUser = user;
+                CurrentTeam = team;
             }
             else
             {
-                NavigationManager.NavigateTo("/");
+                _navigationManager.NavigateTo("/", true);
+                return;
             }
+
+            
             //Get team suggestions
-            teamSug = await _suggestionManager.GetSuggestionsOfTeam(currentTeam.id);
-            List<Category> toset = _suggestionManager.GetCategories();
-            Categories = toset;
-            users = await _userManager.GetUsers();
-            statuses.AddRange(new List<SuggStatus>() { SuggStatus.Plan, SuggStatus.Do, SuggStatus.Study, SuggStatus.Act, SuggStatus.Complete, SuggStatus.Rejected });
+            TeamSuggestions = await _suggestionManager.GetSuggestionsOfTeam(CurrentTeam.TeamId);
+            StatusList.AddRange(new List<SuggStatus>() { SuggStatus.Plan, SuggStatus.Do, SuggStatus.Study, SuggStatus.Act, SuggStatus.Complete, SuggStatus.Rejected });
+            ActiveTeams = await _teamManager.UpdateTeamsList();
+            
+            (Categories, string err2) = await _suggestionManager.GetCategories();
+            if (err2 != string.Empty) { Feedback = err2; }
+            
+            var users = await _userManager.GetActiveUsers();
+            foreach (UserViewmodel u in users)
+            {
+                await u.GetTeamName(_teamManager);
+            }
+            ActiveUsers = users;
+            
         }
 
         //Update DB
         public void UpdateDB()
         {
-            NavigationManager.NavigateTo("/teamView", true);
+            _navigationManager.NavigateTo("/teamView", true);
         }
         void OnChange(object value, string name)
         {
             var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
         }
-        public async Task updateSugg() {
-            if (suggUpdate.Id != null)
+        public async Task UpdateSugg() {
+            if (SuggUpdate.Id != null)
             {
                 string? err;
                 //suggUpdate.SetFristTidToFrist();
-                err = await _suggestionManager.UpdateSuggestion(suggUpdate,CUser);
+                err = await _suggestionManager.UpdateSuggestion(SuggUpdate,CurrentUser);
                 if (err != null)
                 {
                     Feedback = err;

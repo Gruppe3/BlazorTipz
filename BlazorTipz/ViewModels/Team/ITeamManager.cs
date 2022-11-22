@@ -3,14 +3,14 @@
     public interface ITeamManager
     {
         //These methods are available for anyone implementing this interface
-        List<TeamViewmodel>? Teams { get; set; }
+        List<TeamViewmodel>? ActiveTeams { get; set; }
         
-        Task<(TeamViewmodel?, string?)> createTeam(TeamViewmodel team);
-        Task<List<TeamViewmodel>> getInactiveTeams();
-        Task<TeamViewmodel> getTeam(string teamId);
-        Task<List<TeamViewmodel>> getTeams();
-        Task updateTeam(TeamViewmodel team);
-        Task<List<TeamViewmodel>> updateTeamsList();
+        Task<(TeamViewmodel?, string?)> CreateNewTeam(TeamViewmodel team);
+        Task<List<TeamViewmodel>> GetInactiveTeams();
+        Task<TeamViewmodel> GetTeamById(string teamId);
+        Task<List<TeamViewmodel>> GetActiveTeams();
+        Task UpdateSingleTeam(TeamViewmodel team);
+        Task<List<TeamViewmodel>> UpdateTeamsList();
 
         //Search in active team, returns a team if found, null if nothing found
         Task<TeamViewmodel?> SearchTeams(string search);

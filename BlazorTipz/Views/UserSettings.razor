@@ -7,90 +7,94 @@
 
 <!--Injects from program-->
 @inject ILocalStorageService _localStorage
-@inject NavigationManager NavigationManager
+@inject NavigationManager _navigationManager
 @inject IUserManager _userManager
 @inject DialogService DialogService
 
 <PageTitle>User Settings</PageTitle>
 
-<h1 class="center">Endre innstillinger til bruker</h1>
-<p class="d-flex justify-content-center">Endre fornavn og etternavn</p>
-<div class="justify-content-center">
-    <div class="row">
-        <div class="col-lg-6 offset-lg-3">
-            <RadzenTemplateForm TItem="UserViewmodel" Data=userDto Submit=PasswordCheck>
-                <div class="row mb-5">
-                    <div class="col-md-4" style="align-self: center;">
-                        <RadzenLabel Text="Fullt navn" />
-                    </div>
-                    <div class="col">
-                        <RadzenTextBox style="display: block" Name="name" @bind-Value=@userDto.name Class="w-100" />
-                        <RadzenLengthValidator Component="name" Min="3" Text="Type a valid name" Popup=@popup Style="position: absolute" />
+<AuthorizeView>
+    <Authorized>
+		<div class="main-page-content">
+		    <h1 class="center">Endre innstillinger til bruker</h1>
+            <p class="d-flex justify-content-center">Endre fornavn og etternavn</p>
+            <div class="justify-content-center">
+                <div class="row">
+                    <div class="col-lg-6 offset-lg-3">
+                        <RadzenTemplateForm Context="Settings" TItem="UserViewmodel" Data=UserDto Submit=PasswordCheck>
+                            <div class="row mb-5">
+                                <div class="col-3" style="align-self: center;">
+                                    <RadzenLabel Text="Fullt navn" />
+                                </div>
+                                <div class="col-9">
+                                    <RadzenTextBox style="display: block" Name="NameField" @bind-Value=@UserDto.Name Class="w-100" />
+                                    <RadzenLengthValidator Component="NameField" Min="3" Text="Type a valid name" Popup=@popup Style="position: absolute" />
+                                </div>
+                            </div>
+                            <div class="row mb-5">
+                                <div class="col-3" style="align-self: center;">
+                                    <RadzenLabel Text="Passord" />
+                                </div>
+                                <div class="col-9">
+                                    <RadzenTextBox style="display: block" Name="PasswordField" @bind-Value=@UserDto.Password Class="w-100" type="password" />
+                                    <RadzenLengthValidator Component="PasswordField" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
+                                </div>
+                            </div>
+                            <div class="row mb-5">
+                                <div class="col-3" style="align-self: center;">
+                                    <RadzenLabel Text="Gjenta passord" />
+                                </div>
+                                <div class="col-9">
+                                    <RadzenTextBox style="display: block" Name="RepeatPassword" @bind-Value=@UserDto.RepeatPassword Class="w-100" type="password" />
+                                    <RadzenLengthValidator Component="RepeatPassword" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
+                                    <RadzenCompareValidator Visible=@(!string.IsNullOrEmpty(UserDto.RepeatPassword)) Value=@UserDto.Password Component="RepeatPassword" Text="Passwords should be the same" Popup=@popup Style="position: absolute" />
+                                </div>
+                            </div>
+                            <div class="center">
+                                <h1>@Checker</h1>
+                            </div>
+						    <div class="center">
+                                <RadzenButton ButtonType="ButtonType.Submit" Text="Send inn"></RadzenButton>
+                            </div>
+                            <div class="center">
+                                <RadzenButton Click="NavigateBack" Text="Avbryt"></RadzenButton>
+                            </div>
+                        </RadzenTemplateForm>
                     </div>
                 </div>
-                <div class="row mb-5">
-                    <div class="col-md-4" style="align-self: center;">
-                        <RadzenLabel Text="Passord" />
-                    </div>
-                    <div class="col">
-                        <RadzenTextBox style="display: block" Name="password" @bind-Value=@userDto.password Class="w-100" type="password" />
-                        <RadzenLengthValidator Component="password" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
-                    </div>
-                </div>
-                <div class="row mb-5">
-                    <div class="col-md-4" style="align-self: center;">
-                        <RadzenLabel Text="Gjenta passord" />
-                    </div>
-                    <div class="col">
-                        <RadzenTextBox style="display: block" Name="RepeatPassword" @bind-Value=@userDto.RepeatPassword Class="w-100" type="password" />
-                        <RadzenLengthValidator Component="RepeatPassword" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
-                        <RadzenCompareValidator Visible=@(!string.IsNullOrEmpty(userDto.RepeatPassword)) Value=@userDto.password Component="RepeatPassword" Text="Passwords should be the same" Popup=@popup Style="position: absolute" />
-                    </div>
-                </div>
-                <div class="center">
-                    <h1>@Checker</h1>
-                </div>
-                <div class="center">
-                    <RadzenButton ButtonType="ButtonType.Submit" Text="Send inn"></RadzenButton>
-                </div>
-                <div class="center">
-                    <RadzenButton Click="back" Text="Go back"></RadzenButton>
-                </div>
-            </RadzenTemplateForm>
+            </div>
         </div>
-    </div>
-</div>
-<h1 style="opacity:0;">:)</h1>
-<h1 style="opacity:0;">:)</h1>
-<h1 style="opacity:0;">:)</h1>
+    </Authorized>
+    <NotAuthorized>
+        <h1 class="center">Redirecting..</h1>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code{
     async Task PasswordCheck(UserViewmodel request)
     {
-        if(request.firstTimeLogin == true){
+        if(request.FirstTimeLogin == true){
             await ChangeSettings(request);
         }
         else
         {
             await DialogService.OpenAsync($"Skriv inn ditt forrige passord for og endre", ds =>
             @<div>
-                <RadzenTemplateForm TItem="UserViewmodel" Data=@LoginCheckUser Submit=CheckPassword>
+                <RadzenTemplateForm Context="PasswordCheck" TItem="UserViewmodel" Data=@LoginCheckUser Submit=CheckPassword>
     
                     <div class="row mb-5">
-                        <div class="col-md-4" style="align-self: center;">
+                        <div class="col-3" style="align-self: center;">
                             <RadzenLabel Text="Gammelt passord" />
                         </div>
-                        <div class="col">
+                        <div class="col-9">
                             <!--Binder til userDto.password-->
-                            <RadzenTextBox style="display: block" Name="password" @bind-Value=@LoginCheckUser.password Class="w-100" type="password" />
-                            <RadzenLengthValidator Component="password" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
+                            <RadzenTextBox style="display: block" Name="Password" @bind-Value=@LoginCheckUser.Password Class="w-100" type="password" />
+                            <RadzenLengthValidator Component="Password" Min="8" Text="Password name should be at least 8 characters" Popup=@popup Style="position: absolute" />
                         </div>
                     </div>
-                    <div class="center">
-                        <RadzenButton ButtonType="ButtonType.Submit" Text="Oppdater brukerdata"></RadzenButton>
-                    </div>
-                    <div class="center">
-                        <a>@Checker</a>
+					<div class="center">
+                        <RadzenButton Text="Avbryt" ButtonType="ButtonType.Button" ButtonStyle="ButtonStyle.Light" Click="() => ds.Close(false)" Size="ButtonSize.Large" Style="width: 150px; margin-right: 1rem;" />
+                        <RadzenButton Text="Oppdater" ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Click="() => ds.Close(true)" Size="ButtonSize.Large" Style="width: 150px;" />
                     </div>
                 </RadzenTemplateForm>
             </div>, 

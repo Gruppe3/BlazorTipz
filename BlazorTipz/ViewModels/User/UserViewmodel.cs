@@ -7,15 +7,14 @@ namespace BlazorTipz.ViewModels.User
 
     public class UserViewmodel 
     {
-        public string name { get; set; } = string.Empty;
-        public string employmentId { get; set; }
-        public RoleE role { get; set; } = RoleE.User;
-        public string teamId { get; set; }
-        public string password { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string EmploymentId { get; set; } = string.Empty; 
+        public RoleE UserRole { get; set; } = RoleE.User;
+        public string TeamId { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
         public string RepeatPassword { get; set; } = string.Empty;
-        public int listnum { get; set; } = 0;
-        public bool firstTimeLogin{ get; set; }
-
+        public int ListNum { get; set; } = 0;
+        public bool FirstTimeLogin{ get; set; } = false;
         public string TeamName {private get; set; } = string.Empty;
         
         public UserViewmodel()
@@ -26,21 +25,22 @@ namespace BlazorTipz.ViewModels.User
         // passerer inn data fra UserDb og setter lokale verdier 
         public UserViewmodel(UserEntity user)
         {
-            this.employmentId = user.employmentId;
-            this.name = user.userName;
-            this.password = user.password;
-            this.role = user.userRole;
-            this.teamId = user.teamId;
-            this.firstTimeLogin = user.firstTimeLogin;
+            this.EmploymentId = user.employmentId;
+            this.Name = user.userName;
+            this.Password = user.password;
+            this.UserRole = user.userRole;
+            this.FirstTimeLogin = user.firstTimeLogin;
+            if (user.teamId != null)
+                this.TeamId = user.teamId;
         }
 
         public async Task<string?> GetTeamName(ITeamManager _TM)
         {
-            if (teamId == string.Empty || _TM == null) { return null; }
+            if (TeamId == string.Empty || _TM == null) { return null; }
             if (TeamName == string.Empty) 
             { 
-                TeamViewmodel team = await _TM.getTeam(teamId);
-                if (team != null) { TeamName = team.name; } 
+                TeamViewmodel team = await _TM.GetTeamById(TeamId);
+                if (team != null) { TeamName = team.TeamName; } 
             }
             return TeamName;
         }

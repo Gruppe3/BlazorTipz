@@ -16,9 +16,11 @@ namespace BlazorTipzTests.ViewModels.DummyClass
     {
         
         //DummyDatabaseTables
-        private List<UserEntity> _Users = new List<UserEntity>();
-        private List<TeamEntity> _Teams = new List<TeamEntity>();
-        private List<SuggestionEntity> _Suggestions = new List<SuggestionEntity>();
+        private List<UserEntity> _Users = new();
+        private List<TeamEntity> _Teams = new();
+        private List<SuggestionEntity> _Suggestions = new();
+        private List<CommentEntity> _Comments = new();
+        private List<CategoryEntity> _Categories = new();
 
         public string ConnectionString { private get; set; } = "default";
 
@@ -33,11 +35,11 @@ namespace BlazorTipzTests.ViewModels.DummyClass
 
             for (int i = 0; i < 13; i++)
             {
-                UserEntity user = new UserEntity();
+                UserEntity user = new();
                 user.employmentId = i.ToString();
                 user.userName = "User" + i.ToString();
                 user.password = "password" + i.ToString();
-                user.passwordHashing(user.password);
+                user.PasswordHashing(user.password);
                 user.teamId = "1";
                 user.firstTimeLogin = true;
                 
@@ -48,7 +50,7 @@ namespace BlazorTipzTests.ViewModels.DummyClass
             }
             for (int i = 0; i < 5; i++)
             {
-                TeamEntity team = new TeamEntity();
+                TeamEntity team = new();
                 team.teamId = i.ToString();
                 team.teamName = "Team" + i.ToString();
                 team.teamLeader = i.ToString();
@@ -60,39 +62,61 @@ namespace BlazorTipzTests.ViewModels.DummyClass
             }
             for (int i = 0; i < 6; i++)
             {
-                SuggestionEntity sugg = new SuggestionEntity();
+                SuggestionEntity sugg = new();
                 sugg.sugId = i.ToString();
                 if (i < 3) 
                 { 
                     sugg.ownerId = "1";
                     sugg.creatorId = "1";
-                    sugg.categoryId = "HMS";    // HMS
+                    sugg.categoryId = "1";
+                    sugg.catName = "HMS";
                 }
                 else { 
                     sugg.ownerId = "2";
                     sugg.creatorId = "2";
-                    sugg.categoryId = "2";    // Kvalitet
+                    sugg.categoryId = "2";
+                    sugg.catName = "Kvalitet";
                 }
                 sugg.sugTitle = "TestTitle" + i.ToString();
                 sugg.sugDesc = "DescribingTest" + i.ToString();
-                sugg.createdAt = DateTime.Now.ToString();
+                sugg.createdAt = DateTime.Now.ToLocalTime();
                 sugg.justDoIt = false;
                 _Suggestions.Add(sugg);
             }
+            LoadCategoriList();
+        }
+        private void LoadCategoriList()
+        {
+            _Categories.Add(new CategoryEntity("1", "HMS"));
+            _Categories.Add(new CategoryEntity("2", "Kvalitet"));
+            _Categories.Add(new CategoryEntity("3", "Ledetid"));
+            _Categories.Add(new CategoryEntity("4", "Kostnader"));
+            _Categories.Add(new CategoryEntity("5", "Effektivisering"));
+            _Categories.Add(new CategoryEntity("6", "Kompetanse"));
+            _Categories.Add(new CategoryEntity("7", "Kommunikasjon"));
+            _Categories.Add(new CategoryEntity("8", "5S"));
+            _Categories.Add(new CategoryEntity("9", "Standardisering"));
+            _Categories.Add(new CategoryEntity("10", "Flyt"));
+            _Categories.Add(new CategoryEntity("11", "Visualisering"));
+            _Categories.Add(new CategoryEntity("12", "Energi"));
+            _Categories.Add(new CategoryEntity("13", "Bærekraft"));
+            _Categories.Add(new CategoryEntity("14", "Industri 4.0"));
         }
 
 
-
-        public async Task<UserEntity> getLoginUser(string empId)
+        public async Task<UserEntity> GetLoginUser(string empId)
         {
+            await Task.Delay(0);
             return _Users.Where(x => x.employmentId == empId).FirstOrDefault();
         }
-        public async Task<UserEntity> lookUpUser(string empId)
+        public async Task<UserEntity> LookUpUser(string empId)
         {
+            await Task.Delay(0);
             return _Users.Where(x => x.employmentId == empId).FirstOrDefault();
         }
-        public async Task addUserEntries(List<UserEntity> toSaveUsers)
+        public async Task AddUserEntries(List<UserEntity> toSaveUsers)
         {
+            await Task.Delay(0);
             foreach (UserEntity user in toSaveUsers)
             {
                 _Users.Add(user);
@@ -100,8 +124,9 @@ namespace BlazorTipzTests.ViewModels.DummyClass
             //return "Successfully added " + x.ToString() + " users.";
             
         }
-        public async Task updateUserEntry(UserEntity toSaveUser)
+        public async Task UpdateUserEntry(UserEntity toSaveUser)
         {
+            await Task.Delay(0);
             UserEntity user = _Users.Where(x => x.employmentId == toSaveUser.employmentId).FirstOrDefault();
             if (user != null)
             {
@@ -126,17 +151,23 @@ namespace BlazorTipzTests.ViewModels.DummyClass
                 }
             }
         }
-        public async Task<List<UserEntity>> getActiveUsers()
+        public async Task<List<UserEntity>> GetActiveUsers()
         {
-            return await getUsersByActiveStatus(true);
+            return await GetUsersByActiveStatus(true);
         }
-        public async Task<List<UserEntity>> getInactiveUsers()
+        public async Task<List<UserEntity>> GetInactiveUsers()
         {
-            return await getUsersByActiveStatus(false);
+            return await GetUsersByActiveStatus(false);
         }
-        private async Task<List<UserEntity>> getUsersByActiveStatus(bool var)
+        public async Task<List<UserEntity>> GetAllUsers()
         {
-            List<UserEntity> activeUsers = new List<UserEntity>();
+                await Task.Delay(0);
+                return _Users;      
+        }
+        private async Task<List<UserEntity>> GetUsersByActiveStatus(bool var)
+        {
+            await Task.Delay(0);
+            List<UserEntity> activeUsers = new();
 
             foreach (UserEntity user in _Users)
             {
@@ -147,16 +178,18 @@ namespace BlazorTipzTests.ViewModels.DummyClass
             }
             return activeUsers;
         }
-        public async Task changeUserStateTo(string empid, bool state)
+        public async Task ChangeUserStateTo(string empid, bool state)
         {
+            await Task.Delay(0);
             UserEntity user = _Users.Where(x => x.employmentId == empid).FirstOrDefault();
             if (user != null)
             { 
                 user.active = state; 
             }
         }
-        public async Task changeUsersStateTo(List<UserEntity> users, bool state)
+        public async Task ChangeUsersStateTo(List<UserEntity> users, bool state)
         {
+            await Task.Delay(0);
             foreach (UserEntity user in users)
             {
                 user.active = state;
@@ -164,18 +197,21 @@ namespace BlazorTipzTests.ViewModels.DummyClass
         }
 
         //team/teams
-        public async Task<TeamEntity> getSingleTeamDbFromDb(string teamId)
+        public async Task<TeamEntity> GetSingleTeamFromDb(string teamId)
         {
+            await Task.Delay(0);
             return _Teams.Where(x => x.teamId == teamId).FirstOrDefault();
         }
-        public async Task addTeamEntry(TeamEntity team)
+        public async Task AddTeamEntry(TeamEntity team)
         {
+            await Task.Delay(0);
             string numb = _Teams.Count().ToString();
             team.teamId = numb;
             _Teams.Add(team);
         }
-        public async Task updateTeamEntry(TeamEntity team)
+        public async Task UpdateTeamEntry(TeamEntity team)
         {
+            await Task.Delay(0);
             TeamEntity teamEdit = _Teams.Where(x => x.teamId == team.teamId).FirstOrDefault();
             if (teamEdit != null)
             {
@@ -184,17 +220,18 @@ namespace BlazorTipzTests.ViewModels.DummyClass
             }
             
         }
-        public async Task<List<TeamEntity>> getActiveTeams()
+        public async Task<List<TeamEntity>> GetActiveTeams()
         {
-            return await getTeamsByActiveStatus(true);
+            return await GetTeamsByActiveStatus(true);
         }
-        public async Task<List<TeamEntity>> getInactiveTeams()
+        public async Task<List<TeamEntity>> GetInactiveTeams()
         {
-            return await getTeamsByActiveStatus(false);
+            return await GetTeamsByActiveStatus(false);
         }
-        private async Task<List<TeamEntity>> getTeamsByActiveStatus(bool var)
+        private async Task<List<TeamEntity>> GetTeamsByActiveStatus(bool var)
         {
-            List<TeamEntity> activeTeams = new List<TeamEntity>();
+            await Task.Delay(0);
+            List<TeamEntity> activeTeams = new();
 
             foreach (TeamEntity team in _Teams)
             {
@@ -205,16 +242,18 @@ namespace BlazorTipzTests.ViewModels.DummyClass
             }
             return activeTeams;
         }
-        public async Task changeTeamStateTo(string teamid, bool state)
+        public async Task ChangeTeamStateTo(string teamid, bool state)
         {
+            await Task.Delay(0);
             TeamEntity team = _Teams.Where(x => x.teamId == teamid).FirstOrDefault();
             if (team != null)
             {
                 team.active = state;
             }
         }
-        public async Task changeTeamsStateTo(List<TeamEntity> teams, bool state)
+        public async Task ChangeTeamsStateTo(List<TeamEntity> teams, bool state)
         {
+            await Task.Delay(0);
             foreach (TeamEntity team in teams)
             {
                 team.active = state;
@@ -222,40 +261,64 @@ namespace BlazorTipzTests.ViewModels.DummyClass
         }
 
         // Suggestions
-        public async Task saveSuggestion(SuggestionEntity suggestion)
+        public async Task SaveSuggestion(SuggestionEntity suggestion)
         {
+            await Task.Delay(0);
             _Suggestions.Add(suggestion);
         }
-        public async Task saveSuggestionList(List<SuggestionEntity> suggestions)
+        public async Task SaveSuggestionList(List<SuggestionEntity> suggestions)
         {
+            await Task.Delay(0);
             foreach (SuggestionEntity sugg in suggestions)
             {
                 _Suggestions.Add(sugg);
             }
         }
 
-        public async Task<SuggestionEntity?> GetSuggestion(string sugId)
+        public async Task<SuggestionEntity> GetSuggestion(string sugId)
         {
+            await Task.Delay(0);
             return _Suggestions.Where(x => x.sugId == sugId).FirstOrDefault();
         }
 
-        public async Task<List<SuggestionEntity>?> GetSuggestionsOfCreator(string empId)
+        public async Task<List<SuggestionEntity>> GetSuggestionsOfCreator(string empId)
         {
+            await Task.Delay(0);
             return _Suggestions.Where(x => x.creatorId == empId).ToList();
         }
-
-        public async Task<List<SuggestionEntity>?> GetSuggestionOfTeam(string teamId)
+        public async Task<List<SuggestionEntity>> GetAssignedSuggestions(string empId)
         {
+            await Task.Delay(0);
+            return _Suggestions.Where(x => x.assignedId == empId).ToList();
+        }
+        public async Task<List<SuggestionEntity>> GetSuggestionOfTeam(string teamId)
+        {
+            await Task.Delay(0);
             return _Suggestions.Where(x => x.ownerId == teamId).ToList();
+        }
+
+        public async Task<List<SuggestionEntity>> GetSuggestionsOfCreator(string empId, SuggStatus status)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<List<SuggestionEntity>> GetAssignedSuggestions(string empId, SuggStatus status)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<List<SuggestionEntity>> GetSuggestionOfTeam(string teamId, SuggStatus status)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<List<SuggestionEntity>?> GetSuggestionsByStatus(SuggStatus status)
         {
+            await Task.Delay(0);
             return _Suggestions.Where(x => x.sugStatus == status).ToList();
         }
 
-        public async Task updateSuggestion(SuggestionEntity sug)
+        public async Task UpdateSuggestion(SuggestionEntity sug)
         {
+            await Task.Delay(0);
             SuggestionEntity sugg = _Suggestions.Where(x => x.sugId == sug.sugId).FirstOrDefault();
             if (sugg != null)
             {
@@ -268,10 +331,55 @@ namespace BlazorTipzTests.ViewModels.DummyClass
                 sugg.categoryId = sug.categoryId;
             }
         }
-        
-        public Task<List<SuggestionEntity>?> GetAssignedSuggestions(string empId)
+
+        public async Task<List<CategoryEntity>> GetCategoryEntities()
         {
-            throw new NotImplementedException();
+            await Task.Delay(0);
+            return _Categories;
+        }
+
+        public async Task UpdateCategories(List<CategoryEntity> catList)
+        {
+            await Task.Delay(0);
+            foreach (CategoryEntity cat in catList)
+            {
+                CategoryEntity? catEdit = _Categories.Where(x => x.catId == cat.catId).FirstOrDefault();
+                if (catEdit != null)
+                {
+                    catEdit.catName = cat.catName;
+                }
+                else if (cat.catId == null || cat.catId == string.Empty){   }
+                else{ _Categories.Add(cat);}
+            }
+        }
+
+        public async Task SaveComment(CommentEntity comment)
+        {
+            await Task.Delay(0);
+            _Comments.Add(comment);
+        }
+
+        public async Task UpdateComment(CommentEntity comment)
+        {
+            await Task.Delay(0);
+            CommentEntity commentEdit = _Comments.Where(x => x.employmentId == comment.employmentId && x.sugId == comment.sugId && x.createdAt == comment.createdAt).FirstOrDefault();
+            if (commentEdit != null)
+            {
+                commentEdit.content = comment.content;
+                commentEdit.active = comment.active;
+            }
+        }
+
+        public async Task<List<CommentEntity>> GetCommentsOfSuggestion(string sugId)
+        {
+            await Task.Delay(0);
+            return _Comments.Where(x => x.sugId == sugId).ToList();
+        }
+
+        public async Task<List<CommentEntity>> GetCommentsOfUser(string empId)
+        {
+            await Task.Delay(0);
+            return _Comments.Where(x => x.employmentId == empId).ToList();
         }
     }
 }

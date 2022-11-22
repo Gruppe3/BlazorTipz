@@ -1,21 +1,55 @@
 /*=============== GOOGLE FONTS ===============*/
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
 
+/*=============== VARIABLES CSS ===============*/
 :root {
     /*========== Colors ==========*/
     /*Color mode HSL(hue, saturation, lightness)*/
-    --first-color: hsl(228, 81%, 49%);
-    --title-color: hsl(228, 12%, 15%);
-    --text-color: hsl(0, 0%, 100%);
-    --body-color: hsl(236, 28%, 19%);
-    --container-color: #fff;
+    /*--first-color: hsl(228, 81%, 49%);*/
+    --first-color: #f6e87d;
     --primary-color: hsl(264, 0%, 17%);
-    --secondary-color: hsl(264, 0%, 17%);
-    --third-color: hsl(228, 12%, 15%);
+    --primary-hover-color: hsl(264, 0%, 14%);
+    --secondary-color: #6a7e3c;
+    --secondary-hover-color: #4a6314;
+    --third-color: hsl(174, 11%, 73%);
+    --detail-color: var(--rz-success);
+    /**/
+    --light-color: hsl(0, 0%, 80%);
+    --light-hover-color: hsl(0, 0%, 60%);
+    --text-color: black;
+    --body-color: #ffffff;
+    --container-color: #fff;
+    /*====Radzen Theme Override====*/
+    /*--grid-strip-light: #DDDAD3;
+    --text-hover: red;
+    --navbar-icon: black;
+    --navbar-icon-hover: white;
+    --navbar-background: #7cc79e;
+    --background-color: #a8a8a8;
+    --sugg-text-color: #fff;
+    --sugg-text-color2: #B2C1BF;
+    --suggestion-card-box: #7cc79e;*/
     /*========== Font and typography ==========*/
     /*.5rem = 8px | 1rem = 16px ...*/
     --body-font: 'Poppins', sans-serif;
     --normal-font-size: .938rem;
+}
+/*=============== BASE ===============*/
+
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    position: relative;
+    font-family: var(--body-font);
+    font-size: var(--normal-font-size);
+    /*background: linear-gradient(90deg, #e3ffe7 0%, #d9e7ff 100%);*/
+    background-color: var(--rz-body-background-color);
+    color: var(--text-color);
+    height: fit-content;
 }
 
 html, body {
@@ -23,7 +57,321 @@ html, body {
     overflow-y: auto;
 }
 
+h1 {
+    color: var(--text-color);
+}
 
+a {
+    font-size: 17px;
+    text-decoration: none;
+}
+.l-text {
+    color: #ffffff;
+}
+.d-text {
+    color: #000000;
+}
+.main-page-content {
+    padding-top: 30px;
+    min-height: 100vh;
+}
+    .main-page-content h1 {
+        font-weight: 600;
+    }
+
+/*=============== Login ===============*/
+#loggInnWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 96vh;
+    width: 100%;
+}
+
+#loggInnCard {
+    position: absolute;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    height: 510px;
+    width: 90%;
+    max-width: 400px;
+    background-color: var(--primary-color);
+}
+.line {
+    border-bottom: solid lightgrey 1px;
+    margin-top: .5rem;
+    margin-bottom: .5rem;
+}
+.error-card {
+    opacity: 0;
+    transform: translateY(5px);
+    transition: opacity 200ms ease-in-out, transform 200ms ease-in-out;
+}
+    .error-card.active {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+
+/*=============== Popup ===============*/
+.fullpage-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+}
+.fixed-content {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+/*For closing the popup window by clicking the background*/
+.closable-div-background-button {
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    background-color: rgba(0,0,0,0.7);
+    transition: opacity ease-in-out 0.3s;
+}
+    .closable-div-background-button.active {
+        pointer-events: auto;
+        opacity: 1;
+    }
+
+/*=============== SuggView ===============*/
+.closable-sugg-wrapper {
+    pointer-events: none;
+    z-index: 4;
+    opacity: 0;
+    padding-top: 6rem;
+    padding-bottom: 14rem;
+    transition: opacity 200ms ease-in-out;
+}
+    .closable-sugg-wrapper.active {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+.closable-sugg {
+    background-color: var(--container-color);
+    max-width: 600px;
+    opacity: 0;
+    margin: 0 auto;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    transform: translateY(25px);
+    transition: opacity 200ms ease-in-out, transform 200ms ease-in-out;
+    box-shadow: 0px 1px 5px rgba(0,0,0,0.2);
+}
+    .closable-sugg.active {
+        opacity: 1;
+        transform: translateY(0);
+    }
+.close-sugg i {
+
+}
+.close-sugg {
+    border: none;
+    float: left;
+    margin: 0;
+    background: none;
+    text-decoration: none;
+    cursor: pointer;
+}
+    .close-sugg:active i {
+        color: var(--light-hover-color);
+    }
+    .close-sugg i {
+        color: #000;
+        font-size: 40px;
+    }
+
+.sugg-topcard {
+    border-bottom: 2px solid grey;
+}
+
+.suggestion {
+    /*background-color: var(--primary-color);*/
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+}
+
+.sugg-details-wrapper {
+    display: inline-block;
+    width: 100%;
+}
+.sugg-show-moreless {
+    overflow: hidden;
+    height: 45px;
+    margin-bottom: 0.2rem;
+}
+    .sugg-show-moreless.show-more {
+        height: 90px;
+    }
+    .sugg-show-moreless.show-less {
+        height: 45px;
+    }
+
+.button-show-more {
+    font-size: 12px;
+    cursor: pointer;
+}
+    .button-show-more:active {
+        color: gray;
+    }
+
+.sugg-details {
+    color: gray;
+    width: 75%;
+    float: left;
+}
+
+.progress-display {
+    height: 100%;
+    width: 25%;
+    float: left;
+}
+
+.comment_editor {
+    background-color: var(--light-hover-color);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+}
+
+
+/*=============== progress-wheel ===============*/
+.circular-progress {
+    background-color: var(--light-color);
+    border-radius: 50%;
+    position: relative;
+    max-height: 90px;
+    max-width: 90px;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    float: right;
+    margin-right: 1rem;
+    display: grid;
+    place-items: center;
+}
+
+.circular-progress:before {
+    background-color: var(--container-color);
+    border-radius: 50%;
+    position: absolute;
+    content: "";
+    height: 75%;
+    width: 75%;
+}
+
+.value-container {
+    position: relative;
+    font-size: 18px;
+}
+
+
+/*=============== comments ===============*/
+.comment-container {
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
+
+.comment-card {
+    background-color: var(--light-hover-color);
+    padding: 1rem;
+    margin-bottom: 0.1rem;
+}
+
+.comment_author {
+    margin-right: 1rem;
+    font-size: 20px;
+}
+
+.comment_date {
+    float: right;
+}
+
+.comment-text {
+    white-space: pre-line;
+    font-size: 12px;
+}
+
+
+
+/*==== Big screen ====*/
+@media screen and (min-width: 1120px) {
+}
+
+@media screen and (min-width: 768px) {
+    .content {
+        
+    }
+}
+
+/*==== Small screen ====*/
+@media screen and (max-width: 768px) {
+    
+}
+
+
+
+/*=============== main-page ===============*/
+.content {
+    margin-bottom: 9rem;
+}
+.u-line {
+    border-bottom: solid var(--light-color) 1px;
+}
+.title-banner {
+    background: linear-gradient(90deg, #f8ff00 0%, #3ad59f 100%);
+
+}
+
+.suggestion-list-container {
+    width: 100%;
+    height: max-content;
+    min-height: 100vh;
+}
+
+.list-display {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.suggcard-wrapper {
+    transition: 0.2s;
+    background-color: var(--container-color);
+    cursor: pointer;
+}
+
+
+.suggestion-cards-progress {
+}
+
+
+
+.filterbar {
+    display: flex;
+    background-color: var(--rz-white);
+    margin-bottom: 0.25rem;
+}
+.filer {
+    padding: 0.5rem;
+}
+
+
+
+
+
+
+/*======== other ========*/
 a.navbar-brand {
     white-space: normal;
     text-align: center;
@@ -35,7 +383,7 @@ a.navbar-brand {
     text-align: center;
     bottom: 0px;
     width: 100%;
-}  
+}
 
 h1:focus {
     outline: none;
@@ -50,7 +398,7 @@ h1 {
     background-color: transparent;
 }
 
-.rz-paginator-element{
+.rz-paginator-element {
     height: 2rem;
     width: 2rem;
     font-size: 1rem;
@@ -62,7 +410,7 @@ a, .btn-link {
 }
 
 .suggColor {
-    background-color: var(--third-color);
+    background-color: var(--primary-color);
     padding: 20px;
 }
 
@@ -75,7 +423,6 @@ a, .btn-link {
     color: var(--text-color);
     font-weight: 500;
     transition: .3s;
-    
 }
 
 .grid-container {
@@ -99,10 +446,11 @@ a, .btn-link {
     animation: spin 700ms linear infinite;
 }
 
-@keyframes spin{
-    0%{
+@keyframes spin {
+    0% {
         transform: rotate(0deg)
     }
+
     100% {
         transform: rotate(360deg)
     }
@@ -120,16 +468,15 @@ a, .btn-link {
     justify-content: center;
     align-items: center;
     padding-top: 1rem;
+    /*
     margin-right: 0.5rem;
+*/
 }
 
-.center p {
-    padding-top: 0rem;
-}
+    .center p {
+        padding-top: 0rem;
+    }
 
-.content {
-    padding-top: 1.1rem;
-}
 
 .valid.modified:not([type=checkbox]) {
     outline: 1px solid #26b050;
@@ -195,11 +542,34 @@ a, .btn-link {
     cursor: pointer;
 }
 
-    table td, table th {
-        padding: 8px;
-    }
+table td, table th {
+    padding: 8px;
+}
 
-    table th {
-        padding-top: 12px;
-        padding-bottom: 12px;
-    }
+table th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+/*=============== rz-override ===============*/
+
+/*
+.rz-dialog {
+    background-color: var(--primary-color);
+}
+.rz-dialog-titlebar {
+    background-color: var(--secondary-color);
+    border-bottom: solid grey 1px;
+}
+.rz-colorpicker,
+.rz-lookup-search input,
+.rz-spinner,
+.rz-calendar .rz-inputtext,
+.rz-multiselect,
+.rz-dropdown,
+.mask,
+.rz-textarea,
+.rz-textbox {
+    background-color: var(--secondary-color);
+    color: #000000;
+}*/

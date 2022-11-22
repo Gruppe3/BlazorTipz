@@ -8,8 +8,9 @@
 @using BlazorTipz.ViewModels.User
 
 <!--Injects from program-->
+@inject ILocalStorageService _localStorage
 @inject NavigationManager _navigationManager
-@inject IUserManager _userM
+@inject IUserManager _userManager
 @inject IJSRuntime JSRuntime
 @inject DialogService DialogService
 
@@ -19,101 +20,102 @@
 <!--Kun Admin rollen kan se-->
 <AuthorizeView Roles="Admin" Context="someContext">
     <Authorized>
-        <h1 class="center">Fyll inn skjema</h1>
-        <p class="d-flex justify-content-center">for å registrere en bruker</p>
-        <div class="justify-content-center">
-            <div class="row">
-                <div class="col-lg-6 offset-lg-3">
-                    <RadzenTemplateForm TItem="UserViewmodel" Data=@userDto Submit=registerUser>
-                        <div class="row mb-5">
-                            <div class="col-md-4">
-                                <RadzenLabel Text="ID" />
-                            </div>
-                            <div class="col" style="align-self: center;">
-                                <RadzenMask Mask="******" CharacterPattern="[0-9]" Placeholder="000000" Name="id"
-                                            @bind-Value=@userDto.employmentId Class="w-100" />
-                                <RadzenLengthValidator Component="id" Min="6" Text="Må være 6 karakterer" Popup=@popup Style="position: absolute" />
-                            </div>
-                        </div>
-                        <div class="row mb-5">
-                            <div class="col-md-4" style="align-self: center;">
-                                <RadzenLabel Text="Navn" />
-                            </div>
-                            <div class="col">
-                                <RadzenTextBox style="display: block" Name="name" @bind-Value=@userDto.name Class="w-100" Placeholder="Navn"/>
-                                <RadzenRequiredValidator Component="name" Text="Name is required" Popup=@popup Style="position: absolute" />
-                            </div>
-                        </div>
-                        <div class="row mb-5">
-                            <div class="col-md-4" style="align-self: center;">
-                                <RadzenLabel Text="Velg rolle" />
-                            </div>
-                            <div class="col">
-                                <!--Tar inn en liste roles-->
-                                <RadzenDropDown @bind-Value="userDto.role" Placeholder="User" Data="@roles" style="width: 100%;" TextProperty="role" ValueProperty="role" Name="Rolle" />
-                            </div>
-                        </div>
-                        <div class="center">
-                            <RadzenButton ButtonType="ButtonType.Submit" Text="Legg til i liste"></RadzenButton>
-                        </div>
-                    </RadzenTemplateForm>
-                    <div class="center">
-                        <p>Liste over de som skal registreres</p>
-                    </div>
-                    <div>
-                        <table class="regT">
-                            <tr>
-                                <th>Nr</th>
-                                <th>Navn</th>
-                                <th>EmpID</th>
-                                <th>Rolle</th>
-                                <th>Passord</th>
-                                <th>Slett</th>
-                            </tr>
-                            @if(UsersList != null){
-                                @foreach (UserViewmodel us in UsersList)
-                                {
-                                    <tr>
-                                        <td>@us.listnum</td>
-                                        <td>@us.name</td>
-                                        <td>@us.employmentId</td>
-                                        <td>@us.role.ToString()</td>
-                                        <td>@us.password</td>
-                                        <td>
-                                            <RadzenTemplateForm TItem="UserViewmodel" Data=@us Submit=DeleteUser>
-                                                <RadzenNumeric style="display: none" Name="id" @bind-Value=@us.employmentId Class="w-100" />
-                                                <div class="center">
-                                                    <RadzenButton ButtonType="ButtonType.Submit" style="background-color: transparent"><i class='bx bx-trash pointer'></i></RadzenButton>
-                                                </div>
-                                            </RadzenTemplateForm>
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                        </table>
-                    </div>
-                    <div>
-                        <div class="center grid-container">
-                            @if (HasBeenRegisterd)
-                            {
-                                <div class="grid-item">
-                                    <RadzenButton Click="DownloadExcelDocument" Icon="get_app" Text="Last ned liste" ButtonStyle="ButtonStyle.Primary" Style="width:auto;"/>
+		<!--Main content on page-->
+		<div class="main-page-content">
+            <h1 class="center">Fyll inn skjema</h1>
+            <p class="d-flex justify-content-center">for å registrere en bruker</p>
+            <div class="justify-content-center">
+                <div class="row">
+                    <div class="col-lg-6 offset-lg-3">
+                        <RadzenTemplateForm TItem="UserViewmodel" Data=@UserDto Submit=RegisterSingleUser>
+                            <div class="row mb-2">
+                                <div class="col-3">
+                                    <RadzenLabel Text="ID" />
                                 </div>
-                            }
-                            <div class="grid-item">
-                            <RadzenButton Click="ExcelAsk" Text="Registrer" ButtonStyle="ButtonStyle.Primary" />
-                        </div>
-                        </div>
+                                <div class="col-9" style="align-self: center;">
+                                    <RadzenMask Mask="******" CharacterPattern="[0-9]" Placeholder="000000" Name="id"
+                                                @bind-Value=@UserDto.EmploymentId Class="w-100" />
+                                    <RadzenLengthValidator Component="id" Min="6" Text="Må være 6 karakterer" Popup=@popup Style="position: absolute" />
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-3" style="align-self: center;">
+                                    <RadzenLabel Text="Navn" />
+                                </div>
+                                <div class="col-9">
+                                    <RadzenTextBox style="display: block" Name="name" @bind-Value=@UserDto.Name Class="w-100" Placeholder="Navn"/>
+                                    <RadzenRequiredValidator Component="name" Text="Name is required" Popup=@popup Style="position: absolute" />
+                                </div>
+                            </div>
+                            <div class="row mb-5">
+                                <div class="col-3" style="align-self: center;">
+                                    <RadzenLabel Text="Velg rolle" />
+                                </div>
+                                <div class="col-9">
+                                    <!--Tar inn en liste roles-->
+                                    <RadzenDropDown @bind-Value="UserDto.UserRole" Placeholder="User" Data="@UserRoles" style="width: 100%;" TextProperty="UserRole" ValueProperty="UserRole" Name="Rolle" />
+                                </div>
+                            </div>
+                            <div class="center">
+                                <RadzenButton ButtonType="ButtonType.Reset" Text="Avbryt"></RadzenButton>
+                                <RadzenButton ButtonType="ButtonType.Submit" Text="Legg til i liste"></RadzenButton>
+                            </div>
+                        </RadzenTemplateForm>
                         <div class="center">
-                            <p>@Checker</p>
+                            <p>Liste over de som skal registreres</p>
+                        </div>
+                        <div>
+                            <table class="regT">
+                                <tr>
+                                    <th>Nr</th>
+                                    <th>Navn</th>
+                                    <th>EmpID</th>
+                                    <th>Rolle</th>
+                                    <th>Passord</th>
+                                    <th>Slett</th>
+                                </tr>
+                                @if(UsersList != null){
+                                    @foreach (UserViewmodel us in UsersList)
+                                    {
+                                        <tr>
+                                            <td>@us.ListNum</td>
+                                            <td>@us.Name</td>
+                                            <td>@us.EmploymentId</td>
+                                            <td>@us.UserRole.ToString()</td>
+                                            <td>@us.Password</td>
+                                            <td>
+                                                <RadzenTemplateForm TItem="UserViewmodel" Data=@us Submit=DeleteUser>
+                                                    <RadzenNumeric style="display: none" Name="id" @bind-Value=@us.EmploymentId Class="w-100" />
+                                                    <div class="center">
+                                                        <RadzenButton ButtonType="ButtonType.Submit" style="background-color: transparent"><i class='bx bx-trash pointer'></i></RadzenButton>
+                                                    </div>
+                                                </RadzenTemplateForm>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </table>
+                        </div>
+                        <div>
+                            <div class="center grid-container">
+                                @if (HasBeenRegisterd)
+                                {
+                                    <div class="grid-item">
+                                        <RadzenButton Click="DownloadExcelDocument" Icon="get_app" Text="Last ned liste" ButtonStyle="ButtonStyle.Primary" Style="width:auto;"/>
+                                    </div>
+                                }
+                                <div class="grid-item">
+                                <RadzenButton Click="ExcelAsk" Text="Registrer" ButtonStyle="ButtonStyle.Primary" />
+                            </div>
+                            </div>
+                            <div class="center">
+                                <p>@Checker</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <h1 style="opacity:0;">:)</h1>
-        <h1 style="opacity:0;">:)</h1>
-        <h1 style="opacity:0;">:)</h1>
     </Authorized>
     <NotAuthorized>
         <h1 class="center">Denne siden er ikke for deg</h1>
@@ -125,12 +127,12 @@
     {
         await DialogService.OpenAsync($"Ønsker du å laste ned brukerne?", ds =>
     @<div>
-                            <div class="center">
-                            <RadzenButton Click="RegisterUsersWExcel" Text="Ja" ButtonStyle="ButtonStyle.Primary" Style="width:4rem;" />
-                            </div>
-                            <div class="center">
-                                <RadzenButton Click="RegisterUsers" Text="Nei" ButtonStyle="ButtonStyle.Primary" Style="width:4rem;"/>
-                            </div>
+        <div class="center">
+        <RadzenButton Click="RegisterUsersWExcel" Text="Ja" ButtonStyle="ButtonStyle.Primary" Style="width:4rem;" />
+        </div>
+        <div class="center">
+            <RadzenButton Click="RegisterUsers" Text="Nei" ButtonStyle="ButtonStyle.Light" Style="width:4rem;"/>
+        </div>
     </div>, new DialogOptions() { CloseDialogOnOverlayClick = true });
     }
 }
