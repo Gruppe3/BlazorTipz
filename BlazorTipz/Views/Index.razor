@@ -27,8 +27,8 @@
         <!--Popups-->
         <div class="closable-sugg-wrapper fixed-content @SuggCardHiddenState">
             <div class="closable-div-background-button fullpage-wrapper @SuggCardHiddenState" @onclick="@(() => CloseSuggWindow())"></div>
-            <div class="closable-sugg l-text @SuggCardHiddenState">
-                <button class="close-nav float-right" @onclick="CloseSuggWindow">
+            <div class="closable-sugg d-text @SuggCardHiddenState">
+                <button class="close-sugg float-right" @onclick="CloseSuggWindow">
                     <i class='bx bx-x'></i>
                 </button>
                 <div class="sugg-topcard">
@@ -53,7 +53,7 @@
                                     <span>Progresjonsnivå: @CurrentSugg.Progression</span>
                                 </div>
 							    <div class="progress-display">
-								    <div class="circular-progress" style="background: conic-gradient(#2c3cf2 @((CurrentSugg.Progression * 25) * 3.6)deg, 
+								    <div class="circular-progress" style="background: conic-gradient(var(--rz-success-dark) @((CurrentSugg.Progression * 25) * 3.6)deg, 
                                                                                                       #cadcff @((CurrentSugg.Progression * 25) * 3.6)deg)">
 									    <div class="value-container">
                                             @if (@SuggShowMore == "show-more")
@@ -115,9 +115,9 @@
 		
 		<!--Main content on page-->
 		<div class="main-page-content">
-			<h1 class="center d-text">Dashboard</h1>
+            <h1 class="center d-text">Dashboard</h1>
             <div class="container-lg">
-                <div class="filterbar" runat="Server">
+                <div class="filterbar rz-shadow-1" runat="Server">
                     <div class="filer d-text">
                         <span title="Velg hvilke forslag å vise">Visning:</span>
                         <select id="visningSelectOpt" @onchange="@(args => UpdateVisning(args))">
@@ -157,10 +157,10 @@
 					<div class="list-display">
 						@foreach (SuggViewmodel sugg in SuggList) 
                         {
-                            <div class="suggcard-wrapper mb-2 l-text" @onclick="@(() => ShowSuggWindow(sugg))">
-                                <div class="container">
+                            <div class="suggcard-wrapper mb-2 d-text" @onclick="@(() => ShowSuggWindow(sugg))">
+                                <div class="container-lg">
                                     <div class="row">
-                                        <div class="col-lg p-3 product-title">
+                                        <div class="col-6 p-3 product-title">
                                             <h2>
                                                 @(sugg.Title)
                                                 <RadzenBadge BadgeStyle="BadgeStyle.Warning" Shade="Shade.Lighter" IsPill="@true" Text="@sugg.Status.ToString()" Class="ml-2" />
@@ -170,9 +170,8 @@
                                                 <p>Sist endret: @(sugg.UpdatedDate.ToString("dd/MM/yyyy kl HH/mm"))</p>
                                             }
                                         </div>
-								        <div class="suggestion-cards-progress">
-									        <div class="circular-progress" style="background: conic-gradient(#2c3cf2 @((sugg.Progression * 25) * 3.6)deg, 
-                                                                                                            #cadcff @((sugg.Progression * 25) * 3.6)deg)">
+								        <div class="col-6">
+                                            <div class="circular-progress" style="background: conic-gradient(var(--rz-success-dark) @((sugg.Progression * 25) * 3.6)deg, #cadcff @((sugg.Progression * 25) * 3.6)deg)">
 									            <div class="value-container">
                                                     @(sugg.Progression * 20)<span>%</span>
 										        </div>
@@ -184,97 +183,6 @@
                         }
                     </div>
                 </div>
-            
-            
-                @*<div class="">
-                    <RadzenCard Class="suggColor mb-3">
-                        @if (isLoaded == true)
-                        {
-                            <h1 class="d-flex justify-content-center">Forslag du er tilordnet</h1>
-                            <p class="d-flex justify-content-center">Sortert fra gammel til ny</p>
-                            <RadzenDataList WrapItems="true" AllowPaging="true" Data="@Assignedsugg" TItem="SuggViewmodel" PageSize="2"
-                                        PagerHorizontalAlign="HorizontalAlign.Center" PagerPosition="PagerPosition.Top">
-                                <Template Context="suggestions">
-                                    <RadzenCard Style="width: 100%; padding: 0; overflow: hidden;">
-                                        <div class="suggcard-wrapper" @onclick="@(() => ShowSuggWindow(suggestions))">
-                                            <div class="container">
-                                                <div class="row">
-                                                    <div class="col-lg p-3 product-title">
-                                                        <h2>
-                                                            @(suggestions.Title)
-                                                            <RadzenBadge BadgeStyle="BadgeStyle.Warning" Shade="Shade.Lighter" IsPill="@true" Text="@suggestions.Status.ToString()" Class="ml-2" />
-                                                        </h2>
-													    @if (suggestions.UpdatedDate != suggestions.StartDate)
-                                                        {
-                                                            <p>Sist endret: @(suggestions.UpdatedDate.ToString("dd/MM/yyyy kl HH/mm"))</p>
-                                                        }
-                                                    </div>
-												    <div class="suggestion-cards-progress">
-													    <div class="circular-progress" style="background: conic-gradient(#2c3cf2 @((suggestions.Progression * 25) * 3.6)deg, 
-                                                                                                                        #cadcff @((suggestions.Progression * 25) * 3.6)deg)">
-									                        <div class="value-container">
-                                                                @(suggestions.Progression * 20)<span>%</span>
-											                </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </RadzenCard>
-                                </Template>
-                            </RadzenDataList>
-                        }
-                        else
-                        {
-                            <div class="center">
-                                <div class="spinner"></div>
-                            </div>
-                        }
-                    </RadzenCard>
-                    <RadzenCard Class="suggColor mb-3">
-                        @if (isLoaded == true)
-                        {
-                            <h1 class="d-flex justify-content-center">Dine forslag</h1>
-                            <p class="d-flex justify-content-center">Sortert fra gammel til ny</p>
-                            <RadzenDataList WrapItems="true" AllowPaging="true" Data="@UserSugg" TItem="SuggViewmodel" PageSize="3"
-                                        PagerHorizontalAlign="HorizontalAlign.Center" PagerPosition="PagerPosition.Top">
-                                <Template Context="suggestions">
-                                    <RadzenCard Style="width: 100%; padding: 0; overflow: hidden;">
-                                        <div class="suggcard-wrapper card" @onclick="@(() => ShowSuggWindow(suggestions))">
-                                            <div class="card-body row">
-											    <div class="col-sm-9">
-												    <div class="mb-2">
-												        <h2 class="card-title">@(suggestions.Title)</h2>
-                                                        <RadzenBadge BadgeStyle="BadgeStyle.Warning" Shade="Shade.Lighter" IsPill="@true" Text="@suggestions.Status.ToString()" Class="card-subtitle ml-2" />
-                                                    </div>
-											        <p>Lagt til: @(suggestions.StartDate)</p>
-											        @if (suggestions.UpdatedDate != suggestions.StartDate)
-                                                    {
-                                                        <p>Sist endret: @(suggestions.UpdatedDate.ToString("dd/MM/yyyy kl HH/mm"))</p>
-                                                    }
-                                                </div>
-                                                <div class="col-sm-3 suggestion-cards-progress">
-												    <div class="circular-progress" style="background: conic-gradient(#2c3cf2 @((suggestions.Progression * 25) * 3.6)deg, 
-                                                                                                                    #cadcff @((suggestions.Progression * 25) * 3.6)deg)">
-									                    <div class="value-container">
-                                                            @(suggestions.Progression * 20)<span>%</span>
-											            </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </RadzenCard>
-                                </Template>
-                            </RadzenDataList>
-                        }
-                        else
-                        {
-                            <div class="center">
-                                <div class="spinner"></div>
-                            </div>
-                        }
-                    </RadzenCard>
-                </div>*@
             </div>
         </div>
 		
@@ -456,7 +364,7 @@
                     <!--Button-->
                     <div class="center">
                         <RadzenButton Text="Avbryt" ButtonType="ButtonType.Button" ButtonStyle="ButtonStyle.Light" Click="() => ds.Close(false)" Size="ButtonSize.Large" Style="width: 150px; margin-right: 1rem;" />
-                        <RadzenButton Text="Lagre" ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Click="() => ds.Close(true)" Size="ButtonSize.Large" Style="width: 150px;" />
+                        <RadzenButton Text="Lagre" ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Success" Click="() => ds.Close(true)" Size="ButtonSize.Large" Style="width: 150px;" />
                     </div>
                 </RadzenTemplateForm>
             </div>

@@ -26,7 +26,7 @@ namespace BlazorTipz.Shared
         private string ShowUser { get; set; } = "none";
         private string ShowTeam { get; set; } = "none";
         private string Feedback { get; set; } = "";
-
+        
         public async Task Logout()
         {
             await _localStorage.RemoveItemAsync("token");

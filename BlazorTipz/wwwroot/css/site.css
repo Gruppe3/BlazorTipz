@@ -9,19 +9,18 @@
     --first-color: #f6e87d;
     --primary-color: hsl(264, 0%, 17%);
     --primary-hover-color: hsl(264, 0%, 14%);
-    --secondary-color: hsl(78, 35%, 36%);
-    --secondary-hover-color: hsl(78, 35%, 25%);
-
+    --secondary-color: #6a7e3c;
+    --secondary-hover-color: #4a6314;
     --third-color: hsl(174, 11%, 73%);
-    --detail-color: hsl(235, 93%, 64%);
+    --detail-color: var(--rz-success);
+    /**/
     --light-color: hsl(0, 0%, 80%);
     --light-hover-color: hsl(0, 0%, 60%);
     --text-color: black;
     --body-color: #ffffff;
     --container-color: #fff;
-    
     /*====Radzen Theme Override====*/
-    --grid-strip-light: #DDDAD3;
+    /*--grid-strip-light: #DDDAD3;
     --text-hover: red;
     --navbar-icon: black;
     --navbar-icon-hover: white;
@@ -29,7 +28,7 @@
     --background-color: #a8a8a8;
     --sugg-text-color: #fff;
     --sugg-text-color2: #B2C1BF;
-    --suggestion-card-box: #7cc79e;
+    --suggestion-card-box: #7cc79e;*/
     /*========== Font and typography ==========*/
     /*.5rem = 8px | 1rem = 16px ...*/
     --body-font: 'Poppins', sans-serif;
@@ -47,7 +46,8 @@ body {
     position: relative;
     font-family: var(--body-font);
     font-size: var(--normal-font-size);
-    background-color: var(--body-color);
+    /*background: linear-gradient(90deg, #e3ffe7 0%, #d9e7ff 100%);*/
+    background-color: var(--rz-body-background-color);
     color: var(--text-color);
     height: fit-content;
 }
@@ -72,9 +72,12 @@ a {
     color: #000000;
 }
 .main-page-content {
-    padding-top: 60px;
+    padding-top: 30px;
     min-height: 100vh;
 }
+    .main-page-content h1 {
+        font-weight: 600;
+    }
 
 /*=============== Login ===============*/
 #loggInnWrapper {
@@ -133,12 +136,13 @@ a {
 .closable-div-background-button {
     pointer-events: none;
     z-index: 0;
-    display: none;
+    opacity: 0;
     background-color: rgba(0,0,0,0.7);
+    transition: opacity ease-in-out 0.3s;
 }
     .closable-div-background-button.active {
         pointer-events: auto;
-        display: block;
+        opacity: 1;
     }
 
 /*=============== SuggView ===============*/
@@ -156,7 +160,7 @@ a {
     }
 
 .closable-sugg {
-    background-color: var(--primary-color);
+    background-color: var(--container-color);
     max-width: 600px;
     opacity: 0;
     margin: 0 auto;
@@ -169,6 +173,24 @@ a {
     .closable-sugg.active {
         opacity: 1;
         transform: translateY(0);
+    }
+.close-sugg i {
+
+}
+.close-sugg {
+    border: none;
+    float: left;
+    margin: 0;
+    background: none;
+    text-decoration: none;
+    cursor: pointer;
+}
+    .close-sugg:active i {
+        color: var(--light-hover-color);
+    }
+    .close-sugg i {
+        color: #000;
+        font-size: 40px;
     }
 
 .sugg-topcard {
@@ -233,13 +255,14 @@ a {
     max-width: 90px;
     height: 100%;
     aspect-ratio: 1 / 1;
-    margin: 0 auto;
+    float: right;
+    margin-right: 1rem;
     display: grid;
     place-items: center;
 }
 
 .circular-progress:before {
-    background-color: var(--primary-color);
+    background-color: var(--container-color);
     border-radius: 50%;
     position: absolute;
     content: "";
@@ -324,12 +347,9 @@ a {
 
 .suggcard-wrapper {
     transition: 0.2s;
-    background-color: var(--primary-color);
+    background-color: var(--container-color);
+    cursor: pointer;
 }
-    .suggcard-wrapper:hover,
-    .suggcard-wrapper:active {
-        background-color: var(--primary-hover-color);
-    }
 
 
 .suggestion-cards-progress {
@@ -339,6 +359,8 @@ a {
 
 .filterbar {
     display: flex;
+    background-color: var(--rz-white);
+    margin-bottom: 0.25rem;
 }
 .filer {
     padding: 0.5rem;

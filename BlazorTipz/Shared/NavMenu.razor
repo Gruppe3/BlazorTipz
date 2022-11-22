@@ -69,8 +69,8 @@
 			</div>
         </div>
 		<div class="suggestion-button-container">
-            <a href="javascript:void(0);" class="" @onclick="ShowSuggestion">
-                <!--<i class='bx bx-plus'></i>-->
+            <a href="javascript:void(0);" @onclick="ShowSuggestion">
+				<!--<i class='bx bx-plus'></i>-->
 				<i class='bx bx-pencil'></i>
             </a>
         </div>
@@ -98,18 +98,18 @@
                     <!--Sider-->
                     <div>
                         <a href="/" @onclick="CloseNavMenu">
-                        <i class='bx bx-home-alt'></i>
+                            <i class='bx bx-home-alt'></i>
                             <span class="nav-text">Home</span>
-                    </a>
+                        </a>
                         <a href="/teamView" @onclick="CloseNavMenu">
-                        <i class='bx bx-food-menu'></i>
+                            <i class='bx bx-food-menu'></i>
                             <span class="nav-text">Team</span>
-                    </a>
+                        </a>
                         <a href="/" @onclick="CloseNavMenu">
-                        <i class='bx bx-bar-chart-alt-2'></i>
+                            <i class='bx bx-bar-chart-alt-2'></i>
                             <span class="nav-text">Statistikk</span>
-                    </a>
-                </div>
+                        </a>
+                    </div>
                     <div class="line"></div>
 
                     <!--Admin-panel-->
@@ -117,31 +117,31 @@
                         <a href="/register" @onclick="CloseNavMenu">
 							<i class='bx bx-user-plus'></i>
 							<span class="nav-text">Bruker-Terminal</span>
-                    </a>
+						</a>
 
                         <a href="/manageTeam" @onclick="CloseNavMenu">
 							<i class='bx bx-group'></i>
                             <span class="nav-text">Team-Terminal</span>
-                    </a>
-                </div>
+						</a>
+                    </div>
                     <div class="line"></div>
 
                     <!--Logout og settings-->
                     <div>
                         <a href="/userSettings" @onclick="CloseNavMenu">
-                        <i class='bx bx-cog'></i>
+                            <i class='bx bx-cog'></i>
                             <span class="nav-text">Innstillinger</span>
-                    </a>
+                        </a>
                         <a href="/" @onclick="Logout">
-                        <i class='bx bx-log-out'></i>
+                            <i class='bx bx-log-out'></i>
                             <span class="nav-text">Logg ut</span>
-                    </a>
+                        </a>
+                    </div>
                 </div>
-                </div>
-                </div>
+            </div>
         </div>
         <div class="suggestion-button-container">
-            <a href="javascript:void(0);" class="" @onclick="ShowSuggestion">
+            <a href="javascript:void(0);" @onclick="ShowSuggestion">
 				<!--<i class='bx bx-plus'></i>-->
                 <i class='bx bx-pencil'></i>
             </a>
@@ -178,10 +178,10 @@
                             <span class="nav-text">Team</span>
                         </a>
                         <a href="/" @onclick="CloseNavMenu">
-                        <i class='bx bx-bar-chart-alt-2'></i>
+                            <i class='bx bx-bar-chart-alt-2'></i>
                             <span class="nav-text">Statistikk</span>
-                    </a>
-                </div>
+                        </a>
+                    </div>
                     <div class="line"></div>
 
                     <!--Admin-panel-->
@@ -189,30 +189,30 @@
                         <a href="/manageTeam" @onclick="CloseNavMenu">
                             <i class='bx bx-group'></i>
                             <span class="nav-text">Team-Terminal</span>
-                    </a>
-                </div>
+                        </a>
+                    </div>
                     <div class="line"></div>
 
                     <!--Logout og settings-->
                     <div>
                         <a href="/userSettings" @onclick="CloseNavMenu">
-                        <i class='bx bx-cog'></i>
+                            <i class='bx bx-cog'></i>
                             <span class="nav-text">Innstillinger</span>
-                    </a>
+                        </a>
                         <a href="/" @onclick="Logout">
-                        <i class='bx bx-log-out'></i>
+                            <i class='bx bx-log-out'></i>
                             <span class="nav-text">Logg ut</span>
-                    </a>
-                </div>
+                        </a>
+                    </div>
                 </div>
             </div>
-                </div>
+        </div>
         <div class="suggestion-button-container">
-            <a href="javascript:void(0);" class="" @onclick="ShowSuggestion">
+            <a href="javascript:void(0);" @onclick="ShowSuggestion">
 				<!--<i class='bx bx-plus'></i>-->
                 <i class='bx bx-pencil'></i>
-                    </a>
-                </div>
+            </a>
+        </div>
     </Authorized>
 </AuthorizeView>
 
@@ -313,7 +313,7 @@
                     <!--Button-->
                     <div class="center">
                         <RadzenButton Text="Avbryt" ButtonType="ButtonType.Button" ButtonStyle="ButtonStyle.Light" Click="() => ds.Close(false)" Size="ButtonSize.Large" Style="width: 150px; margin-right: 1rem;" />
-                        <RadzenButton Text="Send" ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Click="() => ds.Close(true)" Size="ButtonSize.Large" Style="width: 150px;" />
+                        <RadzenButton Text="Send" ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Success" Primary" Click="() => ds.Close(true)" Size="ButtonSize.Large" Style="width: 150px;" />
                     </div>
                 </RadzenTemplateForm>
             </div>    
