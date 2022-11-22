@@ -16,6 +16,7 @@ namespace BlazorTipz.Models.DbRelay
         Task UpdateUserEntry(UserEntity toSaveUser);
         Task<List<UserEntity>> GetActiveUsers();
         Task<List<UserEntity>> GetInactiveUsers();
+        Task<List<UserEntity>> GetAllUsers();
         Task ChangeUserStateTo(string empid, bool state);
         Task ChangeUsersStateTo(List<UserEntity> users, bool state);
 

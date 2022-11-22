@@ -145,6 +145,18 @@ namespace BlazorTipz.Models.DbRelay
             }
             catch (Exception) { throw; }
         }
+        public async Task<List<UserEntity>> GetAllUsers()
+        {
+            try
+            {
+                var sql = "SELECT * FROM Users;";
+
+                var dbinfo = await _data.LoadData<UserEntity, dynamic>(sql, new { }, _config.GetConnectionString(ConnectionString));
+
+                return dbinfo;
+            }
+            catch (Exception) { throw; }
+        }
 
         public async Task ChangeUserStateTo(string empId, bool state) {
             try

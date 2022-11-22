@@ -15,8 +15,12 @@ namespace BlazorTipz.ViewModels.User
 
         //A list of all active users
         public List<UserViewmodel>? ActiveUsers { get; set; }
-
+        
+        //A list of new users to register
         private List<UserViewmodel>? UsersToRegister {  get; set; } = new();
+
+        //A list of all eksisting users
+        private List<UserEntity> EksistingUsers { get; set; } = new();
         //constructor
         
         public UserManager(IDbRelay DBR, AuthenticationComponent auth)
@@ -39,18 +43,25 @@ namespace BlazorTipz.ViewModels.User
             if (dbUser == null)
             {
                 token = null;
-                err = "User not found";
+                err = "Bruker ikke funnet";
                 return (token, err);
             }
+            
             //Verifies password typed in
             if (_Auth.VerifyPasswordHash(user.Password, dbUser.passwordHash, dbUser.passwordSalt))
             {
+                if (!dbUser.active)
+                {
+                    token = null;
+                    err = "Bruker er deaktivert";
+                    return (token, err);
+                }
                 dbUser.CreateToken();
 
                 //setter token
                 token = dbUser.AuthToken;
                 CurrentUser = new(dbUser);
-
+                
                 err = null;
                 return (token, err);
             }
@@ -58,20 +69,44 @@ namespace BlazorTipz.ViewModels.User
             else
             {
                 token = null;
-                err = "Wrong password";
+                err = "Feil passord";
                 return (token, err);
             }
         }
-
+        private (bool,string?) CheckUserDataBeforeReg(UserViewmodel user)
+        {
+            
+            string? err = null;
+            if (user == null) { err = "Ingen bruker å registrere"; return (false, err); };
+            if (user.EmploymentId == null || user.EmploymentId == "") { err = "Ingen AnsattNr"; return (false, err); };
+            if (user.Name == null || user.Name == "") { err = "Ingen navn"; return (false, err); };
+            if (user.Password == null || user.Password == "") { err = "Ingen passord gitt"; return (false, err); };
+            return (true, null);
+        }
+        private async Task UpdateEksistingUsers()
+        {
+            EksistingUsers = await _DBR.GetAllUsers();
+        }
+        private bool SearchIfMatchEksisitingUsers(string userToCheckID)
+        {
+            bool match = false;
+            foreach(UserEntity e in EksistingUsers)
+            {
+                if(e.employmentId == userToCheckID)
+                {
+                    match = true;
+                    break;
+                }
+            }
+            return match;
+        }
+    
         //register singel user function
         //first return "string?" = errmsg, second return "string?" = sucsessMsg
         public async Task<(string?,string?)> RegisterUserSingel(UserViewmodel toRegisterUser)
         {
-            string? err = null;
-            if (toRegisterUser == null) { err = "No user to register"; return (err, null); };
-            if (toRegisterUser.EmploymentId == null|| toRegisterUser.EmploymentId == "") { err = "no emplayment Id"; return (err, null); };
-            if (toRegisterUser.Name == null|| toRegisterUser.Name =="") { err = "no name"; return (err, null); };
-            if (toRegisterUser.Password == null|| toRegisterUser.Password == "") { err = "no password given"; return (err, null); };
+            (bool passed, string? err)=CheckUserDataBeforeReg(toRegisterUser);
+            if (!passed) { return (err, null); }
 
             UserEntity userDb = await _DBR.LookUpUser(toRegisterUser.EmploymentId);
             if (userDb != null) { err = "User alrady exists"; return (err, null); }
@@ -79,7 +114,7 @@ namespace BlazorTipz.ViewModels.User
             UserEntity toSaveUser = new(toRegisterUser);
             List<UserEntity> toSave = new();
             toSave.Add(toSaveUser);
-            if (toSave.Count == 0) { err = "somthing went wrong"; return (err, null); };
+            if (toSave.Count == 0) { err = "noe gikk galt"; return (err, null); };
 
             await _DBR.AddUserEntries(toSave);
             await GetActiveUsersFromDBR();
@@ -91,34 +126,57 @@ namespace BlazorTipz.ViewModels.User
         //first return "string?" = errmsg, second return "string?" = sucsessMsg
         public async Task<(string?,string?)> RegisterMultiple(List<UserViewmodel>? usersToReg)
         {
-            string err = null;
-            string retErr = null;
-            string filler;
+            await UpdateEksistingUsers();
             int itNum = 1;
-            if(usersToReg != null) 
+            List<UserEntity> eksistingUsers = await _DBR.GetAllUsers();
+            List<UserEntity> toSave = new();
+            if (usersToReg != null) 
             {
                 foreach(UserViewmodel user in usersToReg)
                 {
-                    (retErr, filler) = await RegisterUserSingel(user);
-                    if(retErr != null) { return ("Nr: " + itNum +", Failed with: " + retErr, null); }
+
+                    (bool check1, string? err1) = CheckUserDataBeforeReg(user);
+                    bool check2 = SearchIfMatchEksisitingUsers(user.EmploymentId);
+                    if (!check1) { 
+                        return ("Nr: " + itNum + ", Feilet med: " + err1, null); 
+                    }else if (!check2)
+                    {
+                        return ("Nr: " + itNum + ", Feilet med: Bruker eksistrer allerede", null);
+                    }
+                    UserEntity entity = new(user);
+                    toSave.Add(entity);
                     itNum++;
-                }
-                return (err, "Succsess");
+                }                
             } 
             else if (UsersToRegister != null && UsersToRegister.Count > 0)
             {
                 foreach (UserViewmodel user in UsersToRegister)
                 {
-                    (retErr, filler) = await RegisterUserSingel(user);
-                    if (retErr != null) { return ("Nr: " + itNum + ", Failed with: " + retErr, null); }
+                    (bool check1, string? err1) = CheckUserDataBeforeReg(user);
+                    bool check2 = SearchIfMatchEksisitingUsers(user.EmploymentId);
+                    if (!check1)
+                    {
+                        return ("Nr: " + itNum + ", Feilet med: " + err1, null);
+                    }
+                    else if (!check2)
+                    {
+                        return ("Nr: " + itNum + ", Feilet med: Bruker eksistrer allerede", null);
+                    }
+                    UserEntity entity = new(user);
+                    toSave.Add(entity);
                     itNum++;
                 }
-                return (err, "Succsess");
             }
             else
             {
                 return ("No one to register",null);
             }
+            if (toSave.Count == 0) { string? err = "noe gikk galt"; return (err, null); };
+
+            await _DBR.AddUserEntries(toSave);
+            await GetActiveUsersFromDBR();
+            string suc = "succsess";
+            return (null, suc);
         }
         public List<UserViewmodel> GetRegisterUserList()
         {
