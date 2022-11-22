@@ -159,6 +159,11 @@ namespace BlazorTipzTests.ViewModels.DummyClass
         {
             return await GetUsersByActiveStatus(false);
         }
+        public async Task<List<UserEntity>> GetAllUsers()
+        {
+                await Task.Delay(0);
+                return _Users;      
+        }
         private async Task<List<UserEntity>> GetUsersByActiveStatus(bool var)
         {
             await Task.Delay(0);
@@ -327,18 +332,26 @@ namespace BlazorTipzTests.ViewModels.DummyClass
             }
         }
 
-        public Task<List<CategoryEntity>> GetCategoryEntities()
+        public async Task<List<CategoryEntity>> GetCategoryEntities()
         {
-            throw new NotImplementedException();
+            await Task.Delay(0);
+            return _Categories;
         }
 
-        public Task UpdateCategories(List<CategoryEntity> catList)
+        public async Task UpdateCategories(List<CategoryEntity> catList)
         {
-            throw new NotImplementedException();
+            await Task.Delay(0);
+            foreach (CategoryEntity cat in catList)
+            {
+                CategoryEntity? catEdit = _Categories.Where(x => x.catId == cat.catId).FirstOrDefault();
+                if (catEdit != null)
+                {
+                    catEdit.catName = cat.catName;
+                }
+                else if (cat.catId == null || cat.catId == string.Empty){   }
+                else{ _Categories.Add(cat);}
+            }
         }
-
-
-
 
         public async Task SaveComment(CommentEntity comment)
         {

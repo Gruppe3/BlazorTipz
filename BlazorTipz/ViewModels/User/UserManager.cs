@@ -139,7 +139,7 @@ namespace BlazorTipz.ViewModels.User
                     bool check2 = SearchIfMatchEksisitingUsers(user.EmploymentId);
                     if (!check1) { 
                         return ("Nr: " + itNum + ", Feilet med: " + err1, null); 
-                    }else if (!check2)
+                    }else if (check2)
                     {
                         return ("Nr: " + itNum + ", Feilet med: Bruker eksistrer allerede", null);
                     }
@@ -158,7 +158,7 @@ namespace BlazorTipz.ViewModels.User
                     {
                         return ("Nr: " + itNum + ", Feilet med: " + err1, null);
                     }
-                    else if (!check2)
+                    else if (check2)
                     {
                         return ("Nr: " + itNum + ", Feilet med: Bruker eksistrer allerede", null);
                     }
@@ -175,7 +175,7 @@ namespace BlazorTipz.ViewModels.User
 
             await _DBR.AddUserEntries(toSave);
             await GetActiveUsersFromDBR();
-            string suc = "succsess";
+            string suc = "Succsess";
             return (null, suc);
         }
         public List<UserViewmodel> GetRegisterUserList()
@@ -190,7 +190,7 @@ namespace BlazorTipz.ViewModels.User
         public string StageToRegisterList(UserViewmodel user)
         {
             if (user == null) { return "no user to stage"; }
-            if (user.EmploymentId==null) { return "Not supplied EmploymentID"; }
+            if (user.EmploymentId==null|| user.EmploymentId == string.Empty) { return "Not supplied EmploymentID"; }
             if (user.Name == string.Empty) { return "Not supplied a name"; }
             if (user.Password == string.Empty || user.Password == "" ) { return "Not supplied a password"; }
             //check if user is in list, update instead of add

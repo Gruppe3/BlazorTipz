@@ -89,10 +89,12 @@ namespace BlazorTipz.ViewModels.User.Tests
         public async Task RegisterMultipleTest(string? id,string? pass, string? name, int testcase)
         {
             //arrange
+            UserManager UnitUnderTest = new UserManager(new DummyDBR(), new Components.AuthenticationComponent());
             string? err;
             string? succ;
             string expected = "Succsess";
-            List<UserViewmodel> users = PrefillGoodUsers();
+            List<UserViewmodel> users = new();
+            List<UserViewmodel> preFillUsers = PrefillGoodUsers();
             UserViewmodel user = new()
             {
                 EmploymentId = id,
@@ -104,29 +106,29 @@ namespace BlazorTipz.ViewModels.User.Tests
             {
                 expected = "No one to register";
                 List<UserViewmodel>? userst = null;
-                _userManager.GetRegisterUserList().Clear();
+                UnitUnderTest.GetRegisterUserList().Clear();
                 //act
-                (err, succ) = await _userManager.RegisterMultiple(userst);
+                (err, succ) = await UnitUnderTest.RegisterMultiple(userst);
                 //assert
                 Assert.AreEqual(expected, err);
             }else if(testcase == 2 || testcase == 3)
             {
                 foreach (UserViewmodel us in users)
                 {
-                    _userManager.StageToRegisterList(us);
+                    UnitUnderTest.StageToRegisterList(us);
                     
                 }
                 if (testcase == 2) {
-                    (err, succ) = await _userManager.RegisterMultiple(null);
+                    (err, succ) = await UnitUnderTest.RegisterMultiple(null);
                     Assert.AreEqual(expected, succ); }
                 if (testcase == 3) {
-                    _userManager.GetRegisterUserList().Clear();
-                    (err, succ) = await _userManager.RegisterMultiple(null);
+                    UnitUnderTest.GetRegisterUserList().Clear();
+                    (err, succ) = await UnitUnderTest.RegisterMultiple(null);
                     Assert.AreNotEqual(expected, succ); }
             }
             //act
             
-            (err, succ) = await _userManager.RegisterMultiple(users);
+            (err, succ) = await UnitUnderTest.RegisterMultiple(users);
 
             //assert
             if (testcase == 2) {  }
