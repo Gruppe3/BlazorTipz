@@ -57,10 +57,8 @@
         @<div>
 		    <span>Id på forslag: @sugg.Id</span><br/>
             <span>Skrevet av @sugg.CreatorName</span><br/>
-            <span>Status: @sugg.Status</span><br />
-            <span>Kategori: @sugg.Category</span><br />
-            <h4>@sugg.Title</h4>
-	        <p>@sugg.Description</p>
+            <span>Tittel: @sugg.Title</span><br />
+	        <p>Forsklaring: @sugg.Description</p>
             <RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Class="m-1" Text="Oppdater" Click=@(() => ShowSuggestion(sugg)) />
         </div>
         , new DialogOptions() { CloseDialogOnOverlayClick = true });

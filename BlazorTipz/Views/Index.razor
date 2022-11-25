@@ -74,13 +74,11 @@
                 </div>
                 <div>
                     <div class="d-inline-flex">
-                        <RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Class="m-1"
-                                      Text="Oppdater" Click=@(() => ShowProgress(CurrentSugg)) />
-                    
-                        <div class="dropdown show popup-menu">
-                            <a class="close-sugg" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class='bx bx-dots-vertical-rounded'></i>
-                            </a>
+                        <RadzenButton ButtonStyle="ButtonStyle.Success" Disabled="@EditDisable" Class="m-1" Text="Oppdater" Click=@(() => ShowProgress(CurrentSugg)) />
+                        
+                        <div class="dropdown show popup-menu d-icon">
+                            <RadzenButton ButtonStyle="ButtonStyle.Light" Icon="more_vert" Disabled="@EditDisable" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" Class="m-1 d-text"/>
+						    
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                 <a class="dropdown-item" href="javascript:void(0);" @onclick="@(() => ShowSuggestion(CurrentSugg))">
                                     <!--<i class='bx bx-plus'></i>-->

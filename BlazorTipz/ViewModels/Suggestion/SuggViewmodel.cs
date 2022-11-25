@@ -12,6 +12,7 @@ namespace BlazorTipz.ViewModels.Suggestion
         public Category Category { get; set; }
         public string OwnerTeam { get; set; } = string.Empty;
         public string Creator { get; set; } = string.Empty;
+        public string Completer { get; set; } = string.Empty;
         public SuggStatus Status { get; set; } = SuggStatus.Waiting;
         public int Progression { get; set; } = 0;
         public DateTime StartDate { get; set; }
@@ -58,7 +59,9 @@ namespace BlazorTipz.ViewModels.Suggestion
             this.OwnerTeamName = Suggestion.teamName;
             this.CreatorName = Suggestion.creatorName;
             this.AnsvarligName = Suggestion.assignedName;
-            //SetFristToFristTid();
+
+            if (Suggestion.completerId != null)
+                this.Completer = Suggestion.completerId;
         }
 
     }

@@ -38,6 +38,7 @@ namespace BlazorTipz.Views
         private string SuggShowMore { get; set; } = "show-less";
         private string ErrString { get; set; } = string.Empty;
         private string ErrorCardState { get; set; } = string.Empty;
+        private bool EditDisable { get; set; } = false;
 
 
         //Everytime page loads this runs
@@ -70,9 +71,8 @@ namespace BlazorTipz.Views
                 //Sets currentUser to user
                 CurrentUser = user;
             }
-            SuggList = await _suggestionManager.GetFilteredSuggestions(FilterVisning, CurrentUser.EmploymentId);
+            await ApplyFilterToSuggList();
             
-
             // ==== Fill for the update-form ====
             StatusList.AddRange(new List<SuggStatus>() { SuggStatus.Plan, SuggStatus.Do, SuggStatus.Study, SuggStatus.Act, SuggStatus.Complete, SuggStatus.Rejected });
             
@@ -164,6 +164,10 @@ namespace BlazorTipz.Views
         private async Task ShowSuggWindow(SuggViewmodel sugg)
         {
             CurrentSugg = sugg;
+            if (CurrentSugg.Status == SuggStatus.Complete)
+            {
+                EditDisable = true;
+            }
             if (sugg.Id != null) { await UpdateComments(sugg.Id); }
 
             //SuggProgress = ConvertProgres(sugg.Progression);

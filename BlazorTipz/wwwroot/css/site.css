@@ -221,7 +221,6 @@ a {
 }
 
 .suggestion {
-    /*background-color: var(--primary-color);*/
     border-radius: 0.5rem;
     padding: 0.5rem;
 }
@@ -268,7 +267,9 @@ a {
     padding: 0.5rem;
 }
 
-
+.d-icon i {
+    color: #000;
+}
 /*=============== progress-wheel ===============*/
 .circular-progress {
     background-color: var(--light-color);

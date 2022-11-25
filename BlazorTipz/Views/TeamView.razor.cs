@@ -22,6 +22,7 @@ namespace BlazorTipz.Views
         //public string TeamCheck { get; set; }
         //public string teamU { get; set; }
         public string Feedback { get; set; }
+        private bool EditDisable { get; set; } = false;
 
 
         //Get team from user

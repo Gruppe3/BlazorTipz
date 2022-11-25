@@ -436,7 +436,7 @@ namespace BlazorTipz.Models.DbRelay
         {
             try
             {
-                var sql = "UPDATE Suggestions SET ownerId = @OwnerId, sugTitle = @SugTitle, sugDesc = @SugDesc, sugStatus = @SugStatus, categoryId = @CategoryId, assignedId = @AssignedId, dueDate = @DueDate, sugProgression = @SugProgress, active = @Active WHERE sugId = @SugId;";
+                var sql = "UPDATE Suggestions SET ownerId = @OwnerId, sugTitle = @SugTitle, sugDesc = @SugDesc, sugStatus = @SugStatus, categoryId = @CategoryId, assignedId = @AssignedId, dueDate = @DueDate, sugProgression = @SugProgress, completerId = @Completer, active = @Active WHERE sugId = @SugId;";
                 await _data.SaveData(sql, new
                 {
                     OwnerId = sug.ownerId,
@@ -447,6 +447,7 @@ namespace BlazorTipz.Models.DbRelay
                     AssignedId = sug.assignedId,
                     DueDate = sug.dueDate,
                     SugId = sug.sugId,
+                    Completer = sug.completerId,
                     SugProgress = sug.sugProgression,
                     Active = sug.active
                 },

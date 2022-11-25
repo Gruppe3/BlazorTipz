@@ -254,6 +254,13 @@ namespace BlazorTipz.ViewModels.Suggestion
                 suggOld.Progression = sugg.Progression;
                 suggOld.ActiveStatus = sugg.ActiveStatus;
 
+                if (sugg.Progression >= 5 || sugg.Status == SuggStatus.Complete)
+                {
+                    suggOld.Progression = 5;
+                    suggOld.Status = SuggStatus.Complete;
+                    suggOld.Completer = currentUser.EmploymentId;
+                }
+                
                 err = await UpdateSuggestion(suggOld);
             }
             else
