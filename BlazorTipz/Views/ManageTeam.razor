@@ -42,7 +42,7 @@
 								</div>
 								<div class="col-9">
 									<RadzenDropDownDataGrid @bind-Value=@TeamDto.TeamLeaderId FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
-															AllowFiltering="false" AllowClear="true" Data=@ActiveUsers TextProperty="Navn" Placeholder="Navn" ValueProperty="EmploymentId" Class="w-100">
+															AllowFiltering="false" AllowClear="true" Data=@ActiveUsers TextProperty="Name" Placeholder="Navn" ValueProperty="EmploymentId" Class="w-100">
 										<Columns>
 											<RadzenDropDownDataGridColumn Property="EmploymentId" Title="Bruker ID" />
 											<RadzenDropDownDataGridColumn Property="Name" Title="Navn" />
