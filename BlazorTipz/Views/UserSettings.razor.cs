@@ -41,6 +41,7 @@ namespace BlazorTipz.Views
         //changes the current user details
         public async Task<ActionResult<UserViewmodel>> ChangeSettings(UserViewmodel request)
         {
+            bool orgFirstTimeLogin = CurrentUser.FirstTimeLogin;
             string err;
             if (request.FirstTimeLogin == true)
             {
@@ -50,7 +51,11 @@ namespace BlazorTipz.Views
             err = await _userManager.UpdateCurrentUser(request);
             if (err != null)
             {
-                Checker = err;
+                if (orgFirstTimeLogin == true)
+                {
+                    request.FirstTimeLogin = true;
+                }
+                    Checker = err;
                 return new BadRequestObjectResult(Checker);
             }
             else
