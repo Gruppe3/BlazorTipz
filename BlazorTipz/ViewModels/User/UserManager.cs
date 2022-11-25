@@ -32,12 +32,24 @@ namespace BlazorTipz.ViewModels.User
         //Login function
         public async Task<(string?, string?)> Login(UserViewmodel user)
         {
-            //User entity
-            UserEntity tryUser = new(user);
-            //Sends emplyment id to userdb through interface relay
-            UserEntity dbUser = await _DBR.GetLoginUser(tryUser.employmentId);
             string? token;
             string? err;
+            
+            //User entity
+            UserEntity tryUser = new(user);
+            UserEntity? dbUser;
+            //Sends emplyment id to userdb through interface relay
+            try
+            {
+                dbUser = await _DBR.GetLoginUser(tryUser.employmentId);
+            }
+            catch (Exception e)
+            {
+                err = "Noe gikk galt, prøv igjen.";
+                Console.WriteLine(e);
+                return (null, err);
+            }
+            
 
             //If doesn´t exist
             if (dbUser == null)

@@ -17,9 +17,9 @@ namespace BlazorTipz.Views
 
         //For suggestion
         private SuggViewmodel CurrentSugg { get; set; } = new();
-        public SuggViewmodel SuggUpdate { get; set; } = new();
+        private SuggViewmodel SuggUpdate { get; set; } = new();
         private List<TeamViewmodel> ActiveTeams { get; set; } = new();
-        public List<Category> Categories { get; set; } = new();
+        private List<Category> Categories { get; set; } = new();
         private List<SuggStatus> StatusList { get; set; } = new();
         private List<UserViewmodel> ActiveUsers { get; set; } = new();
         
@@ -33,11 +33,12 @@ namespace BlazorTipz.Views
 
         
         //CSS fields
-        private string SuggCardHiddenState { get; set; } = "";
+        private string SuggCardHiddenState { get; set; } = string.Empty;
         private string Feedback { get; set; } = string.Empty;
         private string SuggShowMore { get; set; } = "show-less";
         private string ErrString { get; set; } = string.Empty;
-        private string ErrorCardState { get; set; } = "active";
+        private string ErrorCardState { get; set; } = string.Empty;
+        private bool EditDisable { get; set; } = false;
 
 
         //Everytime page loads this runs
@@ -70,9 +71,8 @@ namespace BlazorTipz.Views
                 //Sets currentUser to user
                 CurrentUser = user;
             }
-            SuggList = await _suggestionManager.GetFilteredSuggestions(FilterVisning, CurrentUser.EmploymentId);
+            await ApplyFilterToSuggList();
             
-
             // ==== Fill for the update-form ====
             StatusList.AddRange(new List<SuggStatus>() { SuggStatus.Plan, SuggStatus.Do, SuggStatus.Study, SuggStatus.Act, SuggStatus.Complete, SuggStatus.Rejected });
             
@@ -94,7 +94,7 @@ namespace BlazorTipz.Views
             //Removes loading
             isLoaded = true;
         }
-
+        
         private async Task ApplyFilterToSuggList() 
         {
             ErrString = "";
@@ -164,6 +164,10 @@ namespace BlazorTipz.Views
         private async Task ShowSuggWindow(SuggViewmodel sugg)
         {
             CurrentSugg = sugg;
+            if (CurrentSugg.Status == SuggStatus.Complete)
+            {
+                EditDisable = true;
+            }
             if (sugg.Id != null) { await UpdateComments(sugg.Id); }
 
             //SuggProgress = ConvertProgres(sugg.Progression);
@@ -224,6 +228,30 @@ namespace BlazorTipz.Views
                 {
                     await ApplyFilterToSuggList();
                     Feedback = "Forslag er oppdatert";
+                }
+            }
+            else
+            {
+                ErrorCardState = "active";
+                Feedback = "Noe er galt. Forslag kan ikke identifiseres.";
+            }
+        }
+        private async Task DeleteSugg(SuggViewmodel sugg)
+        {
+            if (sugg.Id != null)
+            {
+                sugg.ActiveStatus = false;
+                
+                string? err = await _suggestionManager.UpdateSuggestion(sugg, CurrentUser);
+                if (err != null)
+                {
+                    ErrorCardState = "active";
+                    Feedback = err;
+                }
+                else
+                {
+                    await ApplyFilterToSuggList();
+                    Feedback = "Forslag er fjernet";
                 }
             }
             else

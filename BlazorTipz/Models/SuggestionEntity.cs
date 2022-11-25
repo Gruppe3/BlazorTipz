@@ -7,14 +7,14 @@ namespace BlazorTipz.Models
     {
         //db colums
         //In lowercase to match the db column-variables
-        public string? sugId { get; set; } = string.Empty;
+        public string? sugId { get; set; } = null;
         public string ownerId { get; set; } = string.Empty;
         public string teamName { get; set; } = string.Empty;
         public string creatorId { get; set; } = string.Empty;
         public string creatorName { get; set; } = string.Empty;
-        public string? assignedId { get; set; } = string.Empty;
+        public string? assignedId { get; set; } = null;
         public string assignedName { get; set; } = string.Empty;
-        public string? completerId { get; set; } = string.Empty;
+        public string? completerId { get; set; } = null;
         public SuggStatus sugStatus { get; set; }
         public int sugProgression { get; set; }
         public string sugTitle { get; set; } = string.Empty;
@@ -27,6 +27,7 @@ namespace BlazorTipz.Models
         public bool justDoIt { get; set; } = false;
         public string? beforeImage { get; set; }
         public string? afterImage { get; set; }
+        public bool active { get; set; } = true;
 
 
         //ekstra fields
@@ -54,7 +55,10 @@ namespace BlazorTipz.Models
             this.beforeImage = sugg.BeforeImage;
             this.assignedId = sugg.Ansvarlig;
             this.dueDate = sugg.Frist;
-            
+            this.active = sugg.ActiveStatus;
+            if (sugg.Completer != string.Empty)
+            { this.completerId = sugg.Completer; }
+
             this.CatEntity = new CategoryEntity(sugg.Category);
         }
         public void FillCatEntity()

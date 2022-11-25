@@ -290,14 +290,14 @@
                         </div>
                     </div>
 					<!--Frist-->
-                    <div class="row">
+                    <!--<div class="row">
                         <div class="col-3 align-items-center d-flex">
                             <RadzenLabel Text="Frist" />
                         </div>
                         <div class="col-9">
                             <RadzenDatePicker Min="DateTime.Today.AddDays(1)" @bind-Value=@SuggDto.Frist TValue="DateTime" ShowTime="false" DateFormat="d" Class="w-100" />
                         </div>
-                    </div>
+                    </div>-->
                     <!--Description-->
                     <div class="row mb-2">
                         <div class="col-md-3" style="align-self: center;">
@@ -313,7 +313,7 @@
                     <!--Button-->
                     <div class="center">
                         <RadzenButton Text="Avbryt" ButtonType="ButtonType.Button" ButtonStyle="ButtonStyle.Light" Click="() => ds.Close(false)" Size="ButtonSize.Large" Style="width: 150px; margin-right: 1rem;" />
-                        <RadzenButton Text="Send" ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Success" Primary" Click="() => ds.Close(true)" Size="ButtonSize.Large" Style="width: 150px;" />
+                        <RadzenButton Text="Send" ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Success" Click="() => ds.Close(true)" Size="ButtonSize.Large" Style="width: 150px;" />
                     </div>
                 </RadzenTemplateForm>
             </div>    

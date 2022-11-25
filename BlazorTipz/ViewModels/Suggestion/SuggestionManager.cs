@@ -230,10 +230,10 @@ namespace BlazorTipz.ViewModels.Suggestion
         {
             
             string? err;
-            if (sugg.Id == null) { err = "No Id could be fond. Something wrong has happened with the suggestion"; return err; }
+            if (sugg.Id == null) { err = "Kan ikke identifisere forslaget. Noe gikk galt."; return err; }
             
             SuggViewmodel? suggOld = await GetSuggestionById(sugg.Id);
-            if (suggOld == null) { err = "No suggestion found"; return err; }
+            if (suggOld == null) { err = "Kan ikke finne forslaget i systemet. Noe gikk galt."; return err; }
             if (suggOld.Ansvarlig == null || suggOld.Ansvarlig == "") {
                 err = await ApproveAndUpdateSuggestion(sugg);
                 return err;
@@ -251,7 +251,16 @@ namespace BlazorTipz.ViewModels.Suggestion
                 suggOld.Frist = sugg.Frist;
                 suggOld.BeforeImage = sugg.BeforeImage;
                 suggOld.AfterImage = sugg.AfterImage;
+                suggOld.Progression = sugg.Progression;
+                suggOld.ActiveStatus = sugg.ActiveStatus;
 
+                if (sugg.Progression >= 5 || sugg.Status == SuggStatus.Complete)
+                {
+                    suggOld.Progression = 5;
+                    suggOld.Status = SuggStatus.Complete;
+                    suggOld.Completer = currentUser.EmploymentId;
+                }
+                
                 err = await UpdateSuggestion(suggOld);
             }
             else
@@ -327,8 +336,8 @@ namespace BlazorTipz.ViewModels.Suggestion
 
             foreach (SuggestionEntity e in respList)
             {
-                if (e.sugStatus != SuggStatus.Waiting ||
-                    e.sugStatus != SuggStatus.Complete ||
+                if (e.sugStatus != SuggStatus.Waiting &&
+                    e.sugStatus != SuggStatus.Complete &&
                     e.sugStatus != SuggStatus.Rejected)
                 {
                     e.FillCatEntity();
