@@ -27,6 +27,7 @@ namespace BlazorTipz.Models
         public bool justDoIt { get; set; } = false;
         public string? beforeImage { get; set; }
         public string? afterImage { get; set; }
+        public bool active { get; set; } = true;
 
 
         //ekstra fields
@@ -54,6 +55,7 @@ namespace BlazorTipz.Models
             this.beforeImage = sugg.BeforeImage;
             this.assignedId = sugg.Ansvarlig;
             this.dueDate = sugg.Frist;
+            this.active = sugg.ActiveStatus;
             
             this.CatEntity = new CategoryEntity(sugg.Category);
         }
