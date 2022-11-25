@@ -336,8 +336,8 @@ namespace BlazorTipz.ViewModels.Suggestion
 
             foreach (SuggestionEntity e in respList)
             {
-                if (e.sugStatus != SuggStatus.Waiting ||
-                    e.sugStatus != SuggStatus.Complete ||
+                if (e.sugStatus != SuggStatus.Waiting &&
+                    e.sugStatus != SuggStatus.Complete &&
                     e.sugStatus != SuggStatus.Rejected)
                 {
                     e.FillCatEntity();
