@@ -4,33 +4,33 @@ namespace BlazorTipz.Models.AppStorage
 {
     public class AppStorage : IAppStorage
     {
-        public List<CategoriEntity> categoris { get; } = new List<CategoriEntity>();
+        public List<CategoryEntity> Categories { get; } = new List<CategoryEntity>();
 
         public AppStorage() 
         {
-            loadCategoriList();
+            LoadCategoriList();
         }
-        private void loadCategoriList()
+        private void LoadCategoriList()
         {
-            categoris.Add(new CategoriEntity("1", "HMS"));
-            categoris.Add(new CategoriEntity("2", "Kvalitet"));
-            categoris.Add(new CategoriEntity("3", "Ledetid"));
-            categoris.Add(new CategoriEntity("4", "Kostnader"));
-            categoris.Add(new CategoriEntity("5", "Effektivisering"));
-            categoris.Add(new CategoriEntity("6", "Kompetanse"));
-            categoris.Add(new CategoriEntity("7", "Kommunikasjon"));
-            categoris.Add(new CategoriEntity("8", "5S"));
-            categoris.Add(new CategoriEntity("9", "Standardisering"));
-            categoris.Add(new CategoriEntity("10", "Flyt"));
-            categoris.Add(new CategoriEntity("11", "Visualisering"));
-            categoris.Add(new CategoriEntity("12", "Energi"));
-            categoris.Add(new CategoriEntity("13", "Bærekraft"));
-            categoris.Add(new CategoriEntity("14", "Industri 4.0"));
+            Categories.Add(new CategoryEntity("1", "HMS"));
+            Categories.Add(new CategoryEntity("2", "Kvalitet"));
+            Categories.Add(new CategoryEntity("3", "Ledetid"));
+            Categories.Add(new CategoryEntity("4", "Kostnader"));
+            Categories.Add(new CategoryEntity("5", "Effektivisering"));
+            Categories.Add(new CategoryEntity("6", "Kompetanse"));
+            Categories.Add(new CategoryEntity("7", "Kommunikasjon"));
+            Categories.Add(new CategoryEntity("8", "5S"));
+            Categories.Add(new CategoryEntity("9", "Standardisering"));
+            Categories.Add(new CategoryEntity("10", "Flyt"));
+            Categories.Add(new CategoryEntity("11", "Visualisering"));
+            Categories.Add(new CategoryEntity("12", "Energi"));
+            Categories.Add(new CategoryEntity("13", "Bærekraft"));
+            Categories.Add(new CategoryEntity("14", "Industri 4.0"));
         }
 
-        public List<CategoriEntity> GetCategories()
+        public List<CategoryEntity> GetCategories()
         {
-            return categoris;
+            return Categories;
         }
     }
 

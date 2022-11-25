@@ -1,9 +1,7 @@
-﻿using BlazorTipz.Models;
+﻿using BlazorTipz.Data;
+using BlazorTipz.Models;
 using BlazorTipz.Models.DbRelay;
 using BlazorTipz.ViewModels.User;
-using BlazorTipz.Data;
-using System.Linq.Expressions;
-using System.Collections.Generic;
 
 namespace BlazorTipz.ViewModels.Team
 {
@@ -11,7 +9,7 @@ namespace BlazorTipz.ViewModels.Team
     {
         private readonly IDbRelay _DBR;
         private readonly IUserManager _UM;
-        public List<TeamViewmodel>? Teams { get; set; }
+        public List<TeamViewmodel>? ActiveTeams { get; set; }
         
         public TeamManager(IDbRelay DBR, IUserManager UM)
         {
@@ -19,84 +17,90 @@ namespace BlazorTipz.ViewModels.Team
             _UM = UM;
         }
         // Returns a list of all active teams.
-        public async Task<List<TeamViewmodel>> getTeams()
+        public async Task<List<TeamViewmodel>> GetActiveTeams()
         {
-            if (Teams == null)
+            if (ActiveTeams == null)
             {
-                List<TeamEntity> dbTeams = await _DBR.getActiveTeams();
-                List<TeamViewmodel> teams = new List<TeamViewmodel>();
+                List<TeamEntity> dbTeams = await _DBR.GetActiveTeams();
+                List<TeamViewmodel> teams = new();
                 foreach (TeamEntity dbTeam in dbTeams)
                 {
-                    TeamViewmodel team = new TeamViewmodel(dbTeam);
+                    TeamViewmodel team = new(dbTeam);
                     teams.Add(team);
                 }
-                Teams = teams;
+                ActiveTeams = teams;
             }
-            return Teams;
+            return ActiveTeams;
         }
         // Updates the list of available teams.
-        public async Task<List<TeamViewmodel>> updateTeamsList()
+        public async Task<List<TeamViewmodel>> UpdateTeamsList()
         {
-            Teams = null;
-            List<TeamViewmodel> teams = await getTeams();
+            ActiveTeams = null;
+            List<TeamViewmodel> teams = await GetActiveTeams();
             return teams;
         }
         // Returns the team with the given ID.
-        public async Task<TeamViewmodel> getTeam(string teamId)
+        public async Task<TeamViewmodel> GetTeamById(string teamId)
         {
 
-            TeamViewmodel team = new TeamViewmodel();
-            if (Teams == null)
+            TeamViewmodel team = new();
+            if (ActiveTeams == null)
             {
-                await getTeams();
+                await GetActiveTeams();
             }
-            foreach (TeamViewmodel t in Teams)
+            if (ActiveTeams != null)
             {
-                if (t.id == teamId)
+                foreach (TeamViewmodel t in ActiveTeams)
                 {
-                    team = t;
-                    break;
+                    if (t.TeamId == teamId)
+                    {
+                        team = t;
+                        break;
+                    }
                 }
             }
+            
             return team;
         }
         // Returns a list of all inactive teams.
-        public async Task<List<TeamViewmodel>> getInactiveTeams()
+        public async Task<List<TeamViewmodel>> GetInactiveTeams()
         {
-            List<TeamViewmodel> teams = new List<TeamViewmodel>();
-            List<TeamEntity> dbTeams = await _DBR.getInactiveTeams();
+            List<TeamViewmodel> teams = new();
+            List<TeamEntity> dbTeams = await _DBR.GetInactiveTeams();
             foreach (TeamEntity dbTeam in dbTeams)
             {
-                TeamViewmodel team = new TeamViewmodel(dbTeam);
+                TeamViewmodel team = new(dbTeam);
                 teams.Add(team);
             }
             return teams;
         }
         // Update team
-        public async Task updateTeam(TeamViewmodel team)
+        public async Task UpdateSingleTeam(TeamViewmodel team)
         {
-            TeamEntity dbTeam = new TeamEntity(team);
-            if (updateTeams(team))
+            TeamEntity dbTeam = new(team);
+            if (UpdateTeams(team))
             {
-                await _DBR.updateTeamEntry(dbTeam);
+                await _DBR.UpdateTeamEntry(dbTeam);
             }
             else
             {
-                await _DBR.updateTeamEntry(dbTeam);
-                await getTeams();
+                await _DBR.UpdateTeamEntry(dbTeam);
+                await GetActiveTeams();
             }
         }
         // Gets the team id for a given team name and leader.
-        private string getTeamId(string teamName, string teamLeader)
+        private string GetTeamId(string teamName, string teamLeader)
         {
             string teamId = string.Empty;
-            foreach (TeamViewmodel team in Teams)
+            
+            if (ActiveTeams != null)
             {
-                if (team.name == teamName)
+                foreach (TeamViewmodel team in ActiveTeams)
                 {
-                    if (team.leader == teamLeader)
+                    if (team.TeamName == teamName && 
+                        team.TeamLeaderId == teamLeader)
                     {
-                        teamId = team.id;
+                        teamId = team.TeamId;
                         break;
                     }
                 }
@@ -104,132 +108,71 @@ namespace BlazorTipz.ViewModels.Team
             return teamId;
         }
         // Updates the teams of the given viewmodel.
-        private bool updateTeams(TeamViewmodel team)
+        private bool UpdateTeams(TeamViewmodel team)
         {
-            if (Teams == null) { return false; }
-            foreach (TeamViewmodel t in Teams)
+            if (ActiveTeams == null) { return false; }
+            foreach (TeamViewmodel t in ActiveTeams)
             {
-                if (t.id == team.id)
+                if (t.TeamId == team.TeamId)
                 {
-                    t.name = team.name;
-                    t.leader = team.leader;
+                    t.TeamName = team.TeamName;
+                    t.TeamLeaderId = team.TeamLeaderId;
                     return true;
                 }
             }
             return false;
         }
         //add team
-        public async Task<(TeamViewmodel?, string?)> createTeam(TeamViewmodel team)
+        public async Task<(TeamViewmodel?, string?)> CreateNewTeam(TeamViewmodel team)
         {
 
             if (team == null) { return (null, "Team is null"); }
-            if (team.name == string.Empty) { return (null, "Team name is empty"); }
-            if (team.leader == string.Empty) { return (null, "No team leader chosen"); }
+            if (team.TeamName == string.Empty) { return (null, "Team name is empty"); }
+            if (team.TeamLeaderId == string.Empty) { return (null, "No team leader chosen"); }
 
-            UserViewmodel teamLeader = await _UM.getUser(team.leader);
+            UserViewmodel? teamLeader = await _UM.GetUserById(team.TeamLeaderId);
             if (teamLeader == null) { return (null, "Team leader not found"); }
-            if (teamLeader.role != RoleE.TeamLeader)
+            if (teamLeader.UserRole != RoleE.TeamLeader)
             {
-                await _UM.updateRole(teamLeader, RoleE.TeamLeader, true);
+                await _UM.UpdateUserRole(teamLeader, RoleE.TeamLeader, true);
             }
 
-            TeamEntity dbTeam = new TeamEntity(team);
-            await _DBR.addTeamEntry(dbTeam);
-            await updateTeamsList();
-            string teamid = getTeamId(team.name, team.leader);
+            TeamEntity dbTeam = new(team);
+            await _DBR.AddTeamEntry(dbTeam);
+            await UpdateTeamsList();
+            string teamid = GetTeamId(team.TeamName, team.TeamLeaderId);
             if (teamid == string.Empty) { return (null, "Team creation error"); }
-            TeamViewmodel rTeam = await getTeam(teamid);
+            TeamViewmodel rTeam = await GetTeamById(teamid);
 
-            await _UM.updateUserTeam(teamLeader.employmentId, teamid);
+            await _UM.UpdateUserTeam(teamLeader.EmploymentId, teamid);
 
             return (rTeam, null);
         }
         public async Task<TeamViewmodel?> SearchTeams(string search) 
         { 
-            if (Teams == null)
+            if (ActiveTeams == null)
             {
-                await getTeams();
+                await GetActiveTeams();
             }
-            foreach (TeamViewmodel team in Teams)
+            if (ActiveTeams != null)
             {
-                if (team.name.ToLower().Contains(search.ToLower()))
+                foreach (TeamViewmodel team in ActiveTeams)
                 {
-                    return team;
-                }
-                else if (team.leader.ToLower().Contains(search.ToLower()))
-                {
-                    return team;
-                }
-                else if (team.id.ToLower().Contains(search.ToLower()))
-                {
-                    return team;
+                    if (team.TeamName.ToLower().Contains(search.ToLower()))
+                    {
+                        return team;
+                    }
+                    else if (team.TeamLeaderId.ToLower().Contains(search.ToLower()))
+                    {
+                        return team;
+                    }
+                    else if (team.TeamId.ToLower().Contains(search.ToLower()))
+                    {
+                        return team;
+                    }
                 }
             }
             return null;
-        }
-        
-
-        public async Task<string?> AddTeamMembers(List<TeamMemberViewmodel> teamMemberList)
-        {
-            if (teamMemberList == null) { return "Team member list is null"; }
-            if (teamMemberList.Count <= 0) { return "Team member list is empty"; }
-
-            List<TeamMemberEntity> memberList = new();
-            
-            foreach (TeamMemberViewmodel teamMember in teamMemberList)
-            {
-                memberList.Add(new TeamMemberEntity(teamMember));
-            }
-            await _DBR.AddTeamMemberToTeam(memberList);
-            return null;
-        }
-
-        public async Task<(List<TeamMemberViewmodel>, string?)> GetTeamMembersByUser(string empId)
-        {
-            List<TeamMemberViewmodel> TeamMemViewList = new();
-            if (empId == string.Empty || empId == null) { return (TeamMemViewList, "Employee ID is empty"); }
-            var resp = await _DBR.GetTeamMemberList(empId);
-            if (resp == null || resp.Count <= 0) { return (TeamMemViewList, "Ingen team funnet"); }
-
-            TeamMemViewList = ConvertToViewModel(resp);
-
-            return (TeamMemViewList, null);
-        }
-
-        public async Task<(List<TeamMemberViewmodel>, string?)> GetTeamMembersByTeam(string teamId)
-        {
-            List<TeamMemberViewmodel> TeamMemViewList = new();
-            if (teamId == string.Empty || teamId == null) { return (TeamMemViewList, "Team ID is empty"); }
-            var resp = await _DBR.GetTeamMembersByTeam(teamId);
-            if (resp == null || resp.Count <= 0) { return (TeamMemViewList, "Ingen team funnet"); }
-
-            TeamMemViewList = ConvertToViewModel(resp);
-
-            return (TeamMemViewList, null);
-        }
-        
-        //For Admin to oversee all
-        public async Task<(List<TeamMemberViewmodel>, string?)> GetAllTeamMembers()
-        {
-            List<TeamMemberViewmodel> TeamMemViewList = new();
-            var resp = await _DBR.GetAllTeamMemberLists();
-            if (resp == null || resp.Count <= 0) { return (TeamMemViewList, "Ingen entiteter i databasen"); }
-            
-            TeamMemViewList = ConvertToViewModel(resp);
-            
-            return (TeamMemViewList, null);
-        }
-        
-        private List<TeamMemberViewmodel> ConvertToViewModel(List<TeamMemberEntity> memberList)
-        {
-            List<TeamMemberViewmodel> TeamMemViewList = new();
-
-            foreach (TeamMemberEntity TeamMemEntity in memberList)
-            {
-                TeamMemberViewmodel teamMember = new(TeamMemEntity);
-                TeamMemViewList.Add(teamMember);
-            }
-            return TeamMemViewList;
         }
     }
 }

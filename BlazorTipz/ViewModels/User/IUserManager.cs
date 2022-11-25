@@ -7,37 +7,37 @@ namespace BlazorTipz.ViewModels.User
         UserViewmodel? CurrentUser { get; set; }
 
         //These methods are available for anyone implementing this interface
-        UserViewmodel getCurrentUser();
+        UserViewmodel GetCurrentUser();
 
         //first return "string?" = "token", second return "string?" = errorMsg
-        Task<(string, string)> Login(UserViewmodel user);
+        Task<(string?, string?)> Login(UserViewmodel user);
 
-        List<UserViewmodel> getRegisterUserList();
+        List<UserViewmodel> GetRegisterUserList();
 
         //first return "string?" = errmsg, second return "string?" = sucsessMsg
-        Task<(string?, string?)> registerUserSingel(UserViewmodel user);
-        Task<(string?, string?)> registerMultiple(List<UserViewmodel>? usersToReg);
+        Task<(string?, string?)> RegisterUserSingel(UserViewmodel user);
+        Task<(string?, string?)> RegisterMultiple(List<UserViewmodel>? usersToReg);
 
         //add to list usersToregister, returns either a error or succsess msg
-        string stageToRegisterList(UserViewmodel user);
+        string StageToRegisterList(UserViewmodel user);
 
         //deletes a specified element form usersToRegister list.
-        void deleteFromRegisterList(string emipd);
+        void DeleteFromRegisterList(string emipd);
 
-        Task<(UserViewmodel, string)> getCurrentUser(string token);
-        void logout();
-        Task<string> updateCurrentUser(UserViewmodel user);
-        Task<List<UserViewmodel>> GetUsers();
+        Task<(UserViewmodel, string)> GetCurrentUser(string token);
+        void Logout();
+        Task<string> UpdateCurrentUser(UserViewmodel user);
+        Task<List<UserViewmodel>> GetActiveUsers();
 
         //serach active users by id or name
         //returns a user if found
         //null if nothing found
         Task<UserViewmodel?> SearchActiveUsers(string search);
-        Task<string?> updateRole(UserViewmodel user, RoleE role, bool upgradeRole);
-        Task<UserViewmodel?> getUser(string empid);
-        Task<string?> updateUserTeam(string empid, string teamId);
-        Task<List<UserViewmodel>> updateUsersList();
-        string generatePassword();
+        Task<string?> UpdateUserRole(UserViewmodel user, RoleE role, bool upgradeRole);
+        Task<UserViewmodel?> GetUserById(string empid);
+        Task<string?> UpdateUserTeam(string empid, string teamId);
+        Task<List<UserViewmodel>> UpdateUsersList();
+        string GenerateRandomPassword();
         
     }
 }

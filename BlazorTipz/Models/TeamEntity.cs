@@ -1,5 +1,4 @@
 ﻿using BlazorTipz.ViewModels.Team;
-using System;
 
 namespace BlazorTipz.Models
 {
@@ -17,9 +16,9 @@ namespace BlazorTipz.Models
         }
         public TeamEntity(TeamViewmodel team)
         {
-            this.teamId = team.id;
-            this.teamName = team.name;
-            this.teamLeader = team.leader;
+            this.teamId = team.TeamId;
+            this.teamName = team.TeamName;
+            this.teamLeader = team.TeamLeaderId;
         }
     }
 }

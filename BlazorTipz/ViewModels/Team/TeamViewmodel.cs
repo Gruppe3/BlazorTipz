@@ -4,17 +4,17 @@ namespace BlazorTipz.ViewModels.Team
 {
     public class TeamViewmodel 
     {
-        public string name { get; set; } = string.Empty;
-        public string id { get; set; } = string.Empty;
-        public string leader { get; set; } = string.Empty;
+        public string TeamName { get; set; } = string.Empty;
+        public string TeamId { get; set; } = string.Empty;
+        public string TeamLeaderId { get; set; } = string.Empty;
         public TeamViewmodel()
         {
         }
         public TeamViewmodel(TeamEntity team)
         {
-            this.id = team.teamId;
-            this.name = team.teamName;
-            this.leader = team.teamLeader;
+            this.TeamId = team.teamId;
+            this.TeamName = team.teamName;
+            this.TeamLeaderId = team.teamLeader;
         }
     }
 }

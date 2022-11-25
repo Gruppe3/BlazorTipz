@@ -7,7 +7,7 @@
 @using Microsoft.AspNetCore.Mvc
 
 @inject ILocalStorageService _localStorage
-@inject NavigationManager NavigationManager
+@inject NavigationManager _navigationManager
 @inject IUserManager _userManager
 @inject ITeamManager _teamManager
 @inject ISuggestionManager _suggestionManager
@@ -19,201 +19,199 @@
 
 <AuthorizeView Roles="User">
     <Authorized>
-        <h1 style="opacity:0; text-decoration: none;">:)</h1>
         <!--=============== NAV ===============-->
-        <div class="nav">
-            <nav class="nav__content">
-
-                <div class="nav__list">
-                    <a href="/" class="nav__link active-link">
-                        <i class='bx bx-grid-alt'></i>
-                    </a>
-                    <div>
-                        <a href="javascript:void(0);" class="nav__add active-link" @onclick="@(() => ShowSuggestion())">
-                            <i class='bx bx-plus-circle'></i>
-                        </a>
-                    </div>
-                    <a href="/" class="nav__link active-link">
-                        <i class='bx bx-bar-chart-alt-2'></i>
-                    </a>
-
+        <div class="navbar">
+            <div class="closable-div-background-button fullpage-wrapper @NavMenuState" @onclick="CloseNavMenu"></div>
+			<div class="navbar-topbar">
+                <button class="navbar-button" @onclick="ToggleNavMenu">
+				    <i class='bx bx-menu'></i>
+                </button>
+            </div>
+            <div class="navbar-togglecard container-md l-text @NavMenuState">
+                <button class="close-nav" @onclick="CloseNavMenu">
+                    <i class='bx bx-chevron-left'></i>
+                </button>
+                <div class="navbar-userinfo">
+                    <span class="navbar-username">@CurrentUser.Name</span><br />
+                    <span class="navbar-userid">Bruker-ID: @CurrentUser.EmploymentId</span>
                 </div>
-            </nav>
+				<div class="nav-pages">
+					<!--Sider-->
+					<div>
+                        <a href="/" @onclick="CloseNavMenu">
+							<i class='bx bx-home-alt'></i>
+							<span class="nav-text">Home</span>
+						</a>
+                        <a href="/teamView" @onclick="CloseNavMenu">
+							<i class='bx bx-food-menu'></i>
+							<span class="nav-text">Team</span>
+						</a>
+                        <a href="/" @onclick="CloseNavMenu">
+							<i class='bx bx-bar-chart-alt-2'></i>
+							<span class="nav-text">Statistikk</span>
+						</a>
+					</div>
+                    <div class="line"></div>
+					<!--Admin-panel-->
+					
+					<!--Logout og settings-->
+					<div>
+                        <a href="/userSettings" @onclick="CloseNavMenu">
+							<i class='bx bx-cog'></i>
+							<span class="nav-text">Innstillinger</span>
+						</a>
+                        <a href="/" @onclick="Logout">
+							<i class='bx bx-log-out'></i>
+							<span class="nav-text">Logg ut</span>
+						</a>
+					</div>
+                </div>
+			</div>
         </div>
-
-        <div class="nav" id="nav">
-            <nav class="nav__content">
-                <div class="nav__umenu">
-                    <a href="javascript:void(0);" class="nav__link" @onclick="@ShowUserP">
-                        <i class='bx bx-user'></i>
-                    </a>
-                </div>
-                <div class="nav__user" id="user" style="display: @ShowUser">
-                    <a>@currentUser.name</a>
-                    <br />
-                    <a href="/userSettings" class="nav__link">
-                        <i class='bx bx-cog'></i>
-                        <span class="nav__name">Settings</span>
-                    </a>
-                    <a href="/" @onclick="Logout" class="nav__link">
-                        <i class='bx bx-log-out'></i>
-                        <span class="nav__name">Logout</span>
-                    </a>
-                </div>
-
-                <div class="nav__tmenu">
-                    <a href="javascript:void(0);" class="nav__link" @onclick="@ShowTeamP">
-                        <i class='bx bx-dock-top'></i>
-                    </a>
-                </div>
-                <div class="nav__panel" style="display: @ShowTeam">
-
-                    <a>View Team</a>
-                    <a href="/teamView" class="nav__link">
-                        <i class='bx bx-food-menu'></i>
-                        <span class="nav__name">View Team</span>
-                    </a>
-                </div>
-            </nav>
+		<div class="suggestion-button-container">
+            <a href="javascript:void(0);" @onclick="ShowSuggestion">
+				<!--<i class='bx bx-plus'></i>-->
+				<i class='bx bx-pencil'></i>
+            </a>
         </div>
-
-                
     </Authorized>
 </AuthorizeView>
 <AuthorizeView Roles="Admin">
     <Authorized>
-        <h1 style="opacity:0; text-decoration: none;">:)</h1>
         <!--=============== NAV ===============-->
-        <div class="nav">
-            <nav class="nav__content">
-
-                <div class="nav__list">
-                    <a href="/" class="nav__link active-link">
-                        <i class='bx bx-grid-alt'></i>
-                    </a>
+        <div class="navbar">
+            <div class="closable-div-background-button fullpage-wrapper @NavMenuState" @onclick="CloseNavMenu"></div>
+            <div class="navbar-topbar">
+                <button class="navbar-button" @onclick="ToggleNavMenu">
+                    <i class='bx bx-menu'></i>
+                </button>
+            </div>
+            <div class="navbar-togglecard container-md l-text @NavMenuState">
+                <button class="close-nav" @onclick="CloseNavMenu">
+                    <i class='bx bx-chevron-left'></i>
+                </button>
+                <div class="navbar-userinfo">
+                    <span class="navbar-username">@CurrentUser.Name</span><br />
+                    <span class="navbar-userid">Bruker-ID: @CurrentUser.EmploymentId</span>
+                </div>
+                <div class="nav-pages">
+                    <!--Sider-->
                     <div>
-                        <a href="javascript:void(0);" class="nav__add active-link" @onclick="@(() => ShowSuggestion())">
-                            <i class='bx bx-plus-circle'></i>
+                        <a href="/" @onclick="CloseNavMenu">
+                            <i class='bx bx-home-alt'></i>
+                            <span class="nav-text">Home</span>
+                        </a>
+                        <a href="/teamView" @onclick="CloseNavMenu">
+                            <i class='bx bx-food-menu'></i>
+                            <span class="nav-text">Team</span>
+                        </a>
+                        <a href="/" @onclick="CloseNavMenu">
+                            <i class='bx bx-bar-chart-alt-2'></i>
+                            <span class="nav-text">Statistikk</span>
                         </a>
                     </div>
-                    <a href="/" class="nav__link active-link">
-                        <i class='bx bx-bar-chart-alt-2'></i>
-                    </a>
-                   
+                    <div class="line"></div>
+
+                    <!--Admin-panel-->
+                    <div>
+                        <a href="/register" @onclick="CloseNavMenu">
+							<i class='bx bx-user-plus'></i>
+							<span class="nav-text">Bruker-Terminal</span>
+						</a>
+
+                        <a href="/manageTeam" @onclick="CloseNavMenu">
+							<i class='bx bx-group'></i>
+                            <span class="nav-text">Team-Terminal</span>
+						</a>
+                    </div>
+                    <div class="line"></div>
+
+                    <!--Logout og settings-->
+                    <div>
+                        <a href="/userSettings" @onclick="CloseNavMenu">
+                            <i class='bx bx-cog'></i>
+                            <span class="nav-text">Innstillinger</span>
+                        </a>
+                        <a href="/" @onclick="Logout">
+                            <i class='bx bx-log-out'></i>
+                            <span class="nav-text">Logg ut</span>
+                        </a>
+                    </div>
                 </div>
-            </nav>
+            </div>
         </div>
-
-        <div class="nav" id="nav">
-            <nav class="nav__content">
-                <div class="nav__umenu">
-                    <a href="javascript:void(0);" class="nav__link" @onclick="@ShowUserP">
-                        <i class='bx bx-user'></i>
-                    </a>
-                </div>
-                <div class="nav__user" id="user" style="display: @ShowUser">
-                    <a>@currentUser.name</a>
-                    <br />
-                    <a href="/userSettings" class="nav__link">
-                        <i class='bx bx-cog'></i>
-                        <span class="nav__name">Innstillinger</span>
-                    </a>
-                    <a href="/" @onclick="Logout" class="nav__link">
-                        <i class='bx bx-log-out'></i>
-                        <span class="nav__name">Logg ut</span>
-                    </a>
-                </div>
-
-                <div class="nav__tmenu">
-                    <a href="javascript:void(0);" class="nav__link" @onclick="@ShowTeamP">
-                        <i class='bx bx-dock-top'></i>
-                    </a>
-                </div>
-                <div class="nav__panel" style="display: @ShowTeam">
-                    
-                    <a>Admin Panel</a>
-                    <a href="/register" class="nav__link">
-                        <i class='bx bx-user-plus'></i>
-                        <span class="nav__name">Registrer Bruker</span>
-                    </a>
-
-                    <a href="/manageTeam" class="nav__link">
-                        <i class='bx bx-group'></i>
-                        <span class="nav__name">Registrer Team</span>
-                    </a>
-
-                    <a href="/teamView" class="nav__link">
-                        <i class='bx bx-food-menu'></i>
-                        <span class="nav__name">Se Team</span>
-                    </a>
-                </div>
-            </nav>
+        <div class="suggestion-button-container">
+            <a href="javascript:void(0);" @onclick="ShowSuggestion">
+				<!--<i class='bx bx-plus'></i>-->
+                <i class='bx bx-pencil'></i>
+            </a>
         </div>
     </Authorized>
 </AuthorizeView>
 <AuthorizeView Roles="TeamLeader">
     <Authorized>
-        <h1 style="opacity:0;">:)</h1>
         <!--=============== NAV ===============-->
-        <div class="nav">
-            <nav class="nav__content">
-                <div class="nav__list">
-                    <a href="/" class="nav__link active-link">
-                        <i class='bx bx-grid-alt'></i>
-                    </a>
+        <div class="navbar">
+            <div class="closable-div-background-button fullpage-wrapper @NavMenuState" @onclick="CloseNavMenu"></div>
+            <div class="navbar-topbar">
+                <button class="navbar-button" @onclick="ToggleNavMenu">
+                    <i class='bx bx-menu'></i>
+                </button>
+            </div>
+            <div class="navbar-togglecard container-md l-text @NavMenuState">
+                <button class="close-nav" @onclick="CloseNavMenu">
+                    <i class='bx bx-chevron-left'></i>
+                </button>
+                <div class="navbar-userinfo">
+                    <span class="navbar-username">@CurrentUser.Name</span><br />
+                    <span class="navbar-userid">Bruker-ID: @CurrentUser.EmploymentId</span>
+                </div>
+                <div class="nav-pages">
+                    <!--Sider-->
                     <div>
-                        <a href="javascript:void(0);" class="nav__add active-link" @onclick="@(() => ShowSuggestion())">
-                            <i class='bx bx-plus-circle'></i>
+                        <a href="/" @onclick="CloseNavMenu">
+                            <i class='bx bx-home-alt'></i>
+                            <span class="nav-text">Hjem</span>
+                        </a>
+                        <a href="/teamView" @onclick="CloseNavMenu">
+                            <i class='bx bx-food-menu'></i>
+                            <span class="nav-text">Team</span>
+                        </a>
+                        <a href="/" @onclick="CloseNavMenu">
+                            <i class='bx bx-bar-chart-alt-2'></i>
+                            <span class="nav-text">Statistikk</span>
                         </a>
                     </div>
-                    <a href="/" class="nav__link active-link">
-                        <i class='bx bx-bar-chart-alt-2'></i>
-                    </a>
+                    <div class="line"></div>
 
+                    <!--Admin-panel-->
+                    <div>
+                        <a href="/manageTeam" @onclick="CloseNavMenu">
+                            <i class='bx bx-group'></i>
+                            <span class="nav-text">Team-Terminal</span>
+                        </a>
+                    </div>
+                    <div class="line"></div>
+
+                    <!--Logout og settings-->
+                    <div>
+                        <a href="/userSettings" @onclick="CloseNavMenu">
+                            <i class='bx bx-cog'></i>
+                            <span class="nav-text">Innstillinger</span>
+                        </a>
+                        <a href="/" @onclick="Logout">
+                            <i class='bx bx-log-out'></i>
+                            <span class="nav-text">Logg ut</span>
+                        </a>
+                    </div>
                 </div>
-            </nav>
+            </div>
         </div>
-
-        <div class="nav" id="nav">
-            <nav class="nav__content">
-                <div class="nav__umenu">
-                    <a href="javascript:void(0);" class="nav__link" @onclick="@ShowUserP">
-                        <i class='bx bx-user'></i>
-                    </a>
-                </div>
-                <div class="nav__user" id="user" style="display: @ShowUser">
-                    <a>@currentUser.name</a>
-                    <br />
-                    <a href="/userSettings" class="nav__link">
-                        <i class='bx bx-cog'></i>
-                        <span class="nav__name">Innstillinger</span>
-                    </a>
-                    <a href="/" @onclick="Logout" class="nav__link">
-                        <i class='bx bx-log-out'></i>
-                        <span class="nav__name">Logg ut</span>
-                    </a>
-                </div>
-
-                <div class="nav__tmenu">
-                    <a href="javascript:void(0);" class="nav__link" @onclick="@ShowTeamP">
-                        <i class='bx bx-dock-top'></i>
-                    </a>
-                </div>
-                <div class="nav__panel" style="display: @ShowTeam">
-
-                    <a>Team Panel</a>
-
-                    <a href="/manageTeam" class="nav__link">
-                        <i class='bx bx-group'></i>
-                        <span class="nav__name">Registrer Team</span>
-                    </a>
-
-                    <a href="/teamView" class="nav__link">
-                        <i class='bx bx-food-menu'></i>
-                        <span class="nav__name">Se Team</span>
-                    </a>
-                </div>
-            </nav>
+        <div class="suggestion-button-container">
+            <a href="javascript:void(0);" @onclick="ShowSuggestion">
+				<!--<i class='bx bx-plus'></i>-->
+                <i class='bx bx-pencil'></i>
+            </a>
         </div>
     </Authorized>
 </AuthorizeView>
@@ -221,99 +219,104 @@
 @code{
     async Task ShowSuggestion()
     {
-        await DialogService.OpenAsync($"Enter a suggestion", ds =>
-    @<div>
-                <div class="justify-content-center" style="padding-top: 1rem;">
+        await DialogService.OpenAsync($"Skriv et forslag", ds =>
+        @<div>
+            <div class="justify-content-center" style="padding-top: 1rem;">
+                <!--Wants type SuggViewmodel, field object is suggDto-->
+                <RadzenTemplateForm Context="NewSuggestion" TItem="SuggViewmodel" Data=@SuggDto Submit=Submit>
+                    <!--Title on suggestion-->
                     <div class="row">
-                        <div class="col-lg-8 offset-lg-2">
-                            <!--Wants type SuggViewmodel, field object is suggDto-->
-                            <RadzenTemplateForm TItem="SuggViewmodel" Data=@suggDto Submit=submit>
-                                <!--Title on suggestion-->
-                                <div class="row mb-5">
-                                    <div class="col-md-4" style="align-self: center;">
-                                        <RadzenLabel Text="Tittel" />
-                                    </div>
-                                    <div class="col">
-                                        <!--Binder til userDto.emplymentId-->
-                                        <RadzenTextBox  @bind-Value=@suggDto.Title Name="title" Class="w-100" />
-                                    </div>
-                                </div>
-                                <!--Just do it checkbox-->
-                                <div class="row mb-5">
-                                    <div class="col-md-4" style="align-self: center;">
-                                        <RadzenLabel Text="Just Do It" />
-                                    </div>
-                                    <div class="col">
-                                        <RadzenCheckBox @bind-Value=@suggDto.JustDoIt Name="CheckBox1" TValue="bool" Change=@(args => OnChange(args, "CheckBox1 CheckBox")) />
-                                        <RadzenLabel Text="Just Do It" Component="CheckBox1" Style="margin-left: 8px; vertical-align: middle;" />
-                                    </div>
-                                </div>
-                                <div class="row mb-5">
-                                    <div class="col-md-4" style="align-self: center;">
-                                        <RadzenLabel Text="Ansvarlig" />
-                                    </div>
-                                    <div class="col">
-                                        <RadzenDropDownDataGrid @bind-Value=@suggDto.Ansvarlig FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
-                                                            AllowFiltering="true" AllowClear="true" Data=@Users TextProperty="name" Placeholder="Ansvarlig" ValueProperty="employmentId" Class="w-100">
-                                            <Columns>
-                                                <RadzenDropDownDataGridColumn Property="name" Title="Navn" />
-                                                <RadzenDropDownDataGridColumn Property="TeamName" Title="Team Name" />
-                                            </Columns>
-
-                                        </RadzenDropDownDataGrid>
-                                    </div>
-                                </div>
-                                <!--Team dropdown-->
-                                <div class="row mb-5">
-                                    <div class="col-md-4" style="align-self: center;">
-                                        <RadzenLabel Text="Team Name" />
-                                    </div>
-                                    <div class="col">
-                                        <RadzenDropDownDataGrid @bind-Value=@suggDto.OwnerTeam FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
-                                                            AllowFiltering="true" AllowClear="true" Data=@teams TextProperty="name" Placeholder="Team" ValueProperty="id" Class="w-100">
-                                            <Columns>
-                                                <RadzenDropDownDataGridColumn Property="id" Title="Team ID"  />
-                                                <RadzenDropDownDataGridColumn Property="name" Title="Team Name" />
-                                            </Columns>
-
-                                        </RadzenDropDownDataGrid>
-                                    </div>
-
-                                </div>
-                                <!--Category-->
-                                <div class="row mb-5">
-                                    <div class="col-md-4" style="align-self: center;">
-                                        <RadzenLabel Text="Kategori" />
-                                    </div>
-                                    <div class="col">
-                                        <RadzenDropDownDataGrid @bind-Value=@suggDto.Category FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
-                                                            AllowFiltering="true" AllowClear="true" Data=@Categories TextProperty="Name" Placeholder="Kategori" Class="w-100">
-                                            <Columns>
-                                                <RadzenDropDownDataGridColumn Property="Name" Title="Kategori" />
-                                            </Columns>
-                                        </RadzenDropDownDataGrid>
-                                    </div>
-                                </div>
-                                <!--Description-->
-                                <div class="row mb-5">
-                                    <div class="col-md-4" style="align-self: center;">
-                                        <RadzenLabel Text="Description" />
-                                    </div>
-                                    <div class="col">
-                                        <RadzenTextArea Style="min-height:10rem" @bind-Value=@suggDto.Description Change=@(args => OnChange(args, "TextArea")) Class="w-100" />
-                                    </div>
-                                </div>
-                                <div class="center">
-                                    <p>@Feedback</p>
-                                </div>
-                                <!--Button-->
-                                <div class="center">
-                                    <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
-                                </div>
-                            </RadzenTemplateForm>
+                        <div class="col-3 align-items-center d-flex">
+                            <RadzenLabel Text="Tittel" />
+                        </div>
+                        <div class="col-9">
+                            <RadzenTextBox @bind-Value=@SuggDto.Title MaxLength="64" Name="title" Class="w-100" />
                         </div>
                     </div>
-                </div>    
+                    <!--Just-do-it checkbox-->
+                    <div class="row">
+                        <div class="col-3" style="align-self: center;">
+                            <RadzenLabel Text="Just Do It" />
+                        </div>
+                        <div class="col-9">
+                            <RadzenCheckBox @bind-Value=@SuggDto.JustDoIt Name="CheckBox1" TValue="bool" Change=@(args => OnChange(args, "CheckBox1 CheckBox")) />
+                            <RadzenLabel Text="Just Do It" Component="CheckBox1" Style="margin-left: 8px; vertical-align: middle;" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3" style="align-self: center;">
+                            <RadzenLabel Text="Ansvarlig" />
+                        </div>
+                        <div class="col-9">
+                            <RadzenDropDownDataGrid @bind-Value=@SuggDto.Ansvarlig FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
+                                                AllowFiltering="true" AllowClear="true" Data=@ActiveUsers TextProperty="Name" Placeholder="Ansvarlig" ValueProperty="EmploymentId" Class="w-100">
+                                <Columns>
+                                    <RadzenDropDownDataGridColumn Property="Name" Title="Navn" />
+                                    <RadzenDropDownDataGridColumn Property="TeamName" Title="Team Navn" />
+                                </Columns>
+
+                            </RadzenDropDownDataGrid>
+                        </div>
+                    </div>
+                    <!--Team dropdown-->
+                    <div class="row">
+                        <div class="col-3" style="align-self: center;">
+                            <RadzenLabel Text="Team" />
+                        </div>
+                        <div class="col-9">
+                            <RadzenDropDownDataGrid @bind-Value=@SuggDto.OwnerTeam FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
+                                        AllowFiltering="true" AllowClear="true" Data=@ActiveTeams TextProperty="TeamName" Placeholder="Team" ValueProperty="TeamId" Class="w-100">
+                                <Columns>
+                                    <RadzenDropDownDataGridColumn Property="TeamId" Title="Team ID"  />
+                                    <RadzenDropDownDataGridColumn Property="TeamName" Title="Team Navn" />
+                                </Columns>
+
+                            </RadzenDropDownDataGrid>
+                        </div>
+
+                    </div>
+                    <!--Category-->
+                    <div class="row">
+                        <div class="col-3" style="align-self: center;">
+                            <RadzenLabel Text="Kategori" />
+                        </div>
+                        <div class="col-9">
+                            <RadzenDropDownDataGrid @bind-Value=@SuggDto.Category FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowVirtualization="true"
+                                                AllowFiltering="true" AllowClear="true" Data=@Categories TextProperty="Name" Placeholder="Kategori" Class="w-100">
+                                <Columns>
+                                    <RadzenDropDownDataGridColumn Property="Name" Title="Kategori" />
+                                </Columns>
+                            </RadzenDropDownDataGrid>
+                        </div>
+                    </div>
+					<!--Frist-->
+                    <!--<div class="row">
+                        <div class="col-3 align-items-center d-flex">
+                            <RadzenLabel Text="Frist" />
+                        </div>
+                        <div class="col-9">
+                            <RadzenDatePicker Min="DateTime.Today.AddDays(1)" @bind-Value=@SuggDto.Frist TValue="DateTime" ShowTime="false" DateFormat="d" Class="w-100" />
+                        </div>
+                    </div>-->
+                    <!--Description-->
+                    <div class="row mb-2">
+                        <div class="col-md-3" style="align-self: center;">
+                            <RadzenLabel Text="Forklaring" />
+                        </div>
+                        <div class="col-sm-9">
+                            <RadzenTextArea Style="min-height:10rem" MaxLength="3000" @bind-Value=@SuggDto.Description Change=@(args => OnChange(args, "TextArea")) Class="w-100" />
+                        </div>
+                    </div>
+                    <div class="center">
+                        <p>@Feedback</p>
+                    </div>
+                    <!--Button-->
+                    <div class="center">
+                        <RadzenButton Text="Avbryt" ButtonType="ButtonType.Button" ButtonStyle="ButtonStyle.Light" Click="() => ds.Close(false)" Size="ButtonSize.Large" Style="width: 150px; margin-right: 1rem;" />
+                        <RadzenButton Text="Send" ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Success" Click="() => ds.Close(true)" Size="ButtonSize.Large" Style="width: 150px;" />
+                    </div>
+                </RadzenTemplateForm>
+            </div>    
         </div>
     , new DialogOptions() { CloseDialogOnOverlayClick = true });
     }

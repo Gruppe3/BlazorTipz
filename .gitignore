@@ -362,9 +362,6 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-# Debugger Output
-BlazorTipz/obj/
-BlazorTipz/bin/
-DataLibrary/obj/
-DataLibrary/bin/
+# miscellaneous
 /database
+*.csproj.user

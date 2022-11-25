@@ -1,60 +1,61 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Mvc;
 using BlazorTipz.ViewModels.User;
+using Microsoft.AspNetCore.Mvc;
+
 namespace BlazorTipz.Views
 {
     public partial class UserSettings
     {
         bool popup;
-        public string Checker { get; set; }
-
-        UserViewmodel userDto = new UserViewmodel();
-        UserViewmodel? CUser;
-
-        UserViewmodel LoginCheckUser = new();
+        public string Checker { get; set; } = string.Empty;
+        UserViewmodel UserDto { get; set; } = new();
+        UserViewmodel CurrentUser { get; set; } = new();
+        UserViewmodel LoginCheckUser { get; set; } = new();
 
 
         //checks if there is a current user
         protected override async Task OnInitializedAsync()
         {
-            //checks if currentUser is null 
-            var CurrentUser = _userManager.getCurrentUser();
-            if (CurrentUser == null)
+            var token = await _localStorage.GetItemAsync<string>("token");
+            if (token != null)
             {
-                NavigationManager.NavigateTo("/");
-                return;
+                // If a token is found
+                (UserViewmodel user, string err) = await _userManager.GetCurrentUser(token);
+                if (err != null)
+                {
+                    //If error, send to login
+                    _navigationManager.NavigateTo("/login", true);
+                    return;
+                }
+
+                CurrentUser = user;
             }
             else
             {
-                CUser = CurrentUser;
+                _navigationManager.NavigateTo("/login", true);
+                return;
             }
-            userDto.name = CUser.name;
-            userDto.firstTimeLogin = CUser.firstTimeLogin;
+            UserDto.Name = CurrentUser.Name;
+            UserDto.FirstTimeLogin = CurrentUser.FirstTimeLogin;
         }
 
         //changes the current user details
         public async Task<ActionResult<UserViewmodel>> ChangeSettings(UserViewmodel request)
         {
+            bool orgFirstTimeLogin = CurrentUser.FirstTimeLogin;
             string err;
-            if (request.firstTimeLogin == true)
+            if (request.FirstTimeLogin == true)
             {
-                request.firstTimeLogin = false;
-                err = await _userManager.updateCurrentUser(request);
-                if (err != null)
-                {
-                    request.firstTimeLogin = true;
-                    await _userManager.updateCurrentUser(request);
-                }            
+                request.FirstTimeLogin = false;
             }
-            else
-            {
-                err = await _userManager.updateCurrentUser(request);
-            }
-
-            err = await _userManager.updateCurrentUser(request);
+            
+            err = await _userManager.UpdateCurrentUser(request);
             if (err != null)
             {
-                Checker = err;
+                if (orgFirstTimeLogin == true)
+                {
+                    request.FirstTimeLogin = true;
+                }
+                    Checker = err;
                 return new BadRequestObjectResult(Checker);
             }
             else
@@ -63,39 +64,39 @@ namespace BlazorTipz.Views
                 return new OkObjectResult(Checker);
             }
 
-            CUser = _userManager.getCurrentUser();
-            if (CUser.password != request.RepeatPassword)
-            {
-                Checker = "not changed correctly, try again";
-                return new BadRequestObjectResult(Checker);
-            }
+            //CurrentUser = _userManager.GetCurrentUser();
+            //if (CurrentUser.Password != request.RepeatPassword)
+            //{
+            //    Checker = "not changed correctly, try again";
+            //    return new BadRequestObjectResult(Checker);
+            //}
 
-            return CUser;
+            //return CurrentUser;
         }
 
         // navigate back to home, when used
-        private void back()
+        private void NavigateBack()
         {
-            NavigationManager.NavigateTo("/", true);
+            _navigationManager.NavigateTo("/", true);
         }
 
         //Check password of CUser and change settings
         public async Task<ActionResult<string>> CheckPassword(UserViewmodel request)
         {
-            string token;
-            string err;
-            request.employmentId = CUser.employmentId;
+            string? token;
+            string? err;
+            request.EmploymentId = CurrentUser.EmploymentId;
             //returns token or err
             (token, err) = await _userManager.Login(request);
             //If error is null
-            if (err == null)
+            if (err == null && token != null)
             {
                 await _localStorage.SetItemAsync("token", token);
-                await ChangeSettings(userDto);
+                await ChangeSettings(UserDto);
                 return token;
             }
             //If token is null
-            else if (token == null)
+            else if (err != null && token == null)
             {
                 Checker = err;
                 return err;
